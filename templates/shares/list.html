@@ -1,0 +1,83 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}{% t "Hisa" "Shares" %}{% endblock %}
+{% block page_title %}{% if stats_for_own_only %}{% t "Hisa Zangu" "My Shares" %}{% else %}{% t "Usimamizi wa Hisa" "Share Management" %}{% endif %}{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_shares }}</h4>
+            <p>
+                {% if stats_for_own_only %}
+                <span class="lang-sw">Hisa Zangu</span><span class="lang-en">My Shares</span>
+                {% else %}
+                <span class="lang-sw">Jumla ya Hisa (Ushirika)</span><span class="lang-en">Total Shares (Cooperative)</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_value|floatformat:0 }}</h4>
+            <p>
+                {% if stats_for_own_only %}
+                <span class="lang-sw">Thamani Yangu (TZS)</span><span class="lang-en">My Value (TZS)</span>
+                {% else %}
+                <span class="lang-sw">Jumla ya Thamani (TZS)</span><span class="lang-en">Total Value (TZS)</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>{% if stats_for_own_only %}{% t "Hisa Zangu" "My Share Holding" %}{% else %}{% t "Hisa za Wanachama" "Share Holdings" %}{% endif %}</h3>
+        {% can 'shares.purchase' as can_purchase %}{% if can_purchase %}<a href="{% url 'shares:purchase' %}" class="btn btn-primary btn-sm">+ {% t "Nunua Hisa" "Purchase Shares" %}</a>{% endif %}
+    </div>
+    <div class="card-body">
+        {% if not stats_for_own_only %}
+        <p class="text-muted" style="font-size:0.85rem;margin-bottom:0.75rem;">
+            <span class="lang-sw">Jumla juu = jumla ya safu zote hapa chini (wanachama wote).</span>
+            <span class="lang-en">Top totals = sum of all rows below (all members).</span>
+        </p>
+        {% endif %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% t "Cheti" "Certificate" %}</th>
+                        {% if not stats_for_own_only %}<th>{% t "Mwanachama" "Member" %}</th>{% endif %}
+                        <th>{% t "Hisa" "Shares" %}</th>
+                        <th>{% t "Thamani" "Value" %}</th>
+                        <th>{% t "Hali" "Status" %}</th>
+                        <th>{% t "Vitendo" "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in shares %}
+                    <tr>
+                        <td>{{ s.certificate_number }}</td>
+                        {% if not stats_for_own_only %}
+                        <td>{% if s.member_obj %}{{ s.member_obj.member_number }} — {{ s.member_obj.first_name }} {{ s.member_obj.last_name }}{% else %}{{ s.member_id }}{% endif %}</td>
+                        {% endif %}
+                        <td><strong>{{ s.total_shares }}</strong></td>
+                        <td>{{ s.total_value|floatformat:0 }}</td>
+                        <td><span class="badge badge-{% if s.status == 'active' %}success{% else %}secondary{% endif %}">{{ s.status }}</span></td>
+                        <td class="actions-cell">
+                            <div class="table-actions table-actions--compact">
+                                <a href="{% url 'shares:detail' s.id %}" class="btn btn-sm btn-outline">{% t "Angalia" "View" %}</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="{% if stats_for_own_only %}5{% else %}6{% endif %}" style="text-align:center;padding:2rem;color:var(--gray-400);">{% t "Hakuna hisa." "No shares recorded." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

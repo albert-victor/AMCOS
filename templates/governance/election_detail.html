@@ -1,0 +1,51 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Election Detail{% endblock %}
+{% block page_title %}{{ election.title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3>Election: {{ election.position }}</h3></div>
+    <div class="card-body">
+        <table>
+            <tr><td style="font-weight:600;width:140px;">Position</td><td>{{ election.position }}</td></tr>
+            <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if election.status == 'voting' %}success{% elif election.status == 'completed' %}info{% else %}warning{% endif %}">{{ election.status }}</span></td></tr>
+            <tr><td style="font-weight:600;">Voting Period</td><td>{{ election.voting_start|date:"d/m/Y H:i" }} - {{ election.voting_end|date:"d/m/Y H:i" }}</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3>Candidates</h3>
+        {% if election.status == 'voting' %}
+        <span class="badge badge-success">Voting Open</span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="grid-2">
+            {% for c in candidates %}
+            <div class="card" style="border:1px solid var(--gray-200);">
+                <div class="card-body" style="text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;"><i class="fa-solid fa-users" aria-hidden="true"></i>  </div>
+                    <h4>{{ c.member_name }}</h4>
+                    <p style="font-size:0.875rem;color:var(--gray-500);">Votes: {{ c.vote_count }}</p>
+                    {% if c.manifesto %}
+                    <p style="font-size:0.8rem;color:var(--gray-600);">{{ c.manifesto|truncatechars:100 }}</p>
+                    {% endif %}
+                    {% can 'governance.vote' as can_vote %}
+                    {% if can_vote and election.status == 'voting' %}
+                    <a href="{% url 'governance:vote' election.id %}?candidate={{ c.id }}" class="btn btn-primary btn-sm">Vote</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state" style="grid-column:1/-1;">
+                <div class="empty-icon"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i> </div>
+                <h3>No Candidates</h3>
+                <p>No candidates registered for this election.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Notifications {% if unread_count %}<span class="badge badge-danger">{{ unread_count }} unread</span>{% endif %}</h3>
+        <div class="flex gap-2">
+            <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-sm btn-outline">Mark All Read</a>
+            {% can 'notifications.send' as can_send %}{% if can_send %}
+            <a href="{% url 'notifications:send' %}" class="btn btn-sm btn-primary">Send Notification</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        {% for n in notifications %}
+        <div style="padding:1rem;border-bottom:1px solid var(--gray-100);{% if not n.is_read %}background:var(--primary-light);{% endif %}">
+            <div class="flex justify-between">
+                <div>
+                    <strong>{{ n.title }}</strong>
+                    {% if not n.is_read %}<span class="badge badge-info" style="font-size:0.65rem;">NEW</span>{% endif %}
+                </div>
+                <small style="color:var(--gray-400);">{{ n.created_at|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p style="margin:0.25rem 0;font-size:0.875rem;color:var(--gray-600);">{{ n.message }}</p>
+            <div class="flex gap-2" style="margin-top:0.5rem;">
+                <span class="badge badge-secondary">{{ n.get_notification_type_display }}</span>
+                {% if not n.is_read %}
+                <a href="{% url 'notifications:mark_read' n.id %}" class="btn btn-sm btn-outline">Mark Read</a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i> </div>
+            <h3>No Notifications</h3>
+            <p>You're all caught up!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+﻿{% extends 'base.html' %}
+{% block title %}Payment Report{% endblock %}
+{% block page_title %}Payment Report{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_collected|floatformat:0 }}</h4><p>Total Collected (TZS)</p></div></div>
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_transactions }}</h4><p>Total Transactions</p></div></div>
+</div>
+<div class="card">
+    <div class="card-header"><h3>Payment History</h3></div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Type</th>
+                        <th>Method</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payments %}
+                    <tr>
+                        <td>{{ p.reference_number|truncatechars:12 }}</td>
+                        <td>{{ p.get_payment_type_display }}</td>
+                        <td>{{ p.get_payment_method_display }}</td>
+                        <td>{{ p.amount|floatformat:0 }}</td>
+                        <td><span class="badge badge-{% if p.status == 'completed' %}success{% elif p.status == 'pending' %}warning{% else %}danger{% endif %}">{{ p.status }}</span></td>
+                        <td>{{ p.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

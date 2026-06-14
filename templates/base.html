@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html lang="{{ current_lang|default:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}MGOWELO AMCOS{% endblock %} | MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    {% load static rbac_tags %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    {% if db_in_fallback %}
+    <div style="background:#fef3c7;color:#92400e;padding:10px 16px;text-align:center;font-size:14px;border-bottom:1px solid #fcd34d;">
+        <i class="fa-solid fa-database"></i>
+        <strong>HALI YA FALLBACK:</strong> MySQL haipatikani — mfumo unaendesha kwa nakala ya ndani (SQLite).
+        Data inaweza kuwa ya zamani.
+        <a href="{% url 'core:database_status' %}" style="margin-left:8px;font-weight:600;">Angalia hali</a>
+    </div>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo sidebar-brand-logo">
+                    <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" width="36" height="36">
+                </div>
+                <div class="sidebar-brand-text">
+                    <h2>MGOWELO AMCOS</h2>
+                    <small>Agricultural Marketing Cooperative</small>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                {% with role=user.role %}
+                <!-- SUPER ADMIN -->
+                {% if role == 'super_admin' %}
+                <div class="nav-section"><span class="lang-sw">Msimamizi Mkuu</span><span class="lang-en">Super Admin</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i> <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+                <a href="{% url 'core:super_admin_dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Jopo la Usimamizi</span><span class="lang-en">Admin Panel</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Usimamizi</span><span class="lang-en">Management</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama Wote</span><span class="lang-en">All Members</span></a>
+                {% can 'members.create' as can_member_create %}{% if can_member_create %}
+                <a href="{% url 'members:create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span></a>
+                {% endif %}
+                {% can 'members.id_card_bulk' as can_bulk_ids %}{% if can_bulk_ids %}
+                <a href="{% url 'members:id_card_bulk' %}" class="nav-item"><i class="fa-solid fa-id-card nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Vitambulisho</span><span class="lang-en">ID Cards</span></a>
+                {% endif %}
+                <a href="{% url 'cooperative:branches' %}" class="nav-item"><i class="fa-solid fa-sitemap nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Matawi</span><span class="lang-en">Branches</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'loans:products' %}" class="nav-item"><i class="fa-solid fa-boxes-stacked nav-icon" aria-hidden="true"></i> <span class="lang-sw">Bidhaa za Mikopo</span><span class="lang-en">Loan Products</span></a>
+                <a href="{% url 'shares:list' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Hisa</span><span class="lang-en">Shares</span></a>
+                <a href="{% url 'shares:dividends' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Gawio</span><span class="lang-en">Dividends</span></a>
+                <a href="{% url 'payments:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Malipo</span><span class="lang-en">Payments Dashboard</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo Yote</span><span class="lang-en">All Payments</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ankara</span><span class="lang-en">Invoices</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Uhasibu</span><span class="lang-en">Accounting</span></div>
+                <a href="{% url 'accounting:dashboard' %}" class="nav-item"><i class="fa-solid fa-calculator nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Muhtasari</span><span class="lang-en">Overview</span></a>
+                <a href="{% url 'accounting:chart_of_accounts' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akaunti</span><span class="lang-en">Chart of Accounts</span></a>
+                <a href="{% url 'accounting:income_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-up nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mapato</span><span class="lang-en">Income</span></a>
+                <a href="{% url 'accounting:expense_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-down nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Matumizi</span><span class="lang-en">Expenses</span></a>
+                <a href="{% url 'accounting:budget_list' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Bajeti</span><span class="lang-en">Budgets</span></a>
+                <a href="{% url 'accounting:trial_balance' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Majaribio</span><span class="lang-en">Trial Balance</span></a>
+                <a href="{% url 'accounting:income_statement' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Taarifa ya Mapato</span><span class="lang-en">Income Statement</span></a>
+                <a href="{% url 'accounting:balance_sheet' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mizani</span><span class="lang-en">Balance Sheet</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Utawala</span><span class="lang-en">Governance</span></div>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+                <a href="{% url 'governance:elections' %}" class="nav-item"><i class="fa-solid fa-check-to-slot nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uchaguzi</span><span class="lang-en">Elections</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ukaguzi</span><span class="lang-en">Audit</span></div>
+                <a href="{% url 'audit:trails' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Kumbukumbu</span><span class="lang-en">Audit Trails</span></a>
+                <a href="{% url 'audit:compliance' %}" class="nav-item"><i class="fa-solid fa-clipboard-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uzingatiaji</span><span class="lang-en">Compliance</span></a>
+                <a href="{% url 'audit:fraud_alerts' %}" class="nav-item"><i class="fa-solid fa-triangle-exclamation nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Arifa za Ulaghai</span><span class="lang-en">Fraud Alerts</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti</span><span class="lang-en">Reports</span></div>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Ripoti</span><span class="lang-en">Reports Dashboard</span></a>
+                <a href="{% url 'reporting:members' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Wanachama</span><span class="lang-en">Member Report</span></a>
+                <a href="{% url 'reporting:savings' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Akiba</span><span class="lang-en">Savings Report</span></a>
+                <a href="{% url 'reporting:loans' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Mikopo</span><span class="lang-en">Loan Report</span></a>
+                <a href="{% url 'reporting:payments' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Malipo</span><span class="lang-en">Payment Report</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                <a href="{% url 'notifications:new_message' %}" class="nav-item"><i class="fa-solid fa-pen-to-square nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Andika Ujumbe</span><span class="lang-en">New Message</span></a>
+                <a href="{% url 'notifications:broadcast' %}" class="nav-item"><i class="fa-solid fa-bullhorn nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tangaza</span><span class="lang-en">Broadcast</span></a>
+                <a href="{% url 'notifications:send' %}" class="nav-item"><i class="fa-solid fa-paper-plane nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tuma Taarifa</span><span class="lang-en">Send Notice</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mipangilio</span><span class="lang-en">Settings</span></div>
+                <a href="{% url 'core:system_settings' %}" class="nav-item"><i class="fa-solid fa-gear nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mipangilio ya Mfumo</span><span class="lang-en">System Settings</span></a>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-gear nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wasifu wa Chama</span><span class="lang-en">Cooperative Profile</span></a>
+
+                <!-- PA-RC & MWENYEKITI (same dashboard & actions) -->
+                {% elif role == 'parrc' or role == 'chairperson' or role == 'vice_chairperson' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                    {% if role == 'parrc' %}
+                    <span class="lang-sw">PA-RC</span><span class="lang-en">PA-RC</span>
+                    {% elif role == 'vice_chairperson' %}
+                    <span class="lang-sw">Makamu wa Mwenyekiti</span><span class="lang-en">Vice Chairperson</span>
+                    {% else %}
+                    <span class="lang-sw">Mwenyekiti</span><span class="lang-en">Chairperson</span>
+                    {% endif %}
+                </div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Uongozi na Maamuzi</span><span class="lang-en">Leadership & Decisions</span></div>
+                <a href="{% url 'loans:list' %}?status=under_review" class="nav-item"><i class="fa-solid fa-clipboard-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Maamuzi ya Mkopo</span><span class="lang-en">Loan Decisions</span></a>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+                <a href="{% url 'governance:elections' %}" class="nav-item"><i class="fa-solid fa-check-to-slot nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uchaguzi wa Viongozi</span><span class="lang-en">Leader Elections</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Wanachama na Nidhamu</span><span class="lang-en">Members & Discipline</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+                {% can 'members.create' as can_member_create %}{% if can_member_create %}
+                <a href="{% url 'members:create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span></a>
+                {% endif %}
+
+                <div class="nav-section"><span class="lang-sw">Uzalishaji na Biashara</span><span class="lang-en">Production & Trade</span></div>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Maendeleo ya AMCOS</span><span class="lang-en">AMCOS Development</span></a>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti za Uzalishaji</span><span class="lang-en">Production Reports</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'payments:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Malipo</span><span class="lang-en">Payments Dashboard</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ankara</span><span class="lang-en">Invoices</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti na Uwakilishi</span><span class="lang-en">Reports & Representation</span></div>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Ripoti</span><span class="lang-en">Reports Dashboard</span></a>
+                <a href="{% url 'reporting:members' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Wanachama</span><span class="lang-en">Member Report</span></a>
+                <a href="{% url 'reporting:savings' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Akiba</span><span class="lang-en">Savings Report</span></a>
+                <a href="{% url 'reporting:loans' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Mikopo</span><span class="lang-en">Loan Report</span></a>
+                <a href="{% url 'reporting:payments' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Malipo</span><span class="lang-en">Payment Report</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                <a href="{% url 'notifications:broadcast' %}" class="nav-item"><i class="fa-solid fa-bullhorn nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tangaza</span><span class="lang-en">Broadcast</span></a>
+                <a href="{% url 'notifications:send' %}" class="nav-item"><i class="fa-solid fa-paper-plane nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tuma Taarifa</span><span class="lang-en">Send Notice</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Nyaraka na Sera</span><span class="lang-en">Documents & Policy</span></div>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-gear nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wasifu wa Chama</span><span class="lang-en">Cooperative Profile</span></a>
+
+                <!-- KATIBU (SECRETARY) -->
+                {% elif role == 'secretary' or role == 'vice_secretary' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                    {% if role == 'vice_secretary' %}
+                    <span class="lang-sw">Makamu Katibu</span><span class="lang-en">Vice Secretary</span>
+                    {% else %}
+                    <span class="lang-sw">Katibu</span><span class="lang-en">Secretary</span>
+                    {% endif %}
+                </div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Usajili na Wanachama</span><span class="lang-en">Registration & Members</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama Wote</span><span class="lang-en">All Members</span></a>
+                {% can 'members.create' as can_member_create %}{% if can_member_create %}
+                <a href="{% url 'members:create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span></a>
+                {% endif %}
+                <a href="{% url 'members:list' %}?status=pending" class="nav-item"><i class="fa-solid fa-hourglass-half nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Maombi Yanayosubiri</span><span class="lang-en">Pending Applications</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mikutano na Nyaraka</span><span class="lang-en">Meetings & Documents</span></div>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+                <a href="{% url 'governance:meeting_create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Panga Mkutano</span><span class="lang-en">Schedule Meeting</span></a>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-file-lines nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Andika Dakika</span><span class="lang-en">Record Minutes</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano na Taarifa</span><span class="lang-en">Communication & Notices</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                <a href="{% url 'notifications:broadcast' %}" class="nav-item"><i class="fa-solid fa-bullhorn nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tangaza kwa Wanachama</span><span class="lang-en">Broadcast to Members</span></a>
+                <a href="{% url 'notifications:send' %}" class="nav-item"><i class="fa-solid fa-paper-plane nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tuma Taarifa Rasmi</span><span class="lang-en">Send Official Notice</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti na Kumbukumbu</span><span class="lang-en">Reports & Records</span></div>
+                <a href="{% url 'reporting:members' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Wanachama</span><span class="lang-en">Member Report</span></a>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti</span><span class="lang-en">Reports</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+
+                <!-- MHAZINI (TREASURER) -->
+                {% elif role == 'treasurer' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>   <span class="lang-sw">Mhazini</span><span class="lang-en">Treasurer</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+                <a href="{% url 'payments:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Malipo</span><span class="lang-en">Payments Dashboard</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo Yote</span><span class="lang-en">All Payments</span></a>
+                <a href="{% url 'payments:make' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Malipo</span><span class="lang-en">Record Payment</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ankara</span><span class="lang-en">Invoices</span></a>
+                <div class="nav-section"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba za Wanachama</span><span class="lang-en">Member Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'loans:list' %}?status=active" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo Inayoendelea</span><span class="lang-en">Active Loans</span></a>
+                <div class="nav-section"><span class="lang-sw">Ripoti za Fedha</span><span class="lang-en">Financial Reports</span></div>
+                <a href="{% url 'reporting:savings' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Akiba</span><span class="lang-en">Savings Report</span></a>
+                <a href="{% url 'reporting:loans' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Mikopo</span><span class="lang-en">Loan Report</span></a>
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- MHASIBU (ACCOUNTANT) -->
+                {% elif role == 'accountant' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>   <span class="lang-sw">Mhasibu</span><span class="lang-en">Accountant</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Muhtasari wa Fedha</span><span class="lang-en">Financial Overview</span></div>
+                <a href="{% url 'accounting:dashboard' %}" class="nav-item"><i class="fa-solid fa-calculator nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Muhtasari</span><span class="lang-en">Overview</span></a>
+                <a href="{% url 'accounting:chart_of_accounts' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akaunti</span><span class="lang-en">Chart of Accounts</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mapato na Matumizi</span><span class="lang-en">Income & Expenses</span></div>
+                <a href="{% url 'accounting:income_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-up nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mapato</span><span class="lang-en">Income</span></a>
+                <a href="{% url 'accounting:income_create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Mapato</span><span class="lang-en">Record Income</span></a>
+                <a href="{% url 'accounting:expense_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-down nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Matumizi</span><span class="lang-en">Expenses</span></a>
+                <a href="{% url 'accounting:expense_create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Matumizi</span><span class="lang-en">Record Expense</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Bajeti na Mipango</span><span class="lang-en">Budget & Planning</span></div>
+                <a href="{% url 'accounting:budget_list' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Bajeti</span><span class="lang-en">Budgets</span></a>
+                <a href="{% url 'accounting:budget_create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tengeneza Bajeti</span><span class="lang-en">Create Budget</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></div>
+                <a href="{% url 'payments:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Malipo</span><span class="lang-en">Payments Dashboard</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo Yote</span><span class="lang-en">All Payments</span></a>
+                <a href="{% url 'payments:make' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Malipo</span><span class="lang-en">Record Payment</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ankara</span><span class="lang-en">Invoices</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Akiba na Mikopo</span><span class="lang-en">Savings & Loans</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba za Wanachama</span><span class="lang-en">Member Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti za Fedha</span><span class="lang-en">Financial Reports</span></div>
+                <a href="{% url 'accounting:trial_balance' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Majaribio</span><span class="lang-en">Trial Balance</span></a>
+                <a href="{% url 'accounting:income_statement' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Taarifa ya Mapato</span><span class="lang-en">Income Statement</span></a>
+                <a href="{% url 'accounting:balance_sheet' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mizani</span><span class="lang-en">Balance Sheet</span></a>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti za Fedha</span><span class="lang-en">Financial Reports</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- MJUMBE WA BODI (BOARD MEMBER) -->
+                {% elif role == 'board_member' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>   <span class="lang-sw">Bodi ya Uongozi</span><span class="lang-en">Board of Directors</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Sera na Maamuzi</span><span class="lang-en">Policy & Decisions</span></div>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano ya Bodi</span><span class="lang-en">Board Meetings</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Bajeti na Fedha</span><span class="lang-en">Budget & Finance</span></div>
+                <a href="{% url 'accounting:budget_list' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Bajeti</span><span class="lang-en">Budgets</span></a>
+                <a href="{% url 'accounting:income_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-up nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mapato</span><span class="lang-en">Income</span></a>
+                <a href="{% url 'accounting:expense_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-down nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Matumizi</span><span class="lang-en">Expenses</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Usajili</span><span class="lang-en">Registration</span></div>
+                <a href="{% url 'members:pending_registrations' %}" class="nav-item"><i class="fa-solid fa-user-clock nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Idhini Usajili Mpya</span><span class="lang-en">Approve New Members</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ufuatiliaji</span><span class="lang-en">Oversight</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba za Wanachama</span><span class="lang-en">Member Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Miradi ya Chama</span><span class="lang-en">Cooperative Projects</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti za Uhasibu</span><span class="lang-en">Financial Statements</span></div>
+                <a href="{% url 'accounting:income_statement' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Taarifa ya Mapato</span><span class="lang-en">Income Statement</span></a>
+                <a href="{% url 'accounting:balance_sheet' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mizani</span><span class="lang-en">Balance Sheet</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                <a href="{% url 'notifications:broadcast' %}" class="nav-item"><i class="fa-solid fa-bullhorn nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tangaza</span><span class="lang-en">Broadcast</span></a>
+
+                <!-- AFISA MIKOPO (LOAN OFFICER) -->
+                {% elif role == 'loan_officer' %}
+                <div class="nav-section"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>  <span class="lang-sw">Afisa Mikopo</span><span class="lang-en">Loan Officer</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></div>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo Yote</span><span class="lang-en">All Loans</span></a>
+                <a href="{% url 'loans:list' %}?status=under_review" class="nav-item"><i class="fa-solid fa-clipboard-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Yanayokaguliwa</span><span class="lang-en">Under Review</span></a>
+                <a href="{% url 'loans:list' %}?status=approved" class="nav-item"><i class="fa-solid fa-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Yaliyoidhinishwa</span><span class="lang-en">Approved</span></a>
+                <a href="{% url 'loans:products' %}" class="nav-item"><i class="fa-solid fa-boxes-stacked nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Bidhaa za Mikopo</span><span class="lang-en">Loan Products</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Orodha ya Wanachama</span><span class="lang-en">Member List</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- MKAGUZI (AUDITOR) -->
+                {% elif role == 'auditor' %}
+                <div class="nav-section"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>  <span class="lang-sw">Mkaguzi</span><span class="lang-en">Auditor</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ukaguzi</span><span class="lang-en">Audit</span></div>
+                <a href="{% url 'audit:trails' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Kumbukumbu</span><span class="lang-en">Audit Trails</span></a>
+                <a href="{% url 'audit:compliance' %}" class="nav-item"><i class="fa-solid fa-clipboard-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uzingatiaji</span><span class="lang-en">Compliance</span></a>
+                <a href="{% url 'audit:fraud_alerts' %}" class="nav-item"><i class="fa-solid fa-triangle-exclamation nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ulaghai</span><span class="lang-en">Fraud Alerts</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ufuatiliaji (Kusoma)</span><span class="lang-en">Oversight (Read-only)</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- TCDC — Tume ya Maendeleo ya Ushirika (read-only) -->
+                {% elif role == 'tcdc_wilaya' or role == 'tcdc_mkoa' %}
+                <div class="nav-section"><i class="fa-solid fa-building-columns" aria-hidden="true"></i>  TCDC {% if role == 'tcdc_wilaya' %}<span class="lang-sw">(Wilaya)</span><span class="lang-en">(District)</span>{% else %}<span class="lang-sw">(Mkoa)</span><span class="lang-en">(Regional)</span>{% endif %}</div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ukaguzi</span><span class="lang-en">Audit</span></div>
+                <a href="{% url 'audit:trails' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Kumbukumbu</span><span class="lang-en">Audit Trails</span></a>
+                <a href="{% url 'audit:compliance' %}" class="nav-item"><i class="fa-solid fa-clipboard-check nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uzingatiaji</span><span class="lang-en">Compliance</span></a>
+                <a href="{% url 'audit:fraud_alerts' %}" class="nav-item"><i class="fa-solid fa-triangle-exclamation nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ulaghai</span><span class="lang-en">Fraud Alerts</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ufuatiliaji (Kusoma)</span><span class="lang-en">Oversight (Read-only)</span></div>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'shares:list' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Hisa</span><span class="lang-en">Shares</span></a>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ripoti za Fedha (Kusoma)</span><span class="lang-en">Financial Reports (Read-only)</span></div>
+                <a href="{% url 'accounting:dashboard' %}" class="nav-item"><i class="fa-solid fa-calculator nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Muhtasari wa Uhasibu</span><span class="lang-en">Accounting Overview</span></a>
+                <a href="{% url 'accounting:trial_balance' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Majaribio</span><span class="lang-en">Trial Balance</span></a>
+                <a href="{% url 'accounting:income_statement' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Taarifa ya Mapato</span><span class="lang-en">Income Statement</span></a>
+                <a href="{% url 'accounting:balance_sheet' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mizani</span><span class="lang-en">Balance Sheet</span></a>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-chart-line nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti za Fedha</span><span class="lang-en">Financial Reports</span></a>
+                <a href="{% url 'reporting:members' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Wanachama</span><span class="lang-en">Member Report</span></a>
+                <a href="{% url 'reporting:loans' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti ya Mikopo</span><span class="lang-en">Loan Report</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- CARDER / ID OFFICER -->
+                {% elif role == 'carder' %}
+                <div class="nav-section"><i class="fa-solid fa-id-card" aria-hidden="true"></i>  <span class="lang-sw">{% t "Carder" "ID Officer" %}</span><span class="lang-en">{% t "Carder" "ID Officer" %}</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Usajili na Vitambulisho</span><span class="lang-en">Registration & IDs</span></div>
+                <a href="{% url 'members:create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span></a>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama Wote</span><span class="lang-en">All Members</span></a>
+                <a href="{% url 'members:id_card_bulk' %}" class="nav-item"><i class="fa-solid fa-id-card nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Chapisha Vitambulisho</span><span class="lang-en">Print ID Cards</span></a>
+                <a href="{% url 'members:list' %}?status=pending" class="nav-item"><i class="fa-solid fa-hourglass-half nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Maombi Yanayosubiri</span><span class="lang-en">Pending Applications</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mwanachama Binafsi</span><span class="lang-en">Individual Member</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+
+                <!-- MWANACHAMA/MKULIMA (MEMBER) -->
+                {% elif role == 'member' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>   <span class="lang-sw">Mwanachama</span><span class="lang-en">Member</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi yangu</span><span class="lang-en">My Dashboard</span></a>
+
+                {% if is_board_leader %}
+                <div class="nav-section"><span class="lang-sw">Bodi ya Uongozi</span><span class="lang-en">Board of Directors</span></div>
+                <a href="{% url 'members:pending_registrations' %}" class="nav-item"><i class="fa-solid fa-user-clock nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Idhini Usajili Mpya</span><span class="lang-en">Approve New Members</span></a>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano ya Bodi</span><span class="lang-en">Board Meetings</span></a>
+                {% endif %}
+
+                {% if member_lifecycle_stage == 'pending_shares' or member_lifecycle_stage == 'full' %}
+                <div class="nav-section"><span class="lang-sw">Hisa</span><span class="lang-en">Shares</span></div>
+                <a href="{% url 'shares:purchase' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Nunua Hisa</span><span class="lang-en">Buy Shares</span></a>
+                {% if member_lifecycle_stage == 'full' %}
+                <a href="{% url 'shares:list' %}" class="nav-item"><i class="fa-solid fa-list nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Hisa Zangu</span><span class="lang-en">My Shares</span></a>
+                {% endif %}
+                {% endif %}
+
+                {% if not member_is_restricted %}
+                <div class="nav-section"><span class="lang-sw">Fedha Zangu</span><span class="lang-en">My Finances</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba yangu</span><span class="lang-en">My Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo yangu</span><span class="lang-en">My Loans</span></a>
+                <a href="{% url 'shares:list' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Hisa zangu</span><span class="lang-en">My Shares</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo yangu</span><span class="lang-en">My Payments</span></a>
+                <a href="{% url 'payments:submit_transaction' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wasilisha Malipo</span><span class="lang-en">Submit Payment</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Mazao na Biashara</span><span class="lang-en">Crops & Trade</span></div>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mauzo ya Mazao</span><span class="lang-en">Crop Sales</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Ushiriki</span><span class="lang-en">Participation</span></div>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+                <a href="{% url 'governance:elections' %}" class="nav-item"><i class="fa-solid fa-check-to-slot nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Uchaguzi</span><span class="lang-en">Elections</span></a>
+
+                <div class="nav-section"><span class="lang-sw">Msaada</span><span class="lang-en">Support</span></div>
+                <a href="{% url 'notifications:list' %}" class="nav-item"><i class="fa-solid fa-bell nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Arifa</span><span class="lang-en">Notifications</span></a>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                {% endif %}
+
+                <!-- COOPERATIVE ADMIN -->
+                {% elif role == 'cooperative_admin' %}
+                <div class="nav-section"><i class="fa-solid fa-user-tie" aria-hidden="true"></i>   <span class="lang-sw">Admin</span><span class="lang-en">Admin</span></div>
+                <a href="{% url 'core:dashboard' %}" class="nav-item"><i class="fa-solid fa-gauge-high nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi</span><span class="lang-en">Dashboard</span></a>
+                <a href="{% url 'members:list' %}" class="nav-item"><i class="fa-solid fa-users nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+                <a href="{% url 'members:create' %}" class="nav-item"><i class="fa-solid fa-plus nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span></a>
+                <a href="{% url 'members:id_card_bulk' %}" class="nav-item"><i class="fa-solid fa-id-card nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Vitambulisho</span><span class="lang-en">ID Cards</span></a>
+                <div class="nav-section"><span class="lang-sw">Fedha</span><span class="lang-en">Finance</span></div>
+                <a href="{% url 'savings:list' %}" class="nav-item"><i class="fa-solid fa-piggy-bank nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></a>
+                <a href="{% url 'loans:list' %}" class="nav-item"><i class="fa-solid fa-hand-holding-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+                <a href="{% url 'shares:list' %}" class="nav-item"><i class="fa-solid fa-chart-pie nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Hisa</span><span class="lang-en">Shares</span></a>
+                <a href="{% url 'payments:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Dashibodi ya Malipo</span><span class="lang-en">Payments Dashboard</span></a>
+                <a href="{% url 'payments:list' %}" class="nav-item"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="nav-item"><i class="fa-solid fa-file-invoice-dollar nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ankara</span><span class="lang-en">Invoices</span></a>
+                <div class="nav-section"><span class="lang-sw">Uhasibu</span><span class="lang-en">Accounting</span></div>
+                <a href="{% url 'accounting:dashboard' %}" class="nav-item"><i class="fa-solid fa-calculator nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Muhtasari</span><span class="lang-en">Overview</span></a>
+                <a href="{% url 'accounting:income_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-up nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mapato</span><span class="lang-en">Income</span></a>
+                <a href="{% url 'accounting:expense_list' %}" class="nav-item"><i class="fa-solid fa-arrow-trend-down nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Matumizi</span><span class="lang-en">Expenses</span></a>
+                <div class="nav-section"><span class="lang-sw">Utawala</span><span class="lang-en">Governance</span></div>
+                <a href="{% url 'governance:meetings' %}" class="nav-item"><i class="fa-solid fa-calendar-days nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></a>
+                <a href="{% url 'reporting:dashboard' %}" class="nav-item"><i class="fa-solid fa-table-cells nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ripoti</span><span class="lang-en">Reports</span></a>
+                <div class="nav-section"><span class="lang-sw">Mawasiliano</span><span class="lang-en">Communication</span></div>
+                <a href="{% url 'notifications:inbox' %}" class="nav-item"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Ujumbe</span><span class="lang-en">Messages</span></a>
+                <a href="{% url 'notifications:broadcast' %}" class="nav-item"><i class="fa-solid fa-bullhorn nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tangaza</span><span class="lang-en">Broadcast</span></a>
+                <a href="{% url 'notifications:send' %}" class="nav-item"><i class="fa-solid fa-paper-plane nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tuma Taarifa</span><span class="lang-en">Send Notice</span></a>
+                <div class="nav-section"><span class="lang-sw">Mipangilio</span><span class="lang-en">Settings</span></div>
+                <a href="{% url 'cooperative:profile' %}" class="nav-item"><i class="fa-solid fa-gear nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Vyama</span><span class="lang-en">Cooperatives</span></a>
+                {% endif %}
+                {% endwith %}
+            </nav>
+            <div class="nav-footer">
+                <a href="{% url 'notifications:list' %}" class="nav-item"><i class="fa-solid fa-bell nav-icon" aria-hidden="true"></i> <span class="lang-sw">Arifa</span><span class="lang-en">Notifications</span></a>
+                <a href="{% url 'auth:profile' %}" class="nav-item"><i class="fa-solid fa-user nav-icon" aria-hidden="true"></i> <span class="lang-sw">Wasifu Wangu</span><span class="lang-en">My Profile</span></a>
+                <form method="post" action="{% url 'auth:logout' %}" class="nav-logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-item nav-item--btn"><i class="fa-solid fa-right-from-bracket nav-icon" aria-hidden="true"></i> <span class="lang-sw">Toka</span><span class="lang-en">Logout</span></button>
+                </form>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <div class="top-brand">
+                <div class="top-brand-start">
+                    <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="top-brand-img" width="40" height="40">
+                    <div class="top-brand-text">
+                        <strong>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY (MGOWELO AMCOS)</strong>
+                    </div>
+                </div>
+                <div class="top-brand-end">
+                    <img src="{% static 'images/logo1.png' %}" alt="Ministry of Agriculture" class="top-brand-img top-brand-img--ministry" width="40" height="40">
+                    <span class="top-brand-badge">TANZANIA</span>
+                </div>
+            </div>
+            <header class="header">
+                <div class="header-left">
+                    <button class="hamburger" id="hamburger"><i class="fa-solid fa-bars" aria-hidden="true"></i> </button>
+                    <span>{% block page_title %}{% endblock %}</span>
+                </div>
+                <div class="header-right">
+                    <div class="notif-badge" style="position:relative;">
+                        <a href="{% url 'notifications:list' %}" style="text-decoration:none;color:inherit;">
+                            <i class="fa-solid fa-bell" aria-hidden="true"></i> 
+                            {% if unread_notifications_count %}
+                            <span style="position:absolute;top:-8px;right:-8px;background:#dc3545;color:white;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:10px;line-height:1;">{{ unread_notifications_count }}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="notif-badge" style="position:relative;">
+                        <a href="{% url 'notifications:inbox' %}" style="text-decoration:none;color:inherit;">
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                            {% if unread_messages_count %}
+                            <span style="position:absolute;top:-8px;right:-8px;background:#F9A825;color:#0d3b12;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:10px;line-height:1;">{{ unread_messages_count }}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="lang-switch lang-switch--header" role="group" aria-label="Language">
+                        <button type="button" class="lang-btn {% if current_lang == 'sw' %}active{% endif %}" onclick="setLanguage('sw')">KISW</button>
+                        <button type="button" class="lang-btn {% if current_lang == 'en' %}active{% endif %}" onclick="setLanguage('en')">ENG</button>
+                    </div>
+                    <div class="dropdown user-dropdown">
+                        <button type="button" class="user-menu-chip dropdown-toggle" aria-haspopup="true">
+                            <span class="user-menu-avatar" aria-hidden="true"><i class="fa-solid fa-user"></i></span>
+                            <span class="user-menu-name">{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fa-solid fa-chevron-down user-menu-chevron" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu user-dropdown-menu">
+                            <div class="user-dropdown-header">
+                                <strong>{{ user.get_full_name|default:user.username }}</strong>
+                                <small>{{ user.get_role_display|default:user.role }}</small>
+                            </div>
+                            <a href="{% url 'auth:profile' %}"><i class="fa-solid fa-user"></i> <span class="lang-sw">Wasifu</span><span class="lang-en">Profile</span></a>
+                            <form method="post" action="{% url 'auth:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> <span class="lang-sw">Toka</span><span class="lang-en">Logout</span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div class="page-module-view" id="pageModuleView" role="main">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% elif message.tags == 'info' %}info{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="auth-lang-switcher">
+        <button class="lang-btn {% if current_lang == 'sw' %}active{% endif %}" onclick="setLanguage('sw')">KISW</button>
+        <button class="lang-btn {% if current_lang == 'en' %}active{% endif %}" onclick="setLanguage('en')">ENG</button>
+    </div>
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/auth-i18n.js' %}"></script>
+
+    {% if user.is_authenticated %}
+    {% include 'includes/_pay_simulation_overlay.html' %}
+    {% endif %}
+
+    {% block ai_assistant %}
+    {% if user.is_authenticated %}
+    {% include 'includes/ai_assistant.html' with ai_variant='dash' %}
+    {% endif %}
+    {% endblock %}
+
+    <script>
+    function setLanguage(lang) {
+        document.documentElement.lang = lang;
+        var btns = document.querySelectorAll('.lang-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.remove('active');
+        }
+        var target = document.querySelector('.lang-btn[onclick*="' + lang + '"]');
+        if (target) target.classList.add('active');
+
+        if (typeof applyAuthI18n === 'function') {
+            applyAuthI18n(lang);
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{% url "core:set_language" %}?lang=' + lang + '&next=' + encodeURIComponent(window.location.pathname), true);
+        xhr.send();
+    }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

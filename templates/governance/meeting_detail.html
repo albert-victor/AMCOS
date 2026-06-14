@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Meeting Detail{% endblock %}
+{% block page_title %}{{ meeting.title }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Meeting Information</h3></div>
+        <div class="card-body">
+            {% if can_join_meeting and meeting_join_url %}
+            <form method="post" action="{% url 'governance:meeting_join' meeting.id %}" style="margin-bottom:1rem;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-video" aria-hidden="true"></i>
+                    <span class="lang-sw">Jiunge na Mkutano</span><span class="lang-en">Join Meeting</span>
+                </button>
+                <small class="text-muted" style="display:block;margin-top:0.35rem;">
+                    <span class="lang-sw">Mahudhurio yako yatarekodiwa kisha utaelekezwa kwenye mkutano wa mtandaoni.</span>
+                    <span class="lang-en">Your attendance will be recorded, then you will open the online meeting.</span>
+                </small>
+                {% if user_checked_in %}
+                <small class="text-muted" style="display:block;margin-top:0.25rem;">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                    <span class="lang-sw">Umekwisha jiandikisha mahudhurio.</span>
+                    <span class="lang-en">You are already checked in.</span>
+                </small>
+                {% endif %}
+            </form>
+            {% endif %}
+            <table>
+                <tr><td style="font-weight:600;width:140px;">Title</td><td>{{ meeting.title }}</td></tr>
+                <tr><td style="font-weight:600;">Type</td><td>{{ meeting.get_meeting_type_display }}</td></tr>
+                <tr><td style="font-weight:600;">Date</td><td>{{ meeting.date|date:"d/m/Y" }}</td></tr>
+                <tr><td style="font-weight:600;">Time</td><td>{{ meeting.start_time|time:"H:i" }} - {{ meeting.end_time|time:"H:i"|default:"Ongoing" }}</td></tr>
+                <tr><td style="font-weight:600;">Venue</td><td>{{ meeting.venue }}</td></tr>
+                {% if meeting_join_url %}
+                <tr>
+                    <td style="font-weight:600;"><span class="lang-sw">Kiungo cha Mtandaoni</span><span class="lang-en">Online Link</span></td>
+                    <td><a href="{{ meeting_join_url }}" target="_blank" rel="noopener noreferrer">{{ meeting_join_url }}</a></td>
+                </tr>
+                {% endif %}
+                <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if meeting.status == 'completed' %}success{% elif meeting.status == 'scheduled' %}info{% elif meeting.status == 'in_progress' %}warning{% else %}secondary{% endif %}">{{ meeting.status }}</span></td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>Agenda & Minutes</h3></div>
+        <div class="card-body">
+            <h4 style="font-weight:600;">Agenda</h4>
+            <p style="white-space:pre-wrap;font-size:0.875rem;">{{ meeting.agenda|default:"No agenda" }}</p>
+            {% if meeting.minutes %}
+            <h4 style="font-weight:600;margin-top:1rem;"><span class="lang-sw">Dakika</span><span class="lang-en">Minutes</span></h4>
+            <p style="white-space:pre-wrap;font-size:0.875rem;">{{ meeting.minutes }}</p>
+            {% if meeting.minutes_uploaded_at %}
+            <p class="text-muted" style="font-size:0.8rem;">
+                <span class="lang-sw">Imechapishwa:</span><span class="lang-en">Published:</span>
+                {{ meeting.minutes_uploaded_at|date:"d/m/Y H:i" }}
+            </p>
+            {% endif %}
+            {% elif meeting.status == 'completed' %}
+            <p style="color:var(--gray-400);font-size:0.875rem;"><span class="lang-sw">Hakuna dakika zilizoandikwa.</span><span class="lang-en">No minutes recorded.</span></p>
+            {% endif %}
+            {% if can_manage %}
+            <a href="{% url 'governance:meeting_minutes' meeting.id %}" class="btn btn-primary btn-sm mt-2">
+                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                <span class="lang-sw">{% if meeting.minutes %}Hariri Dakika{% else %}Andika Dakika{% endif %}</span>
+                <span class="lang-en">{% if meeting.minutes %}Edit Minutes{% else %}Record Minutes{% endif %}</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if documents %}
+<div class="card mt-4">
+    <div class="card-header"><h3><span class="lang-sw">Nyaraka za Mkutano</span><span class="lang-en">Meeting Documents</span></h3></div>
+    <div class="card-body">
+        <ul style="list-style:none;padding:0;margin:0;">
+            {% for doc in documents %}
+            <li style="padding:0.5rem 0;border-bottom:1px solid var(--gray-100);">
+                <a href="{{ doc.file.url }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> {{ doc.title }}
+                </a>
+                {% if doc.description %}<p style="font-size:0.8rem;color:var(--gray-500);margin:0.25rem 0 0;">{{ doc.description }}</p>{% endif %}
+                <small class="text-muted">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<div class="card mt-4">
+    <div class="card-header"><h3>Attendance</h3></div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Member</th><th>Attended</th><th>Check-in Time</th></tr></thead>
+                <tbody>
+                    {% for a in attendance %}
+                    <tr>
+                        <td>{{ a.member_name }}</td>
+                        <td>{% if a.attended %}<i class="fa-solid fa-check" aria-hidden="true"></i> {% else %}<i class="fa-solid fa-xmark" aria-hidden="true"></i> {% endif %}</td>
+                        <td>
+                            {{ a.check_in_time|date:"d/m/Y H:i"|default:"-" }}
+                            {% if a.attendee_role or a.attendee_phone %}
+                            <div style="font-size:0.8rem;color:var(--gray-500);">
+                                {{ a.attendee_role|default:"" }} {% if a.attendee_phone %}· {{ a.attendee_phone }}{% endif %}
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--gray-400);">No attendance recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header"><h3>Resolutions</h3></div>
+    <div class="card-body">
+        {% for r in resolutions %}
+        <div style="padding:0.75rem 0;border-bottom:1px solid var(--gray-100);">
+            <strong>{{ r.title }}</strong> - {% if r.is_passed %}<span class="badge badge-success">Passed</span>{% else %}<span class="badge badge-secondary">Not Passed</span>{% endif %}
+            <p style="font-size:0.875rem;color:var(--gray-600);">For: {{ r.votes_for }} | Against: {{ r.votes_against }} | Abstain: {{ r.votes_abstain }}</p>
+        </div>
+        {% empty %}
+        <p style="color:var(--gray-400);">No resolutions.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3>
+            <span class="lang-sw">Maoni</span>
+            <span class="lang-en">Comments</span>
+        </h3>
+    </div>
+    <div class="card-body">
+        {% if can_view_comments %}
+            {% if comments %}
+                <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    {% for c in comments %}
+                    <div style="border:1px solid var(--gray-200);border-radius:12px;padding:0.75rem;">
+                        <div style="display:flex;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
+                            <strong>{{ c.author_name }}</strong>
+                            <small class="text-muted">{{ c.created_at|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <div style="margin-top:0.35rem;white-space:pre-wrap;font-size:0.9rem;">{{ c.body }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="color:var(--gray-400);">
+                    <span class="lang-sw">Hakuna maoni bado.</span>
+                    <span class="lang-en">No comments yet.</span>
+                </p>
+            {% endif %}
+        {% else %}
+            <p style="color:var(--gray-400);margin-bottom:0.75rem;">
+                <span class="lang-sw">Maoni yanaonekana kwa viongozi.</span>
+                <span class="lang-en">Comments are visible to leaders.</span>
+            </p>
+        {% endif %}
+
+        {% if can_post_comment %}
+        <hr>
+        <form method="post" action="{% url 'governance:meeting_comment_add' meeting.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>
+                    <span class="lang-sw">Andika comment</span>
+                    <span class="lang-en">Write a comment</span>
+                </label>
+                <textarea name="comment_text" class="form-control" rows="4" required
+                    placeholder="{% if current_lang == 'sw' %}Maoni yako hapa...{% else %}Your comment here...{% endif %}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                <span class="lang-sw">Tuma</span>
+                <span class="lang-en">Send</span>
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

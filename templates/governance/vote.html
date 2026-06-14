@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Cast Vote{% endblock %}
+{% block page_title %}Cast Your Vote{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>{{ election.title }} - {{ election.position }}</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Select Candidate</label>
+                <select name="candidate_id" class="form-control" required>
+                    <option value="">Choose candidate...</option>
+                    {% for c in election.candidates.all %}
+                    <option value="{{ c.id }}">{{ c.member_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p style="font-size:0.8rem;color:var(--gray-500);">Your vote is confidential and cannot be changed after submission.</p>
+            <button type="submit" class="btn btn-primary">Cast Vote</button>
+            <a href="{% url 'governance:election_detail' election.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

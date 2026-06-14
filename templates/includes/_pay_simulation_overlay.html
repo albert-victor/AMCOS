@@ -1,0 +1,37 @@
+{% load static %}
+<div class="modal-overlay auth-pay-flow-overlay pay-sim-overlay" id="paySimOverlay" aria-live="polite" aria-hidden="true">
+    <div class="auth-success-card pay-sim-card" role="dialog" aria-labelledby="paySimTitle" aria-modal="true">
+        <div class="auth-success-card-accent" aria-hidden="true"></div>
+        <div class="auth-success-card-body pay-sim-card-body">
+            <div class="auth-pay-flow-stage" id="paySimProcessing">
+                <div class="auth-pay-processing-ring" aria-hidden="true"></div>
+                <p class="auth-pay-flow-label">
+                    <span class="lang-sw">Inathibitisha malipo...</span>
+                    <span class="lang-en">Processing payment...</span>
+                </p>
+            </div>
+            <div class="auth-pay-flow-stage auth-pay-flow-stage--success" id="paySimSuccess" hidden>
+                <div class="auth-pay-calm-tick pay-sim-tick" aria-hidden="true">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 class="auth-pay-success-title" id="paySimTitle">
+                    <span class="lang-sw">Malipo Yamekamilika</span>
+                    <span class="lang-en">Payment Successful</span>
+                </h3>
+                <div class="pay-sim-mini-card" id="paySimReceiptSummary"></div>
+                <p class="pay-sim-mini-hint" id="paySimExtraHint" hidden></p>
+                <div class="pay-sim-receipt-actions">
+                    <button type="button" class="btn btn-outline btn-sm pay-sim-btn-view" id="paySimBtnView">
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                        <span class="lang-sw">Angalia Stakabadhi</span>
+                        <span class="lang-en">View Receipt</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm pay-sim-btn-ok" id="paySimBtnOk">
+                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                        <span class="lang-sw">Sawa</span><span class="lang-en">OK</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

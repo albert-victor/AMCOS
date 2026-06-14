@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Chart of Accounts{% endblock %}
+{% block page_title %}Chart of Accounts{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Accounts</h3>
+        {% can 'accounting.create' as can_create %}{% if can_create %}
+        <a href="{% url 'accounting:account_create' %}" class="btn btn-primary btn-sm">+ New Account</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in accounts %}
+                    <tr>
+                        <td><strong>{{ a.account_code }}</strong></td>
+                        <td>{{ a.account_name }}</td>
+                        <td><span class="badge badge-{% if a.account_type == 'asset' %}info{% elif a.account_type == 'liability' %}warning{% elif a.account_type == 'equity' %}purple{% elif a.account_type == 'income' %}success{% else %}danger{% endif %}">{{ a.account_type }}</span></td>
+                        <td>{{ a.balance|floatformat:2 }}</td>
+                        <td>{% if a.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-secondary">Inactive</span>{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray-400);">No accounts created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

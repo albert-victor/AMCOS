@@ -1,0 +1,153 @@
+﻿{% extends 'base.html' %}
+{% block title %}Super Admin Dashboard{% endblock %}
+{% block page_title %}<span class="lang-sw">Jopo la Msimamizi Mkuu</span><span class="lang-en">Super Admin Panel</span>{% endblock %}
+{% block content %}
+<div class="welcome-section" style="background:linear-gradient(135deg,#0d3b12,#1B5E20);">
+    <h2>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY (MGOWELO AMCOS)</h2>
+    <p>IRINGA TANZANIA</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_cooperatives }}</h4>
+            <p><span class="lang-sw">Jumla ya Vyama</span><span class="lang-en">Total Cooperatives</span></p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ active_cooperatives }}</h4>
+            <p><span class="lang-sw">Vyama Vinavyofanya Kazi</span><span class="lang-en">Active Cooperatives</span></p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_members }}</h4>
+            <p><span class="lang-sw">Wanachama Wote</span><span class="lang-en">System-wide Members</span></p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_revenue|floatformat:0 }}</h4>
+            <p><span class="lang-sw">Jumla ya Mapato (TZS)</span><span class="lang-en">Total Revenue (TZS)</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><span class="lang-sw">Vyama Vilivyosajiliwa</span><span class="lang-en">Registered Cooperatives</span></h3>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span style="font-size:0.85rem;color:#1B5E20;font-weight:600;">{{ cooperatives|length }} <span class="lang-sw">jumla</span><span class="lang-en">total</span></span>
+            <button class="btn btn-sm btn-primary" onclick="toggleForm()"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Ongeza</span><span class="lang-en">Add</span></button>
+        </div>
+    </div>
+    <div id="addForm" style="display:none;border-bottom:2px solid #F9A825;background:#fffde7;padding:1.5rem 1.75rem;">
+        <form method="post" action="{% url 'cooperative:create' %}">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label><span class="lang-sw">Jina la Kikundi</span><span class="lang-en">Cooperative Name</span> <span style="color:red;">*</span></label>
+                    <input type="text" name="name" class="form-control" required placeholder="e.g. MGOWELO AMCOS">
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-sw">Aina</span><span class="lang-en">Type</span></label>
+                    <select name="type" class="form-control">
+                        <option value="amcos">AMCOS</option>
+                        <option value="sacco">SACCO</option>
+                        <option value="vikoba">VICOBA</option>
+                        <option value="credit_union">Credit Union</option>
+                        <option value="farmers">Farmers Cooperative</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></label>
+                    <input type="text" name="phone" class="form-control" placeholder="e.g. 255712345678">
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-sw">Barua Pepe</span><span class="lang-en">Email</span></label>
+                    <input type="email" name="email" class="form-control" placeholder="info@example.com">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><span class="lang-sw">Mkoa</span><span class="lang-en">Region</span></label>
+                    <input type="text" name="region" class="form-control" placeholder="e.g. Iringa">
+                </div>
+                <div class="form-group">
+                    <label><span class="lang-sw">Mpango</span><span class="lang-en">Plan</span></label>
+                    <select name="subscription_plan" class="form-control">
+                        <option value="free">Free</option>
+                        <option value="basic">Basic</option>
+                        <option value="professional">Professional</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Ongeza Kikundi</span><span class="lang-en">Add Cooperative</span></button>
+            <button type="button" class="btn btn-secondary" style="margin-top:0.5rem;" onclick="toggleForm()"><span class="lang-sw">Ghairi</span><span class="lang-en">Cancel</span></button>
+        </form>
+    </div>
+    <div class="card-body">
+        {% if cooperatives %}
+        <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th>
+                    <th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th>
+                    <th><span class="lang-sw">Mpango</span><span class="lang-en">Plan</span></th>
+                    <th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th>
+                    <th><span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></th>
+                    <th><span class="lang-sw">Imeundwa</span><span class="lang-en">Created</span></th>
+                    <th><span class="lang-sw">Vitendo</span><span class="lang-en">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in cooperatives %}
+                <tr>
+                    <td><strong>{{ c.name }}</strong></td>
+                    <td>{{ c.get_type_display }}</td>
+                    <td>{{ c.subscription_plan }}</td>
+                    <td><span class="badge badge-{% if c.status == 'active' %}success{% elif c.status == 'pending' %}warning{% else %}danger{% endif %}">{{ c.status }}</span></td>
+                    <td>{{ c.member_count|default:"0" }}</td>
+                    <td>{{ c.created_at|date:"d/m/Y" }}</td>
+                    <td>
+                        <div style="display:flex;gap:0.35rem;flex-wrap:nowrap;">
+                            <a href="{% url 'cooperative:edit' c.id %}" class="btn btn-sm btn-outline" title="View" style="padding:0.3rem 0.5rem;font-size:0.7rem;"><i class="fa-solid fa-eye" aria-hidden="true"></i> </a>
+                            <a href="{% url 'cooperative:edit' c.id %}" class="btn btn-sm btn-outline" title="Edit" style="padding:0.3rem 0.5rem;font-size:0.7rem;"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>  </a>
+                            <a href="{% url 'cooperative:toggle_status' c.id %}" class="btn btn-sm btn-{% if c.status == 'active' %}warning{% else %}success{% endif %}" title="{% if c.status == 'active' %}Deactivate{% else %}Activate{% endif %}" style="padding:0.3rem 0.5rem;font-size:0.7rem;" onclick="return confirm('{% if c.status == 'active' %}Are you sure you want to deactivate {{ c.name }}?{% else %}Are you sure you want to activate {{ c.name }}?{% endif %}')">{% if c.status == 'active' %}<i class="fa-solid fa-xmark" aria-hidden="true"></i> {% else %}<i class="fa-solid fa-check" aria-hidden="true"></i> {% endif %}</a>
+                            <form method="post" action="{% url 'cooperative:delete' c.id %}" style="display:inline;" onsubmit="return confirm('Delete {{ c.name }} permanently?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger" title="Delete" style="padding:0.3rem 0.5rem;font-size:0.7rem;"><i class="fa-solid fa-trash" aria-hidden="true"></i> </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-table-cells" aria-hidden="true"></i> </div>
+            <h3><span class="lang-sw">Hakuna Vyama Vilivyosajiliwa</span><span class="lang-en">No Cooperatives Registered</span></h3>
+            <p><span class="lang-sw">Vyama vitaonekana hapa vitakapojisajili kupitia mfumo.</span><span class="lang-en">Cooperatives will appear here once they register through the platform.</span></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script>
+function toggleForm() {
+    var f = document.getElementById('addForm');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

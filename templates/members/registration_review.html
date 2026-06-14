@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Taarifa za Mwanachama</span><span class="lang-en">Member Details</span></h3></div>
+        <div class="card-body">
+            <table class="detail-table">
+                <tr><th><span class="lang-sw">Namba</span><span class="lang-en">Member No.</span></th><td>{{ member.member_number }}</td></tr>
+                <tr><th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th><td>{{ member.full_name }}</td></tr>
+                <tr><th><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></th><td>{{ member.phone }}</td></tr>
+                <tr><th>Email</th><td>{{ member.email|default:"—" }}</td></tr>
+                <tr><th>NIDA</th><td>{{ member.national_id|default:"—" }}</td></tr>
+                <tr><th><span class="lang-sw">Ekari</span><span class="lang-en">Hectares</span></th><td>{{ member.hectares|default:"—" }}{% if member.hectares_other_note %} ({{ member.hectares_other_note }}){% endif %}</td></tr>
+                <tr><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th><td><span class="badge badge-{{ member.status }}">{{ member.get_status_display }}</span></td></tr>
+                <tr><th><span class="lang-sw">Ada ya usajili</span><span class="lang-en">Reg. fee</span></th><td>{% if member.registration_fee_paid %}<span class="lang-sw">Imelipwa</span><span class="lang-en">Paid</span>{% else %}—{% endif %}</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Idhini ya Bodi</span><span class="lang-en">Board Approval</span></h3>
+            <span class="badge badge-info">{{ approval_count }} / {{ board_required }}</span>
+        </div>
+        <div class="card-body">
+            {% if approvals %}
+            <ul style="margin:0 0 1rem;padding-left:1.2rem;font-size:0.9rem;">
+                {% for a in approvals %}
+                <li>{{ a.approver_name }} — {{ a.created_at|date:"d/m/Y H:i" }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% if already_voted %}
+            <p class="alert alert-info"><span class="lang-sw">Umekwisha kuidhinisha maombi haya.</span><span class="lang-en">You have already approved this application.</span></p>
+            {% elif member.status == 'approved' %}
+            <p class="alert alert-success"><span class="lang-sw">Idhini ya bodi imekamilika. Mwanachama anaweza kununua hisa.</span><span class="lang-en">Board approval complete. Member may purchase shares.</span></p>
+            {% else %}
+            <form method="post" action="{% url 'members:board_approve' member.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label><span class="lang-sw">Maelezo (hiari)</span><span class="lang-en">Notes (optional)</span></label>
+                    <textarea name="notes" class="form-control" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    <span class="lang-sw">Idhinishe</span><span class="lang-en">Approve</span>
+                </button>
+            </form>
+            <p style="font-size:0.8rem;margin-top:0.75rem;opacity:0.85;">
+                <span class="lang-sw">Inahitajika idhini {{ board_required }} kutoka kwa wajumbe tofauti wa bodi.</span>
+                <span class="lang-en">{{ board_required }} approvals from different board members required.</span>
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<p><a href="{% url 'members:pending_registrations' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> <span class="lang-sw">Rudi</span><span class="lang-en">Back</span></a></p>
+{% endblock %}

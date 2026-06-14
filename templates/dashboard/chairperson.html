@@ -1,0 +1,136 @@
+﻿{% extends 'base.html' %}
+{% block title %}{% if user.role == 'parrc' %}PA-RC{% else %}Mwenyekiti{% endif %} Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><i class="fa-solid fa-user-tie welcome-title-icon" aria-hidden="true"></i>
+        {% if user.role == 'parrc' %}
+        <span class="lang-sw">Karibu PA-RC, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome PA-RC, {{ user.get_full_name|default:user.username }}</span>
+        {% else %}
+        <span class="lang-sw">Karibu Mwenyekiti, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome Chairperson, {{ user.get_full_name|default:user.username }}</span>
+        {% endif %}
+    </h2>
+    <p>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY &bull; IRINGA TANZANIA</p>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Unaweza kusimamia maamuzi makuu, kupitisha approvals, na kuangalia ripoti</span>
+        <span class="lang-en">Manage key decisions, approve applications, and view reports</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_members }}</h4><p><span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_savings|floatformat:0 }}</h4><p><span class="lang-sw">Akiba (TZS)</span><span class="lang-en">Savings (TZS)</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_loans|floatformat:0 }}</h4><p><span class="lang-sw">Mikopo (TZS)</span><span class="lang-en">Loans (TZS)</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ pending_approvals }}</h4><p><span class="lang-sw">Maombi Yanayosubiri</span><span class="lang-en">Pending Approvals</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ active_elections }}</h4><p><span class="lang-sw">Uchaguzi Unaofanyika</span><span class="lang-en">Active Elections</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_meetings }}</h4><p><span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></p></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Mikutano Ijayo</span><span class="lang-en">Upcoming Meetings</span></h3></div>
+        <div class="card-body">
+            {% if upcoming_meetings %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th><span class="lang-sw">Kichwa</span><span class="lang-en">Title</span></th><th><span class="lang-sw">Tarehe</span><span class="lang-en">Date</span></th><th><span class="lang-sw">Mahali</span><span class="lang-en">Venue</span></th></tr></thead>
+                <tbody>{% for m in upcoming_meetings %}
+                <tr><td>{{ m.title|truncatechars:20 }}</td><td>{{ m.date }}</td><td>{{ m.venue|truncatechars:15 }}</td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna mikutano iliyoratibiwa</span><span class="lang-en">No scheduled meetings</span></p></div>{% endif %}
+            <div style="margin-top:0.5rem;"><a href="{% url 'governance:meetings' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>  <span class="lang-sw">Mikutano Yote</span><span class="lang-en">All Meetings</span></a></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Malipo ya Hivi Karibuni</span><span class="lang-en">Recent Payments</span></h3></div>
+        <div class="card-body">
+            {% if recent_payments %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>Ref</th><th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th><th><span class="lang-sw">Kiasi</span><span class="lang-en">Amount</span></th><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th></tr></thead>
+                <tbody>{% for p in recent_payments %}
+                <tr><td>{{ p.reference_number|truncatechars:10 }}</td><td>{{ p.get_payment_type_display }}</td><td>{{ p.amount|floatformat:0 }}</td><td><span class="badge badge-{% if p.status == 'completed' %}success{% else %}warning{% endif %}">{{ p.status }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna malipo bado</span><span class="lang-en">No payments yet</span></p></div>{% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-top:1rem;">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Wanachama Wapya</span><span class="lang-en">New Members</span></h3></div>
+        <div class="card-body">
+            {% if recent_members %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>#</th><th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th></tr></thead>
+                <tbody>{% for m in recent_members %}
+                <tr><td>{{ m.member_number }}</td><td>{{ m.first_name }} {{ m.last_name }}</td><td><span class="badge badge-{{ m.status }}">{{ m.status }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna wanachama bado</span><span class="lang-en">No members yet</span></p></div>{% endif %}
+            <div style="margin-top:0.5rem;"><a href="{% url 'members:list' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-users" aria-hidden="true"></i>  <span class="lang-sw">Wanachama Wote</span><span class="lang-en">All Members</span></a></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Muhtasari wa Fedha</span><span class="lang-en">Financial Summary</span></h3></div>
+        <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div style="text-align:center;padding:1rem;background:#f0f9f0;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#0d3b12;">{{ total_payments|floatformat:0 }}</div>
+                    <small><span class="lang-sw">Jumla ya Malipo</span><span class="lang-en">Total Payments</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#fff8e1;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#F9A825;">{{ active_loans }}</div>
+                    <small><span class="lang-sw">Mikopo Inayoendelea</span><span class="lang-en">Active Loans</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#fce4ec;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#c62828;">{{ resolutions_pending }}</div>
+                    <small><span class="lang-sw">Maamuzi Bado Hayajatekelezwa</span><span class="lang-en">Pending Implementations</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#e8eaf6;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#283593;">{{ active_elections }}</div>
+                    <small><span class="lang-sw">Uchaguzi Unaofanyika</span><span class="lang-en">Active Elections</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="{% url 'loans:list' %}?status=under_review" class="btn btn-primary"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>  <span class="lang-sw">Pitia Maombi ya Mkopo</span><span class="lang-en">Review Loan Apps</span></a>
+            <a href="{% url 'governance:meeting_create' %}" class="btn btn-primary"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>  <span class="lang-sw">Panga Mkutano</span><span class="lang-en">Schedule Meeting</span></a>
+            <a href="{% url 'governance:election_create' %}" class="btn btn-primary"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i>  <span class="lang-sw">Anzisha Uchaguzi</span><span class="lang-en">Start Election</span></a>
+            <a href="{% url 'members:list' %}" class="btn btn-outline"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+            <a href="{% url 'reporting:dashboard' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Angalia Ripoti</span><span class="lang-en">View Reports</span></a>
+            <a href="{% url 'notifications:broadcast' %}" class="btn btn-outline"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i>  <span class="lang-sw">Tuma Tangazo</span><span class="lang-en">Send Broadcast</span></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

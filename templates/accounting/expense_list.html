@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Expenses{% endblock %}
+{% block page_title %}Expense Records{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Expenses (Total: {{ total|floatformat:0 }} TZS)</h3>
+        {% can 'accounting.create' as can_create %}{% if can_create %}
+        <a href="{% url 'accounting:expense_create' %}" class="btn btn-danger btn-sm">+ Record Expense</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Paid To</th>
+                        <th>Method</th>
+                        <th>Approved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in expenses %}
+                    <tr>
+                        <td>{{ e.category }}</td>
+                        <td><strong>{{ e.amount|floatformat:0 }}</strong></td>
+                        <td>{{ e.expense_date|date:"d/m/Y" }}</td>
+                        <td>{{ e.paid_to|default:"-" }}</td>
+                        <td>{{ e.payment_method|default:"-" }}</td>
+                        <td>{% if e.is_approved %}<i class="fa-solid fa-check" aria-hidden="true"></i> {% else %}<i class="fa-solid fa-xmark" aria-hidden="true"></i> {% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400);">No expenses recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

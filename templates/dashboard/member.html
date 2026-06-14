@@ -1,0 +1,126 @@
+﻿{% extends 'base.html' %}
+{% block title %}Mwanachama Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><span class="lang-sw">Karibu, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome, {{ user.get_full_name|default:user.username }}</span></h2>
+    <p>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY &bull; IRINGA TANZANIA</p>
+    {% if member %}
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Namba ya Mwanachama: <strong>{{ member.member_number }}</strong></span>
+        <span class="lang-en">Member Number: <strong>{{ member.member_number }}</strong></span>
+    </p>
+    {% endif %}
+</div>
+
+{% if is_board_leader %}
+<div class="alert alert-info" style="margin-bottom:1rem;border-color:#c8e6c9;background:#f8fdf8;">
+    <p style="margin:0;font-weight:600;"><span class="lang-sw">Mjumbe wa Bodi</span><span class="lang-en">Board Member</span></p>
+    <p style="margin:0.35rem 0 0;font-size:0.9rem;">
+        <span class="lang-sw">Una haki za mwanachama na za bodi. Usajili wanaosubiri:</span>
+        <span class="lang-en">You have member and board rights. Pending registrations:</span>
+        <strong>{{ pending_registrations }}</strong>
+    </p>
+    <a href="{% url 'members:pending_registrations' %}" class="btn btn-primary btn-sm" style="margin-top:0.5rem;"><i class="fa-solid fa-user-clock"></i> <span class="lang-sw">Idhini Usajili</span><span class="lang-en">Approve Registrations</span></a>
+</div>
+{% endif %}
+
+{% if member_is_restricted %}
+<div class="alert alert-warning" style="margin-bottom:1rem;">
+    {% if member_lifecycle_stage == 'pending_board' %}
+    <p style="margin:0;"><strong><span class="lang-sw">Usajili unasubiri ukaguzi wa Bodi ya Uongozi</span><span class="lang-en">Registration awaiting Board review</span></strong></p>
+    <p style="margin:0.35rem 0 0;font-size:0.9rem;">
+        <span class="lang-sw">Utapata taarifa baada ya kukamilika.</span>
+        <span class="lang-en">You will be notified when complete.</span>
+    </p>
+    {% elif member_lifecycle_stage == 'pending_shares' %}
+    <p style="margin:0;"><strong><span class="lang-sw">Bodi imekubali — nunua hisa kufungua dashibodi</span><span class="lang-en">Board approved — purchase shares to unlock dashboard</span></strong></p>
+    <p style="margin:0.5rem 0 0;">
+        <a href="{% url 'shares:purchase' %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-chart-pie"></i> <span class="lang-sw">Nunua Hisa (1–5)</span><span class="lang-en">Buy Shares (1–5)</span></a>
+    </p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="stats-grid"{% if member_is_restricted %} style="opacity:0.45;pointer-events:none;"{% endif %}>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ my_savings|floatformat:0 }}</h4><p><span class="lang-sw">Akiba Yangu (TZS)</span><span class="lang-en">My Savings (TZS)</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ my_loans|floatformat:0 }}</h4><p><span class="lang-sw">Salio la Mikopo (TZS)</span><span class="lang-en">Loan Balance (TZS)</span></p></div>
+    </div>
+    <div class="stat-card"{% if share_record %} onclick="location.href='{% url 'shares:detail' share_record.id %}'" style="cursor:pointer;"{% endif %}>
+        <div class="stat-icon gold"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ my_shares }}</h4><p><span class="lang-sw">Hisa Zangu</span><span class="lang-en">My Shares</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'payments:list' %}'" style="cursor:pointer;">
+        <div class="stat-icon purple"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ my_payment_count }}</h4><p><span class="lang-sw">Miamala Yangu</span><span class="lang-en">My Transactions</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_meetings }}</h4><p><span class="lang-sw">Mikutano</span><span class="lang-en">Meetings</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ active_elections }}</h4><p><span class="lang-sw">Uchaguzi Unaofanyika</span><span class="lang-en">Active Elections</span></p></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Mikopo Yangu</span><span class="lang-en">My Loans</span></h3>
+            <a href="{% url 'loans:list' %}" class="btn btn-sm btn-outline"><span class="lang-sw">Yote</span><span class="lang-en">All</span></a>
+        </div>
+        <div class="card-body">
+            {% if my_loans_list %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>#</th><th><span class="lang-sw">Salio</span><span class="lang-en">Balance</span></th><th><span class="lang-sw">Muda</span><span class="lang-en">Term</span></th><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th></tr></thead>
+                <tbody>{% for l in my_loans_list %}
+                <tr><td>{{ l.loan_number|truncatechars:12 }}</td><td>{{ l.balance|floatformat:0 }}</td><td>{{ l.duration_months }}m</td><td><span class="badge badge-{{ l.status }}">{{ l.status }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Huna mkopo</span><span class="lang-en">No loans</span></p></div>{% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Malipo Yangu ya Hivi Karibuni</span><span class="lang-en">My Recent Payments</span></h3></div>
+        <div class="card-body">
+            {% if my_payments %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th><th><span class="lang-sw">Kiasi</span><span class="lang-en">Amount</span></th><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th></tr></thead>
+                <tbody>{% for p in my_payments %}
+                <tr><td>{{ p.get_payment_type_display }}</td><td>{{ p.amount|floatformat:0 }}</td><td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna malipo bado</span><span class="lang-en">No payments yet</span></p></div>{% endif %}
+            <div style="margin-top:0.5rem;"><a href="{% url 'payments:submit_transaction' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Wasilisha Malipo</span><span class="lang-en">Submit Payment</span></a></div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;"{% if member_is_restricted and member_lifecycle_stage != 'pending_shares' %} hidden{% endif %}>
+    <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            {% if member_lifecycle_stage == 'pending_shares' %}
+            <a href="{% url 'shares:purchase' %}" class="btn btn-primary"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i>  <span class="lang-sw">Nunua Hisa</span><span class="lang-en">Buy Shares</span></a>
+            {% elif not member_is_restricted %}
+            <a href="{% url 'payments:submit_transaction' %}?payment_type=savings_deposit" class="btn btn-primary"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i>  <span class="lang-sw">Weka Akiba</span><span class="lang-en">Deposit Savings</span></a>
+            <a href="{% url 'loans:apply' %}" class="btn btn-primary"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>  <span class="lang-sw">Omba Mkopo</span><span class="lang-en">Apply Loan</span></a>
+            <a href="{% url 'payments:submit_transaction' %}" class="btn btn-primary"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Lipa Michango</span><span class="lang-en">Pay Contributions</span></a>
+            <a href="{% url 'governance:meetings' %}" class="btn btn-outline"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>  <span class="lang-sw">Angalia Mikutano</span><span class="lang-en">View Meetings</span></a>
+            <a href="{% url 'governance:elections' %}" class="btn btn-outline"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i>  <span class="lang-sw">Piga Kura</span><span class="lang-en">Vote</span></a>
+            <a href="{% url 'shares:list' %}" class="btn btn-outline"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i>  <span class="lang-sw">Nunua Hisa</span><span class="lang-en">Buy Shares</span></a>
+            <a href="{% url 'notifications:inbox' %}" class="btn btn-outline"><i class="fa-solid fa-envelope nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Tuma Ujumbe</span><span class="lang-en">Send Message</span></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Mkaguzi Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><span class="lang-sw">Karibu Mkaguzi, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome Auditor, {{ user.get_full_name|default:user.username }}</span></h2>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Ukaguzi, uzingatiaji, na ufuatiliaji wa shughuli za chama (kusoma tu)</span>
+        <span class="lang-en">Audit, compliance, and cooperative oversight (read-only)</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" onclick="location.href='{% url 'audit:trails' %}'">
+        <div class="stat-icon blue"><i class="fa-solid fa-table-cells" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ audit_entries }}</h4><p><span class="lang-sw">Kumbukumbu za Ukaguzi</span><span class="lang-en">Audit Entries</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'audit:fraud_alerts' %}'">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ open_fraud_alerts }}</h4><p><span class="lang-sw">Arifa za Ulaghai</span><span class="lang-en">Fraud Alerts</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ total_members }}</h4><p><span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></p></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="{% url 'audit:trails' %}" class="btn btn-primary"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Kumbukumbu</span><span class="lang-en">Audit Trails</span></a>
+            <a href="{% url 'audit:compliance' %}" class="btn btn-primary"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>  <span class="lang-sw">Uzingatiaji</span><span class="lang-en">Compliance</span></a>
+            <a href="{% url 'audit:fraud_alerts' %}" class="btn btn-outline"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>  <span class="lang-sw">Ulaghai</span><span class="lang-en">Fraud</span></a>
+            <a href="{% url 'payments:list' %}" class="btn btn-outline"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

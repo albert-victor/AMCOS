@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Compliance Checks{% endblock %}
+{% block page_title %}Compliance Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Compliance Checks</h3>
+        {% can 'audit.view' as can_audit %}{% if can_audit %}
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('complianceModal').classList.add('active')">+ New Check</button>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Checked By</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in checks %}
+                    <tr>
+                        <td><strong>{{ c.title }}</strong></td>
+                        <td>{{ c.get_check_type_display }}</td>
+                        <td><span class="badge badge-{% if c.status == 'passed' %}success{% elif c.status == 'failed' %}danger{% elif c.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ c.status }}</span></td>
+                        <td>{{ c.checked_by|default:"-" }}</td>
+                        <td>{{ c.due_date|date:"d/m/Y"|default:"-" }}</td>
+                        <td><a href="{% url 'audit:compliance_update' c.id %}" class="btn btn-sm btn-outline">Update</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400);">No compliance checks.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="complianceModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>New Compliance Check</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Check Type</label>
+                    <select name="check_type" class="form-control">
+                        <option value="kyc">KYC Compliance</option>
+                        <option value="financial">Financial Compliance</option>
+                        <option value="regulatory">Regulatory Compliance</option>
+                        <option value="tax">Tax Compliance</option>
+                        <option value="governance">Governance Compliance</option>
+                        <option value="data_protection">Data Protection</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" name="due_date" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-close">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

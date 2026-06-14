@@ -1,0 +1,59 @@
+========================================================================
+MGOWELO AMCOS — SYSTEM HEALTH REPORT
+========================================================================
+Database mode: primary
+Engine: django.db.backends.mysql
+Database: MKUU_WA_MKOA
+DEBUG: True
+
+[OK] Database connection
+Cooperative AMCOS001: found id=2
+
+--- Leadership accounts (MySQL/primary) ---
+[OK] super_admin role=super_admin active=True
+[OK] amcos001_parrc role=parrc active=True
+[OK] amcos001_chairperson role=chairperson active=True
+[OK] amcos001_vice_chairperson role=vice_chairperson active=True
+[OK] amcos001_secretary role=secretary active=True
+[OK] amcos001_vice_secretary role=vice_secretary active=True
+[OK] amcos001_treasurer role=treasurer active=True
+[OK] amcos001_accountant role=accountant active=True
+[OK] amcos001_auditor role=auditor active=True
+[OK] amcos001_carder role=carder active=True
+[OK] mgowelo_board1 role=board_member active=True
+
+--- Members with board leadership (dual role) ---
+Count: 0
+
+--- Hierarchy (display order) ---
+  super_admin: 3
+  parrc: 2
+  chairperson: 6
+  vice_chairperson: 2
+  secretary: 6
+  vice_secretary: 2
+  treasurer: 6
+  board_member: 12
+  accountant: 6
+  auditor: 2
+  tcdc_wilaya: 2
+  tcdc_mkoa: 2
+  carder: 6
+  loan_officer: 2
+  cooperative_admin: 2
+  member: 68
+
+--- Known RBAC gaps (documented) ---
+  * board_member nav may link reporting without reporting.view
+  * Run ensure_leadership_roles after MySQL restore
+  * Members promoted via Mark as leader keep role=member + leadership_role=board_member
+
+--- Safety measures in place ---
+  + CSRF protection on forms
+  + Login attempt lockout after 5 failures
+  + Role-based permissions (PERMISSIONS registry)
+  + Cooperative scoping on queries (cooperative_id)
+  + DB auto-fallback when MySQL down (with status in runtime/db_status.json)
+  + super_admin isolated from cooperative leadership hierarchy
+
+[OK] No critical issues detected in automated checks.

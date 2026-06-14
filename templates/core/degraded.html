@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFUMO UPO KWENYE HALI YA DHARURA | MGOWELO AMCOS</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        .degraded-wrap { max-width: 720px; margin: 4rem auto; padding: 2rem; }
+        .degraded-wrap h1 { color: #b45309; margin-bottom: 1rem; }
+        .degraded-wrap code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="degraded-wrap card">
+        <h1><i class="fa-solid fa-triangle-exclamation"></i> Mfumo Upo Kwenye Hali ya Dharura</h1>
+        <p>
+            Database ya XAMPP/MySQL haipatikani kwa sasa. Sehemu za mfumo zinazohitaji database
+            haziwezi kufanya kazi hadi tatizo litatuliwe.
+        </p>
+        <p><strong>Hali ya sasa:</strong> {{ active_mode|default:"unknown" }}</p>
+        {% if db_status.message %}
+        <p>{{ db_status.message }}</p>
+        {% endif %}
+        <hr>
+        <h3>Hatua za Haraka</h3>
+        <ol>
+            <li>Anzisha XAMPP → Start <strong>MySQL</strong></li>
+            <li>Endesha: <code>python manage.py check_database</code></li>
+            <li>Endesha: <code>python manage.py sync_fallback_db --migrate-fallback</code></li>
+            <li>Anzisha tena server: <code>python manage.py runserver</code></li>
+        </ol>
+        <h3>Angalia Hali</h3>
+        <p><a href="{% url 'health' %}">/health/</a> — JSON status</p>
+        <p class="text-muted" style="font-size:12px;margin-top:2rem;">{{ error_hint }}</p>
+    </div>
+</body>
+</html>

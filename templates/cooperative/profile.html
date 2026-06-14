@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Cooperative Profile{% endblock %}
+{% block page_title %}Cooperative Settings{% endblock %}
+{% block content %}
+<div class="card" style="max-width:800px;">
+    <div class="card-header"><h3>Cooperative Profile</h3></div>
+    <div class="card-body">
+        {% if can_edit_coop %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Cooperative Name</label>
+                    <input type="text" name="name" class="form-control" value="{{ cooperative.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" class="form-control" value="{{ cooperative.get_type_display }}" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ cooperative.phone }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ cooperative.email }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <textarea name="address" class="form-control">{{ cooperative.address }}</textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" class="form-control" value="{{ cooperative.city }}">
+                </div>
+                <div class="form-group">
+                    <label>Region</label>
+                    <input type="text" name="region" class="form-control" value="{{ cooperative.region }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Vision</label>
+                <textarea name="vision" class="form-control" rows="3">{{ cooperative.vision }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Mission</label>
+                <textarea name="mission" class="form-control" rows="3">{{ cooperative.mission }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Logo</label>
+                <input type="file" name="logo" class="form-control">
+                {% if cooperative.logo %}
+                <p style="margin-top:0.5rem;"><img src="{{ cooperative.logo.url }}" alt="Logo" style="max-height:80px;"></p>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+        {% else %}
+        <table>
+            <tr><td style="font-weight:600;width:200px;">Name</td><td>{{ cooperative.name }}</td></tr>
+            <tr><td style="font-weight:600;">Type</td><td>{{ cooperative.get_type_display }}</td></tr>
+            <tr><td style="font-weight:600;">Phone</td><td>{{ cooperative.phone|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">Email</td><td>{{ cooperative.email|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">Address</td><td>{{ cooperative.address|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">City</td><td>{{ cooperative.city|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">Region</td><td>{{ cooperative.region|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">Vision</td><td>{{ cooperative.vision|default:"—" }}</td></tr>
+            <tr><td style="font-weight:600;">Mission</td><td>{{ cooperative.mission|default:"—" }}</td></tr>
+            {% if cooperative.logo %}
+            <tr><td style="font-weight:600;">Logo</td><td><img src="{{ cooperative.logo.url }}" alt="Logo" style="max-height:80px;"></td></tr>
+            {% endif %}
+        </table>
+        <p class="text-muted" style="margin-top:1rem;font-size:0.9rem;">
+            <span class="lang-sw">Wasifu huu ni wa kusoma tu. Wasiliana na uongozi wa chama kwa mabadiliko.</span>
+            <span class="lang-en">This profile is read-only. Contact cooperative leadership to request changes.</span>
+        </p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-4" style="max-width:800px;">
+    <div class="card-header"><h3>Cooperative Settings</h3></div>
+    <div class="card-body">
+        <table>
+            <tr><td style="font-weight:600;width:200px;">Registration Fee</td><td>{{ cooperative.registration_fee|floatformat:0 }} TZS</td></tr>
+            <tr><td style="font-weight:600;">Membership Fee</td><td>{{ cooperative.membership_fee|floatformat:0 }} TZS</td></tr>
+            <tr><td style="font-weight:600;">Share Price</td><td>{{ cooperative.share_price|floatformat:0 }} TZS</td></tr>
+            <tr><td style="font-weight:600;">Minimum Shares</td><td>{{ cooperative.min_shares }}</td></tr>
+            <tr><td style="font-weight:600;">Savings Interest Rate</td><td>{{ cooperative.interest_rate }}%</td></tr>
+            <tr><td style="font-weight:600;">Loan Interest Rate</td><td>{{ cooperative.loan_interest_rate }}%</td></tr>
+            <tr><td style="font-weight:600;">Subscription Plan</td><td>{{ cooperative.subscription_plan }}</td></tr>
+            <tr><td style="font-weight:600;">Cooperative Code</td><td><strong>{{ cooperative.code }}</strong></td></tr>
+            <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if cooperative.status == 'active' %}success{% elif cooperative.status == 'pending' %}warning{% else %}danger{% endif %}">{{ cooperative.status }}</span></td></tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Payment{% endblock %}
+{% block page_title %}Confirm Payment{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Confirm Payment</h3></div>
+    <div class="card-body">
+        <p>Are you sure you want to confirm this payment?</p>
+        <table>
+            <tr><td style="font-weight:600;">Reference</td><td>{{ payment.reference_number }}</td></tr>
+            <tr><td style="font-weight:600;">Amount</td><td>{{ payment.amount|floatformat:2 }}</td></tr>
+            <tr><td style="font-weight:600;">Type</td><td>{{ payment.get_payment_type_display }}</td></tr>
+        </table>
+        <form method="post" style="margin-top:1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Confirm</button>
+            <a href="{% url 'payments:detail' payment.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

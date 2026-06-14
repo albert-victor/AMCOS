@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Upload Document{% endblock %}
+{% block page_title %}Upload Document - {{ member.full_name }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Upload KYC Document</h3></div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Document Type</label>
+                <select name="document_type" class="form-control" required>
+                    {% for key, value in doc_types %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Document Number</label>
+                <input type="text" name="document_number" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>File</label>
+                <input type="file" name="file" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <a href="{% url 'members:detail' member.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

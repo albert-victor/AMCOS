@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Create Election{% endblock %}
+{% block page_title %}Create Election{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><h3>New Election</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Position</label>
+                <input type="text" name="position" class="form-control" placeholder="e.g., PA-RC, Secretary" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nomination Start</label>
+                    <input type="date" name="nomination_start" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Nomination End</label>
+                    <input type="date" name="nomination_end" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Voting Start</label>
+                    <input type="datetime-local" name="voting_start" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Voting End</label>
+                    <input type="datetime-local" name="voting_end" class="form-control" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Election</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

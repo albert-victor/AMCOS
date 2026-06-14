@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Withdraw Savings{% endblock %}
+{% block page_title %}Withdraw from {{ account.account_number }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Make Withdrawal</h3></div>
+    <div class="card-body">
+        <p>Current Balance: <strong>{{ account.balance|floatformat:2 }}</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="amount" class="form-control" step="0.01" min="0.01" max="{{ account.balance }}" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" name="description" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-warning">Withdraw</button>
+            <a href="{% url 'savings:detail' account.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

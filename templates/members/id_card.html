@@ -1,0 +1,304 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card - {{ member.member_number }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .card-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .id-card {
+            width: 340px;
+            height: 540px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+            border: 1px solid #0d3b12;
+        }
+        /* ─── FRONT ─── */
+        .card-front {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-top {
+            background: linear-gradient(135deg, #0d3b12, #1B5E20);
+            color: white;
+            padding: 20px 16px 14px;
+            text-align: center;
+        }
+        .card-top .brand {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #F9A825;
+        }
+        .card-top .coop-name {
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+        .card-top .title {
+            background: #F9A825;
+            color: #0d3b12;
+            display: inline-block;
+            padding: 4px 20px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+        .card-photo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #0d3b12;
+            margin: 14px auto 8px;
+            overflow: hidden;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-photo .no-photo {
+            font-size: 36px;
+            color: #999;
+        }
+        .card-name {
+            text-align: center;
+            padding: 0 16px;
+        }
+        .card-name h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0d3b12;
+            margin-bottom: 2px;
+        }
+        .card-name .id-number {
+            font-size: 20px;
+            font-weight: 900;
+            color: #F9A825;
+            background: #0d3b12;
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        .card-details {
+            padding: 12px 20px;
+            flex: 1;
+        }
+        .card-details .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+        }
+        .card-details .row .label {
+            font-weight: 700;
+            color: #0d3b12;
+        }
+        .card-details .row .value {
+            font-weight: 600;
+            color: #333;
+        }
+        .card-footer-bar {
+            background: #0d3b12;
+            color: #F9A825;
+            text-align: center;
+            padding: 6px;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        /* ─── BACK ─── */
+        .id-card-back {
+            width: 340px;
+            height: 540px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            border: 1px solid #0d3b12;
+            display: flex;
+            flex-direction: column;
+        }
+        .back-qr {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px 12px;
+        }
+        .back-qr img { width: 120px; height: 120px; }
+        .back-info {
+            padding: 0 20px;
+            text-align: center;
+        }
+        .back-info h3 {
+            font-size: 14px;
+            color: #0d3b12;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .back-info p {
+            font-size: 10px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .back-signature {
+            border-top: 1px solid #ddd;
+            padding: 12px 20px;
+            margin-top: auto;
+            text-align: center;
+        }
+        .back-signature .sig-label {
+            font-size: 9px;
+            color: #888;
+            font-weight: 600;
+        }
+        .back-signature .sig-img {
+            max-width: 120px;
+            max-height: 40px;
+            margin: 4px auto;
+        }
+        .back-footer {
+            background: #0d3b12;
+            color: #F9A825;
+            text-align: center;
+            padding: 6px;
+            font-size: 7px;
+        }
+
+        .no-print {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .no-print button {
+            background: #0d3b12;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 0 8px;
+        }
+        .no-print button:hover { background: #1B5E20; }
+        .no-print a {
+            display: inline-block;
+            margin-top: 12px;
+            color: #0d3b12;
+            font-size: 14px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; display: block; }
+            .no-print { display: none !important; }
+            .id-card, .id-card-back {
+                box-shadow: none;
+                border: 1px solid #0d3b12;
+                break-inside: avoid;
+                page-break-after: always;
+            }
+            @page { margin: 0.3cm; size: portrait; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <!-- FRONT -->
+        <div class="id-card">
+            <div class="card-front">
+                <div class="card-top">
+                    <div class="brand">MGOWELO AGRICULTURAL MARKETING</div>
+                    <div class="coop-name">COOPERATIVE SOCIETY (MGOWELO AMCOS)</div>
+                    <div class="title">MEMBERSHIP CARD</div>
+                </div>
+                <div class="card-photo">
+                    {% if member.photo_url %}
+                    <img src="{{ member.photo_url }}" alt="Photo">
+                    {% else %}
+                    <span class="no-photo"><i class="fa-solid fa-user" aria-hidden="true"></i>  </span>
+                    {% endif %}
+                </div>
+                <div class="card-name">
+                    <h2>{{ member.full_name }}</h2>
+                    <div class="id-number">{{ member.member_number }}</div>
+                </div>
+                <div class="card-details">
+                    <div class="row"><span class="label">Phone</span><span class="value">{{ member.phone }}</span></div>
+                    <div class="row"><span class="label">Gender</span><span class="value">{{ member.get_gender_display }}</span></div>
+                    <div class="row"><span class="label">Region</span><span class="value">{{ member.region|default:"Iringa" }}</span></div>
+                    <div class="row"><span class="label">Member Since</span><span class="value">{{ member.joined_at|date:"M Y" }}</span></div>
+                    <div class="row"><span class="label">Status</span><span class="value" style="color:#0d3b12;font-weight:800;">{{ member.get_status_display }}</span></div>
+                </div>
+                <div class="card-footer-bar">MGOWELO AMCOS &bull; IRINGA &bull; TANZANIA</div>
+            </div>
+        </div>
+
+        <!-- BACK -->
+        <div class="id-card-back">
+            <div class="back-qr">
+                {% if qr_base64 %}
+                <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code">
+                {% endif %}
+            </div>
+            <div class="back-info">
+                <h3>MGOWELO AMCOS</h3>
+                <p>Iringa, Tanzania<br>Enterprise Cooperative Management System<br><br>
+                <strong>Rules:</strong><br>
+                1. This card is property of MGOWELO AMCOS<br>
+                2. Report lost card immediately<br>
+                3. Not transferable<br>
+                4. Member must present card for services</p>
+            </div>
+            <div class="back-signature">
+                <div class="sig-label">MEMBER'S SIGNATURE</div>
+                {% if member.signature_url %}
+                <img src="{{ member.signature_url }}" class="sig-img" alt="Signature">
+                {% else %}
+                <div style="width:120px;height:30px;border-bottom:1px solid #333;margin:4px auto;"></div>
+                {% endif %}
+            </div>
+            <div class="back-footer">MGOWELO AMCOS &copy; {% now "Y" %} &bull; Scan QR to verify</div>
+        </div>
+    </div>
+
+    <div class="no-print">
+        <button onclick="window.print()"><i class="fa-solid fa-print" aria-hidden="true"></i>{% t "Chapisha" "Print" %}</button>
+        <a href="{% url 'members:id_card_pdf' member.id %}" class="btn" style="background:#0d3b12;color:white;border:none;padding:12px 32px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:0 8px;"><i class="fa-solid fa-download" aria-hidden="true"></i>{% t "Pakua PDF" "Download PDF" %}</a>
+        <br>
+        <a href="{% url 'members:detail' member.id %}">{% t "&larr; Rudi kwa Mwanachama" "Back to Member" %}</a>
+    </div>
+    <script>if (window.location.search.includes('print=true')) { window.onload = function() { window.print(); }; }</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Payments{% endblock %}
+{% block page_title %}{% t "Usimamizi wa Malipo" "Payment Management" %}{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_collected|floatformat:0 }}</h4><p>{% t "Jumla" "Total Collected (TZS)" %}</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ pending_count }}</h4><p>{% t "Hajathibitishwa" "Pending" %}</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_count }}</h4><p>{% t "Jumla ya Miamala" "Transactions" %}</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i>{% t "Malipo Yote" "All Payments" %}</h3>
+        <div class="flex gap-2">
+            {% can 'payments.dashboard' as can_pay_dash %}
+            {% if can_pay_dash %}<a href="{% url 'payments:dashboard' %}" class="btn btn-sm btn-outline"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>{% t "Dashibodi" "Dashboard" %}</a>{% endif %}
+            {% can 'payments.make' as can_pay_make %}
+            {% if can_pay_make %}<a href="{% url 'payments:make' %}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i>{% t "Rekodi" "Record" %}</a>{% endif %}
+            {% can 'payments.submit' as can_pay_submit %}
+            {% if can_pay_submit %}<a href="{% url 'payments:submit_transaction' %}" class="btn btn-sm btn-outline">{% t "Wasilisha" "Submit" %}</a>{% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="get" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
+            <input type="text" name="q" class="form-control" placeholder="{% te 'Tafuta' 'Search reference, phone, transaction...' %}" value="{{ request.GET.q }}" style="flex:1;min-width:150px;">
+            <select name="status" class="form-control" style="width:auto;">
+                <option value="">{% t "Hali zote" "All Status" %}</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="failed" {% if request.GET.status == 'failed' %}selected{% endif %}>Failed</option>
+                <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing</option>
+            </select>
+            <select name="type" class="form-control" style="width:auto;">
+                <option value="">{% t "Aina zote" "All Types" %}</option>
+                <option value="registration_fee" {% if request.GET.type == 'registration_fee' %}selected{% endif %}>Registration</option>
+                <option value="membership_fee" {% if request.GET.type == 'membership_fee' %}selected{% endif %}>Membership</option>
+                <option value="share_purchase" {% if request.GET.type == 'share_purchase' %}selected{% endif %}>Share</option>
+                <option value="savings_deposit" {% if request.GET.type == 'savings_deposit' %}selected{% endif %}>Savings</option>
+                <option value="loan_repayment" {% if request.GET.type == 'loan_repayment' %}selected{% endif %}>Loan</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline">{% t "Chuja" "Filter" %}</button>
+        </form>
+        <div class="table-container table-container--scroll">
+            <table class="table-payments">
+                <thead>
+                    <tr>
+                        <th class="col-ref">{% t "Rejea" "Ref" %}</th>
+                        <th class="col-member">{% t "Mwanachama" "Member" %}</th>
+                        <th class="col-type">{% t "Aina" "Type" %}</th>
+                        <th class="col-method">{% t "Njia" "Method" %}</th>
+                        <th class="col-amount">{% t "Kiasi" "Amount" %}</th>
+                        <th class="col-status">{% t "Hali" "Status" %}</th>
+                        <th class="col-verify">{% t "Uthibitisho" "Verification" %}</th>
+                        <th class="col-date">{% t "Tarehe" "Date" %}</th>
+                        <th class="col-actions">{% t "Hatua" "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payments %}
+                    <tr>
+                        <td class="col-ref"><strong title="{{ p.reference_number }}">{{ p.reference_number }}</strong></td>
+                        <td class="col-member">{{ p.member_id|default:"-" }}</td>
+                        <td class="col-type" title="{{ p.get_payment_type_display }}">{{ p.get_payment_type_display }}</td>
+                        <td class="col-method">{{ p.get_payment_method_display }}</td>
+                        <td class="col-amount"><strong>{{ p.amount|floatformat:0 }}</strong></td>
+                        <td class="col-status"><span class="badge badge-{% if p.status == 'completed' %}success{% elif p.status == 'pending' %}warning{% elif p.status == 'failed' %}danger{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+                        <td class="col-verify">
+                            {% if p.verification_method == 'ussd' %}
+                            <span class="badge badge-info">USSD</span>
+                            {% elif p.verification_method == 'auto' %}
+                            <span class="badge badge-success">Auto</span>
+                            {% elif p.verification_method == 'manual' %}
+                            <span class="badge badge-secondary">Manual</span>
+                            {% endif %}
+                        </td>
+                        <td class="col-date">{{ p.created_at|date:"d/m/Y" }}</td>
+                        <td class="col-actions actions-cell">
+                            <div class="table-actions table-actions--compact">
+                                <a href="{% url 'payments:detail' p.id %}" class="btn btn-sm btn-outline" title="{% te 'Angalia' 'View' %}"><i class="fa-solid fa-eye" aria-hidden="true"></i></a>
+                                {% can 'payments.verify' as can_verify %}
+                                {% if can_verify and p.status == 'pending' %}
+                                <a href="{% url 'payments:verify' p.id %}" class="btn btn-sm btn-success" title="{% te 'Thibitisha' 'Verify' %}"><i class="fa-solid fa-check" aria-hidden="true"></i></a>
+                                {% endif %}
+                                <a href="{% url 'payments:receipt' p.id %}" class="btn btn-sm btn-outline" title="{% te 'Stakabadhi' 'Receipt' %}"><i class="fa-solid fa-receipt" aria-hidden="true"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--gray-400);">{% t "Hakuna malipo" "No payments recorded." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Dividends{% endblock %}
+{% block page_title %}Dividend Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3>Dividend Records</h3></div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Financial Year</th>
+                        <th>Per Share Amount</th>
+                        <th>Total Amount</th>
+                        <th>Record Date</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in dividends %}
+                    <tr>
+                        <td><strong>{{ d.financial_year }}</strong></td>
+                        <td>{{ d.per_share_amount|floatformat:2 }}</td>
+                        <td>{{ d.total_amount|floatformat:2 }}</td>
+                        <td>{{ d.record_date|date:"d/m/Y" }}</td>
+                        <td>{{ d.payment_date|date:"d/m/Y"|default:"-" }}</td>
+                        <td><span class="badge badge-{% if d.status == 'paid' %}success{% elif d.status == 'approved' %}info{% else %}warning{% endif %}">{{ d.status }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400);">No dividends declared.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

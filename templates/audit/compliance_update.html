@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Update Compliance{% endblock %}
+{% block page_title %}Update: {{ check.title }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Compliance Check Result</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status" class="form-control" required>
+                    <option value="passed" {% if check.status == 'passed' %}selected{% endif %}>Passed</option>
+                    <option value="failed" {% if check.status == 'failed' %}selected{% endif %}>Failed</option>
+                    <option value="waived" {% if check.status == 'waived' %}selected{% endif %}>Waived</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>{% t "Findings" "Notes" %}</label>
+                <textarea name="findings" class="form-control" rows="5">{{ check.findings }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Check</button>
+            <a href="{% url 'audit:compliance' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

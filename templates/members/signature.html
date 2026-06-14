@@ -1,0 +1,121 @@
+﻿{% extends 'base.html' %}
+{% block title %}Signature - {{ member.full_name }}{% endblock %}
+{% block page_title %}<span class="lang-sw">Sahihi ya Mwanachama</span><span class="lang-en">Member Signature</span>: {{ member.full_name }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;margin:0 auto;">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-calendar-days" aria-hidden="true"></i>  <span class="lang-sw">Weka Sahihi</span><span class="lang-en">Capture Signature</span></h3>
+    </div>
+    <div class="card-body" style="text-align:center;">
+        <p style="margin-bottom:1rem;color:var(--gray-500);">
+            <span class="lang-sw">Tafadhali saini kwenye kisanduku hapa chini kwa kutumia kipanya au skrini ya kugusa</span>
+            <span class="lang-en">Please sign in the box below using your mouse or touch screen</span>
+        </p>
+        <div style="position:relative;display:inline-block;">
+            <canvas id="sigPad" width="500" height="200"
+                style="border:2px solid #0d3b12;border-radius:8px;cursor:crosshair;background:white;touch-action:none;">
+            </canvas>
+            <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:#aaa;font-size:12px;pointer-events:none;" id="sigPlaceholder">
+                <span class="lang-sw">{% t "Saini hapa" "Sign here" %}</span><span class="lang-en">Sign here</span>
+            </div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+            <button class="btn btn-outline" onclick="clearPad()"><i class="fa-solid fa-trash" aria-hidden="true"></i>  <span class="lang-sw">Futa</span><span class="lang-en">Clear</span></button>
+            <button class="btn btn-success" onclick="saveSignature()"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>  <span class="lang-sw">Hifadhi Sahihi</span><span class="lang-en">Save Signature</span></button>
+            <a href="{% url 'members:detail' member.id %}" class="btn btn-outline"><span class="lang-sw">Rudi</span><span class="lang-en">Back</span></a>
+        </div>
+        <div id="sigPreview" style="margin-top:1rem;display:none;">
+            <h4><span class="lang-sw">Sahihi Iliyohifadhiwa</span><span class="lang-en">Saved Signature</span></h4>
+            <img id="sigImg" src="" style="max-width:300px;border:1px solid #ddd;border-radius:8px;padding:8px;">
+        </div>
+    </div>
+</div>
+
+<script>
+var canvas = document.getElementById('sigPad');
+var ctx = canvas.getContext('2d');
+var drawing = false;
+var sigData = null;
+
+function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseleave', stopDraw);
+canvas.addEventListener('touchstart', function(e) { e.preventDefault(); startDraw(e); });
+canvas.addEventListener('touchmove', function(e) { e.preventDefault(); draw(e); });
+canvas.addEventListener('touchend', stopDraw);
+
+function startDraw(e) {
+    drawing = true;
+    var pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    document.getElementById('sigPlaceholder').style.display = 'none';
+}
+function draw(e) {
+    if (!drawing) return;
+    var pos = getPos(e);
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#0d3b12';
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+}
+function stopDraw() {
+    drawing = false;
+    sigData = canvas.toDataURL('image/png');
+}
+
+function clearPad() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    sigData = null;
+    document.getElementById('sigPlaceholder').style.display = 'block';
+    document.getElementById('sigPreview').style.display = 'none';
+}
+clearPad();
+
+function saveSignature() {
+    if (!sigData) {
+        alert(uiMsg('Tafadhali saini kwanza', 'Please sign first'));
+        return;
+    }
+    fetch('{% url "members:signature" member.id %}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ signature: sigData })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'ok') {
+            document.getElementById('sigPreview').style.display = 'block';
+            document.getElementById('sigImg').src = data.url + '?t=' + Date.now();
+            alert(uiMsg('Sahihi imehifadhiwa', 'Signature saved!'));
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(function() { alert('Network error'); });
+}
+
+window.onload = function() {
+    var existingSig = '{{ member.signature_url|default:"" }}';
+    if (existingSig) {
+        document.getElementById('sigPreview').style.display = 'block';
+        document.getElementById('sigImg').src = existingSig;
+    }
+};
+</script>
+{% endblock %}

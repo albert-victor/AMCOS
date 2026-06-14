@@ -1,0 +1,78 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - MGOWELO AMCOS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; max-width: 700px; margin: 0 auto; padding: 30px; background: #f5f5f5; }
+        .invoice-wrap { background: white; border: 1px solid #0d3b12; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #0d3b12; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { font-size: 22px; color: #0d3b12; font-weight: 800; }
+        .header .sub { font-size: 12px; color: #1B5E20; }
+        .header .gold { color: #F9A825; font-weight: 700; }
+        .ctrl-box { background: linear-gradient(135deg,#0d3b12,#1B5E20); padding: 15px; border-radius: 8px; text-align: center; color: white; margin-bottom: 20px; }
+        .ctrl-box .lbl { font-size: 11px; opacity: 0.8; }
+        .ctrl-box .num { font-size: 28px; font-weight: 800; letter-spacing: 3px; color: #F9A825; font-family: monospace; }
+        .info-table { width: 100%; margin-bottom: 20px; }
+        .info-table td { padding: 6px 10px; font-size: 13px; border-bottom: 1px dotted #ccc; }
+        .info-table .lbl { font-weight: 700; color: #0d3b12; width: 40%; }
+        .info-table .val { font-weight: 600; }
+        .amount-box { background: #0d3b12; color: white; padding: 12px; text-align: center; border-radius: 8px; font-size: 20px; font-weight: 800; margin: 15px 0; }
+        .amount-box .amt { color: #F9A825; }
+        .desc { margin: 15px 0; padding: 10px; background: #f8fdf8; border-left: 3px solid #0d3b12; font-size: 13px; }
+        .footer { text-align: center; margin-top: 20px; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
+        .no-print { text-align: center; margin-top: 20px; }
+        .no-print button { background: #0d3b12; color: white; border: none; padding: 10px 24px; font-size: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin: 0 5px; }
+        @media print {
+            body { background: white; padding: 10px; }
+            .invoice-wrap { box-shadow: none; border: 1px solid #0d3b12; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-wrap">
+        <div class="header">
+            <h1>MGOWELO AMCOS</h1>
+            <p class="sub">MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY</p>
+            <p class="gold">IRINGA TANZANIA</p>
+        </div>
+        <div class="ctrl-box">
+            <p class="lbl">CONTROL NUMBER</p>
+            <p class="num">{{ invoice.control_number|default:"-" }}</p>
+        </div>
+        <table class="info-table">
+            <tr><td class="lbl">Invoice No:</td><td class="val">{{ invoice.invoice_number }}</td></tr>
+            <tr><td class="lbl">Bill No:</td><td class="val">{{ invoice.bill_number|default:"-" }}</td></tr>
+            <tr><td class="lbl">Date:</td><td class="val">{{ invoice.created_at|date:"d/m/Y H:i" }}</td></tr>
+            <tr><td class="lbl">Due Date:</td><td class="val">{{ invoice.due_date|date:"d/m/Y" }}</td></tr>
+            <tr><td class="lbl">Payer Phone:</td><td class="val">{{ invoice.payer_phone|default:"-" }}</td></tr>
+            <tr><td class="lbl">Status:</td><td class="val">{{ invoice.invoice_status|title }}</td></tr>
+        </table>
+        <div class="amount-box">AMOUNT: <span class="amt">{{ invoice.amount|floatformat:2 }} TZS</span></div>
+        {% if invoice.description %}
+        <div class="desc"><strong>Description:</strong><br>{{ invoice.description }}</div>
+        {% endif %}
+        {% if invoice.is_paid and invoice.paid_at %}
+        <div style="background:#d1fae5;padding:10px;border-radius:8px;text-align:center;font-weight:700;color:#0d3b12;">
+            <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>   PAID on {{ invoice.paid_at|date:"d/m/Y H:i" }}
+        </div>
+        {% endif %}
+        <div class="footer">
+            <p>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY (MGOWELO AMCOS)</p>
+            <p style="font-size:9px;">This is a computer-generated invoice &bull; {% now "Y" %}</p>
+        </div>
+    </div>
+    <div class="no-print">
+        <button onclick="window.print()"><i class="fa-solid fa-print" aria-hidden="true"></i>  Print Invoice</button>
+        <button onclick="window.print()"><i class="fa-solid fa-download" aria-hidden="true"></i>  Download PDF</button>
+        <br><br>
+        <a href="{% url 'payments:invoice_detail' invoice.id %}" style="color:#0d3b12;font-size:13px;">&larr; Back</a>
+    </div>
+    <script>
+        if (window.location.search.includes('print=true')) { window.onload = function() { window.print(); }; }
+    </script>
+</body>
+</html>

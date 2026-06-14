@@ -1,0 +1,129 @@
+﻿{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY (MGOWELO AMCOS)</h2>
+    <p>IRINGA TANZANIA</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" onclick="location.href='{% url 'members:list' %}'">
+        <div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_members }}</h4>
+            <p><span class="lang-sw">Jumla ya Wanachama</span><span class="lang-en">Total Members</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'savings:list' %}'">
+        <div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_savings|floatformat:0 }}</h4>
+            <p><span class="lang-sw">Jumla ya Akiba (TZS)</span><span class="lang-en">Total Savings (TZS)</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'loans:list' %}'">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_loans|floatformat:0 }}</h4>
+            <p><span class="lang-sw">Jumla ya Mikopo (TZS)</span><span class="lang-en">Total Loans (TZS)</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'shares:list' %}'" style="cursor:pointer;">
+        <div class="stat-icon purple"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_shares }}</h4>
+            <p><span class="lang-sw">Jumla ya Hisa</span><span class="lang-en">Total Shares</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'loans:list' %}?status=pending'">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ pending_loans }}</h4>
+            <p><span class="lang-sw">Mikopo Inayosubiri</span><span class="lang-en">Pending Loans</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Malipo ya Hivi Karibuni</span><span class="lang-en">Recent Payments</span></h3>
+            <a href="{% url 'payments:list' %}" class="btn btn-sm btn-outline"><span class="lang-sw">Ona Yote</span><span class="lang-en">View All</span></a>
+        </div>
+        <div class="card-body">
+            {% if recent_payments %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr>
+                        <th><span class="lang-sw">Rejea</span><span class="lang-en">Reference</span></th>
+                        <th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th>
+                        <th><span class="lang-sw">Kiasi</span><span class="lang-en">Amount</span></th>
+                        <th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th>
+                        <th><span class="lang-sw">Tarehe</span><span class="lang-en">Date</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in recent_payments %}
+                    <tr>
+                        <td>{{ p.reference_number|truncatechars:10 }}</td>
+                        <td>{{ p.get_payment_type_display }}</td>
+                        <td>{{ p.amount|floatformat:0 }}</td>
+                        <td><span class="badge badge-{% if p.status == 'completed' %}success{% elif p.status == 'pending' %}warning{% else %}danger{% endif %}">{{ p.status }}</span></td>
+                        <td>{{ p.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i> </div>
+                <h3><span class="lang-sw">Hakuna Malipo Bado</span><span class="lang-en">No Payments Yet</span></h3>
+                <p><span class="lang-sw">Malipo yataonekana hapa wanachama watakapoanza kufanya shughuli.</span><span class="lang-en">Payments will appear here once members start transacting.</span></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Wanachama Wapya</span><span class="lang-en">Recent Members</span></h3>
+            <a href="{% url 'members:list' %}" class="btn btn-sm btn-outline"><span class="lang-sw">Ona Wote</span><span class="lang-en">View All</span></a>
+        </div>
+        <div class="card-body">
+            {% if recent_members %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr>
+                        <th><span class="lang-sw">Namba</span><span class="lang-en">Number</span></th>
+                        <th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th>
+                        <th><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></th>
+                        <th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in recent_members %}
+                    <tr>
+                        <td>{{ m.member_number }}</td>
+                        <td>{{ m.first_name }} {{ m.last_name }}</td>
+                        <td>{{ m.phone }}</td>
+                        <td><span class="badge badge-{% if m.status == 'active' %}success{% elif m.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ m.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+                <h3><span class="lang-sw">Hakuna Wanachama Bado</span><span class="lang-en">No Members Yet</span></h3>
+                <p><span class="lang-sw">Sajili wanachama ili kuanza kusimamia ushirika wako.</span><span class="lang-en">Register members to start managing your cooperative.</span></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block title %}Submit Payment{% endblock %}
+{% block page_title %}{% t "Wasilisha Malipo" "Submit Payment" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:650px;">
+    <div class="card-header"><h3>{% t "Lipa kwa Simu" "Pay via Mobile" %}</h3></div>
+    <div class="card-body">
+        <div style="background:linear-gradient(135deg,#0d3b12,#1B5E20);border-radius:10px;padding:1rem;margin-bottom:1.5rem;color:white;">
+            <p style="font-weight:700;font-size:0.9rem;color:#F9A825;margin-bottom:0.5rem;"><i class="fa-solid fa-id-card" aria-hidden="true"></i>{% t "Malipo kwa" "Payment to" %} {{ cooperative_name|default:"MGOWELO AMCOS" }}</p>
+            <p style="font-size:0.8rem;opacity:0.9;"><span class="lang-sw">Chagua aina, kiasi, simu na njia — kisha Lipa Sasa.</span><span class="lang-en">Select type, amount, phone and method — then Pay Now.</span></p>
+        </div>
+
+        <form method="post" class="pay-sim-form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Aina ya Malipo" "Payment Type" %}</label>
+                    <select name="payment_type" class="form-control" required>
+                        <option value="">{% t "-- Chagua" "Select --" %}</option>
+                        <option value="registration_fee"{% if default_payment_type == 'registration_fee' %} selected{% endif %}>{% t "Ada ya Usajili" "Registration Fee" %}</option>
+                        <option value="membership_fee"{% if default_payment_type == 'membership_fee' %} selected{% endif %}>{% t "Ada ya Uanachama" "Membership Fee" %}</option>
+                        <option value="share_purchase"{% if default_payment_type == 'share_purchase' %} selected{% endif %}>{% t "Ununuzi wa Hisa" "Share Purchase" %}</option>
+                        <option value="savings_deposit"{% if default_payment_type == 'savings_deposit' %} selected{% endif %}>{% t "Akiba" "Savings Deposit" %}</option>
+                        <option value="loan_repayment">{% t "Malipo ya Mkopo" "Loan Repayment" %}</option>
+                        <option value="contribution">{% t "Michango" "Contribution" %}</option>
+                        <option value="fine">{% t "Faini" "Fine" %}</option>
+                        <option value="other">{% t "Nyingine" "Other" %}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>{% t "Njia ya Malipo" "Payment Method" %}</label>
+                    <select name="payment_method" class="form-control" required
+                        data-opt-sw="-- Chagua njia ya malipo --" data-opt-en="-- Select payment method --">
+                        {% include 'includes/_payment_method_options.html' %}
+                    </select>
+                    {% include 'includes/_payment_method_other_field.html' %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Kiasi" "Amount (TZS)" %}</label>
+                    <input type="number" name="amount" class="form-control" step="0.01" min="0" required placeholder="100000">
+                </div>
+                <div class="form-group">
+                    <label>{% t "Namba ya Simu" "Phone Number" %} *</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="255XXXXXXXXX">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{% t "Maelezo" "Description (optional)" %}</label>
+                <textarea name="description" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" data-pay-sim-submit>
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span class="lang-sw">Lipa Sasa</span><span class="lang-en">Pay Now</span>
+            </button>
+            <a href="{% url 'payments:list' %}" class="btn btn-outline">{% t "Ghairi" "Cancel" %}</a>
+        </form>
+    </div>
+</div>
+<script src="{% static 'js/payment-method-other.js' %}"></script>
+<script src="{% static 'js/pay-simulation.js' %}"></script>
+{% endblock %}

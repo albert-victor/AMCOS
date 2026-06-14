@@ -1,0 +1,364 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Register Member{% endblock %}
+
+{% block page_title %}Register New Member{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:800px;">
+
+    <div class="card-header"><h3>{{ title }}</h3></div>
+
+    <div class="card-body">
+
+        <div class="alert alert-info" style="margin-bottom:1.25rem;">
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            <span class="lang-sw">Ada ya usajili: <strong>TZS {{ reg_fee|floatformat:0 }}</strong>. Mwanachama hatasajiliwa bila namba ya malipo iliyothibitishwa. Tumia kitufe cha Demo TXN ikiwa hakuna API halisi.</span>
+
+            <span class="lang-en">Registration fee: <strong>TZS {{ reg_fee|floatformat:0 }}</strong>. Member cannot be registered without verified payment. Use Demo TXN when no live payment API is available.</span>
+
+        </div>
+
+        <form method="post" id="memberRegisterForm">
+
+            {% csrf_token %}
+
+            <h4 style="margin:0 0 1rem;font-weight:600;">
+
+                <i class="fa-solid fa-wallet"></i>
+
+                <span class="lang-sw">Malipo ya Usajili</span><span class="lang-en">Registration Payment</span>
+
+            </h4>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Njia ya Malipo *</span><span class="lang-en">Payment Method *</span></label>
+
+                    <select name="payment_method" class="form-control" required
+
+                        data-opt-sw="-- Chagua njia ya malipo --" data-opt-en="-- Select payment method --">
+
+                        {% include 'includes/_payment_method_options.html' %}
+
+                    </select>
+
+                    {% include 'includes/_payment_method_other_field.html' %}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Simu ya Malipo *</span><span class="lang-en">Payment Phone *</span></label>
+
+                    <input type="tel" name="payment_phone" class="form-control" required
+
+                        placeholder="255712345678"
+
+                        value="{{ form.payment_phone|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label><span class="lang-sw">Namba ya Kumbukumbu ya Malipo *</span><span class="lang-en">Payment Reference *</span></label>
+
+                <div style="display:flex;gap:0.5rem;align-items:stretch;">
+
+                    <input type="text" name="payment_reference" id="paymentReferenceInput" class="form-control" required minlength="6"
+
+                        data-ph-sw="Mfano: DEMO123456789"
+
+                        data-ph-en="e.g. DEMO123456789"
+
+                        placeholder="Mfano: DEMO123456789"
+
+                        value="{{ form.payment_reference|default:'' }}" style="flex:1;">
+
+                    <button type="button" id="demoTxBtn" class="btn btn-outline" title="Demo TXN" style="white-space:nowrap;">
+
+                        <i class="fa-solid fa-bolt"></i> Demo TXN
+
+                    </button>
+
+                </div>
+
+                <small class="text-muted">
+
+                    <span class="lang-sw">Bonyeza Demo TXN kwa majaribio (hakuna API halisi ya malipo).</span>
+
+                    <span class="lang-en">Click Demo TXN for testing (no live payment API).</span>
+
+                </small>
+
+            </div>
+
+            <hr style="margin:1.5rem 0;">
+
+            <h4 style="margin:0 0 1rem;font-weight:600;">
+
+                <span class="lang-sw">Taarifa za Mwanachama</span><span class="lang-en">Member Details</span>
+
+            </h4>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Jina la Kwanza *</span><span class="lang-en">First Name *</span></label>
+
+                    <input type="text" name="first_name" class="form-control" required value="{{ form.first_name|default:'' }}">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Jina la Mwisho *</span><span class="lang-en">Last Name *</span></label>
+
+                    <input type="text" name="last_name" class="form-control" required value="{{ form.last_name|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Namba ya Simu (login) *</span><span class="lang-en">Phone (login) *</span></label>
+
+                    <input type="tel" name="phone" class="form-control" required
+
+                        placeholder="255712345678" value="{{ form.phone|default:'' }}">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input type="email" name="email" class="form-control" value="{{ form.email|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>{% t "National ID" "NIDA" %}</label>
+
+                    <input type="text" name="national_id" class="form-control" value="{{ form.national_id|default:'' }}">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Gender</label>
+
+                    <select name="gender" class="form-control">
+
+                        <option value="male" {% if form.gender == 'male' %}selected{% endif %}>Male</option>
+
+                        <option value="female" {% if form.gender == 'female' %}selected{% endif %}>Female</option>
+
+                        <option value="other" {% if form.gender == 'other' %}selected{% endif %}>Other</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Date of Birth</label>
+
+                <input type="date" name="date_of_birth" class="form-control" value="{{ form.date_of_birth|default:'' }}">
+
+            </div>
+
+            <h4 style="margin:1rem 0;font-weight:600;">
+
+                <i class="fa-solid fa-user-lock"></i>
+
+                <span class="lang-sw">Akaunti ya Mfumo</span><span class="lang-en">System Account</span>
+
+            </h4>
+
+            <p class="text-muted" style="margin:0 0 1rem;font-size:0.9rem;">
+
+                <span class="lang-sw">Weka nywila ya muda. Mwanachama atalazimika kuibadilisha mara ya kwanza aingiapo.</span>
+
+                <span class="lang-en">Set a temporary password. The member must change it on first login.</span>
+
+            </p>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Nywila *</span><span class="lang-en">Password *</span></label>
+
+                    <input type="password" name="password" id="memberPassword" class="form-control" required minlength="6"
+
+                        autocomplete="new-password" placeholder="Angalau herufi 6">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label><span class="lang-sw">Thibitisha Nywila *</span><span class="lang-en">Confirm Password *</span></label>
+
+                    <input type="password" name="confirm_password" id="memberConfirmPassword" class="form-control" required minlength="6"
+
+                        autocomplete="new-password">
+
+                </div>
+
+            </div>
+
+            <h4 style="margin:1rem 0;font-weight:600;">Next of Kin</h4>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input type="text" name="next_of_kin_name" class="form-control">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Relationship</label>
+
+                    <select name="next_of_kin_relationship" class="form-control">
+
+                        <option value="">Select...</option>
+
+                        <option value="spouse">Spouse</option>
+
+                        <option value="child">Child</option>
+
+                        <option value="parent">Parent</option>
+
+                        <option value="sibling">Sibling</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Phone</label>
+
+                <input type="tel" name="next_of_kin_phone" class="form-control">
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+
+                <span class="lang-sw">Sajili Mwanachama</span><span class="lang-en">Register Member</span>
+
+            </button>
+
+            <a href="{% url 'members:list' %}" class="btn btn-secondary">
+
+                <span class="lang-sw">Ghairi</span><span class="lang-en">Cancel</span>
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/payment-method-other.js' %}"></script>
+
+<script>
+
+(function () {
+
+    var form = document.getElementById('memberRegisterForm');
+
+    if (!form) return;
+
+
+
+    form.addEventListener('submit', function (e) {
+
+        if (typeof validatePaymentMethodOther === 'function' && !validatePaymentMethodOther(form)) {
+
+            e.preventDefault();
+
+            return;
+
+        }
+
+        var pw = form.querySelector('input[name="password"]');
+
+        var cpw = form.querySelector('input[name="confirm_password"]');
+
+        if (pw && cpw && pw.value !== cpw.value) {
+
+            e.preventDefault();
+
+            alert(document.documentElement.lang === 'en'
+
+                ? 'Passwords do not match'
+
+                : 'Nywila hazilingani');
+
+        }
+
+    });
+
+
+
+    var demoBtn = document.getElementById('demoTxBtn');
+
+    var refInput = document.getElementById('paymentReferenceInput');
+
+    if (demoBtn && refInput) {
+
+        demoBtn.addEventListener('click', function () {
+
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+            var txn = 'DEMO';
+
+            for (var i = 0; i < 10; i++) {
+
+                txn += chars.charAt(Math.floor(Math.random() * chars.length));
+
+            }
+
+            refInput.value = txn;
+
+            refInput.focus();
+
+        });
+
+    }
+
+})();
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Income Statement{% endblock %}
+{% block page_title %}Income Statement{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Income</h3></div>
+        <div class="card-body">
+            <table>
+                <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+                <tbody>
+                    {% for i in incomes %}
+                    <tr><td>{{ i.category }}</td><td>{{ i.amount|floatformat:2 }}</td></tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:700;background:var(--gray-50);">
+                        <td>Total Income</td><td>{{ total_income|floatformat:2 }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>Expenses</h3></div>
+        <div class="card-body">
+            <table>
+                <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+                <tbody>
+                    {% for e in expenses %}
+                    <tr><td>{{ e.category }}</td><td>{{ e.amount|floatformat:2 }}</td></tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:700;background:var(--gray-50);">
+                        <td>Total Expenses</td><td>{{ total_expense|floatformat:2 }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card mt-4">
+    <div class="card-body" style="text-align:center;">
+        <h3>Net Income: <span style="color:{% if net_income >= 0 %}var(--success){% else %}var(--danger){% endif %};">{{ net_income|floatformat:2 }} TZS</span></h3>
+    </div>
+</div>
+{% endblock %}

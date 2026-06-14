@@ -1,0 +1,642 @@
+{
+  "title": "KATIBA YA CHAMA CHA USHIRIKA CHA WAKULIMA WA MAZAO MCHANGANYIKO MGOWELO",
+  "alternateTitle": "MGOWELO MULTI - FARMERS ASSOCIATION LTD",
+  "sections": [
+    {
+      "sectionNumber": "SEHEMU YA KWANZA",
+      "sectionTitle": "UTANGULIZI",
+      "content": {
+        "1": {
+          "title": "JINA LA CHAMA",
+          "value": "CHAMA CHA USHIRIKA CHA WAKULIMA WA MAZAO MCHANGANYIKO MGOWELO (MGOWELO MULTI - FARMERS ASSOCIATION LTD)"
+        },
+        "2": {
+          "title": "TAREHE YA KUANDIKISHWA",
+          "value": "………"
+        },
+        "3": {
+          "title": "NAMBA YA KUANDIKISHWA",
+          "value": "………"
+        },
+        "4": {
+          "title": "HATI MILIKI",
+          "value": null
+        },
+        "details": {
+          "ANUANI YA CHAMA": "S.L.P …. KILOLO - MKOA WA IRINGA.",
+          "AINA YA UANACHAMA": "WAKULIMA WA MAZAO MCHANGANYIKO NA WATOA HUDUMA ZA KIJAMIIZITOKANAZO NA MAZAO YA KILIMO",
+          "ENEO LA KILIMO": "KIJIJI CHA MGOWELO, KATA YA NYANZWA, WILAYA YA KILOLO, MKOA WA IRINGA.",
+          "MAKAO MAKUU YA CHAMA": "WILAYA YA KILOLO, MKOA WA IRINGA.",
+          "MWAKA WA FEDHA WA CHAMA": "UTAANZA TAREHE 01 JULAI NA KUISHIA TAREHE 30 JUNI KILA MWAKA."
+        }
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA PILI",
+      "sectionTitle": "MADHUMUNI",
+      "content": {
+        "description": "Madhumuni ya Jumla ya chama yatakuwa ni kuinua na kustawisha hali ya uchumi na maisha ya wanachama wake, kwa kuwezesha upatikanaji wa pembejeo, mbegu bora na masoko ya mazao yatakayozalishwa. Aidha, chama kitawaunganisha wanachama na wataalamu kwa kuwapatia elimu ya kilimo biashara, ushirika na utoaji huduma za kijamii na zinazoongeza mapato kwa wanachama.",
+        "objectives": [
+          "Kuanzisha, kuendeleza na kuboresha Mashamba ya pamoja ya mazao mchanganyiko yakiwemo Tumbaku, Pamba, Alizeti, Ufuta, Karanga, Maharage ya Soya na Korosho matunda na mbogamboga.",
+          "Kuanzisha kilimo cha block farming ambacho kitawezesha wanachama kuzalisha mazao mchanganyiko kwa kila block.",
+          "Kuanzisha kilimo cha mazao ya mbogamboga, matunda, ufugaji wa samaki, mbuzi na ng’ombe wa maziwa ili kuongeza vipato vya wanachama.",
+          "Kuweka Uongozi wa pamoja kwa ajili ya kutunza na kusimamia shughuli na miradi yote ya chama na kumilki ardhi kwa ajili ya shughuli za maendeleo ya chama cha Ushirika Mgowelo.",
+          "Kuweka mipango endelevu kwa ajili ya wanachama kwa kushirikisha wataalamu na wahisani mbalimbali ili kuboresha miradi ya chama kwa maendeleo ya wanachama.",
+          "Kutoa elimu ya Ushirika, biashara na ujasiliamali kwa wanachama wake.",
+          "Kuanzisha miradi ya uchumi kama itakavyokubaliwa na Mkutano Mkuu wa Wanachama kwa lengo la Kununua, kumiliki na kuendesha mitambo ya kuchakata na kusindika mazao yatokanayo na kilimo.",
+          "Kutafuta wafadhili na mikopo yenye masharti nafuuili kuboresha kilimo cha mazao mchanganyiko.",
+          "Kufanya mambo yote ambayo yataendeleza madhumuni ya chama ili chama kiwe endelevu.",
+          "Kushirikiana na vyama vingine vya ushirika vyenye malengo na madhumuni yanayofanana na ushirika huu."
+        ]
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA TATU",
+      "sectionTitle": "UANACHAMA",
+      "content": {
+        "Sifa_za_kuwa_mwanachama": {
+          "description": "Mtu yeyote anaweza kuwa mwanachama anapokuwa na sifa zifuatazo:",
+          "criteria": [
+            "Umri wa chini wa kuwa mwanachamani miaka 15",
+            "Umri wa chini wa kugombea nafasi ya uongozi ni miaka 18.",
+            "Asiwe na shughuli binafsi zinazofanana na za chama.",
+            "Awe anaishi katika eneo la chama na anayekubali kufuata masharti ya chama ikiwa ni pamoja na kujishughulisha na kilimo cha kisasa na ufugaji bora wa kisasa na anayekubali kuendeleza malengo ya chama kwa faida ya wanachama wote.",
+            "Awe na akili timamu.",
+            "Awe tayari kuchangia mtaji wa chama,kufanya biashara,kusimamia shughuli za chama kwa uaminifu pale atakapotakiwa kufanya hivyo hii ni pamoja na kutunza mali na maeneo ya chama kwa kuzingatia misingi ya katiba ya chama cha Mgowelo AMCOS LTD na katiba ya Jamhuri ya Muungano wa Tanzania."
+          ]
+        },
+        "Aina_za_Uanachama": {
+          "1": "Wanachama waanzilishi ambao watakuwa wametimiza masharti Na. 12 na 13.",
+          "2": "Wanachama wapya ambao wataomba na kukubaliwa na bodi ya wadhamini na baadaye kuthibitishwa na mkutano mkuu."
+        },
+        "Kukubaliwa_uanachama": {
+          "steps": [
+            "Mtu atakayeomba uanachama anatakiwa kuandika barua na kujaza fomu na kuwasilisha kwa Mwenyekiti wa chama.",
+            "Maombi ya uanachama yatajadiliwa na bodi na kutolewa pendekezo la kukubaliwa au kukataliwa.",
+            "Mkutano mkuu utakuwa na uamuzi wa mwisho wa kukubali au kukataa maombi ya mtu yeyote kujiunga na chama."
+          ],
+          "additional": [
+            "Mwanachama atakayekubaliwa kujiunga na chama atatakiwa kulipa kiingilio na kununua hisa kama ilivyofafanuliwa kwenye Katiba hii.",
+            "Kila mwanachama atapewa kitambulisho cha uanachama.",
+            "Katibu/Meneja wa chama atarudisha fomu za maombi na hisa zote zilizopokelewa kutoka kwa waombaji waliokataliwa uanachama, kiingilio cha wanachama hakitarudishwa."
+          ]
+        },
+        "KIINGILIO": {
+          "description": "Mwanachama atakapojiunga na chama atalipa kiingilio cha Tshs 100,000 ambapo haitarejeshwa endapo mwanachama amekoma uanachama."
+        },
+        "HISA": {
+          "requirements": [
+            "Mwanachama atalazimika kununua Hisa zisisopungua kumi (10) kwa kipindi cha miaka miwili ambapo thamani ya hisa moja ni shilingi 100,000/-",
+            "Mwanachama atalazimika kulipia Hisa zote 15 kwa kipindi cha miaka miwili (2).",
+            "Kwa kuanzia atalipia Hisa tano (5) zenye thamani ya Tshs 100,000/= kila moja sawa na shilingi 500,000/-.",
+            "Mwanachama aliyekamilisha kulipa hisa zake zote atapewa hati ya kumiliki hisa.",
+            "Kila mwanachama atachangia ardhi Kama Hisa ambapo kiwango cha chini ni ekari 10 na anaweza kuchangia zaidi.",
+            "Ardhi itakayotolewa na mwanachama itamilikiwa na kusimamiwa na chama.",
+            "Mapato yatakayo patikana kutokana na ardhi inayomilikiwa na chama itagawanywa kwa wanachama kulingana na idadi ya ekari alizochangia baada ya kutoa gharama za uzalizshaji kama ityoakavkuliwa na wanachama."
+          ]
+        },
+        "mrithi": {
+          "description": "Kila Mwanachama atateua mrithi wake na kumtambulisha kwa barua kwa meneja na taarifa zake zitasajiliwa katika daftari la chama."
+        },
+        "KUKOMA_KWA_UANACHAMA": {
+          "causes": [
+            "Kifo",
+            "Kuhama kutoka katika eneo la shughuli za chama",
+            "Kutoshiriki kikamilifu katika shughuli za uchumi za chama kama ilivyo katika Masharti haya",
+            "Kutenda kosa lolote ambalo limetajwa katika Sheria na Kanuni za Vyama vya Ushirika.",
+            "Kichaa kilichothibitishwa na daktari",
+            "Kuacha kuwa na Hisa kwa mujibu wa Masharti haya.",
+            "Kupoteza uwezo wa kufanya kazi.",
+            "Kujiuzulu baada ya kutoa taarifa ya miezi 3 ya maandishi kwa Bodi ya Chama.",
+            "Mwanachama aliyejiuzulu au kufukuzwa uanachama atalipwa haki zake zote kama vile hisa na stahiki zingine baada ya kulipa madeni yake yote anayodaiwa.",
+            "Mwanachama anaweza kusimamishwa uanachama kutokana na kukiuka kanuni ya 33 (1-2) ya kanuni za vyama vya ushirika 2015."
+          ]
+        },
+        "Haki_na_Wajibu_za_Mwanachama": {
+          "rights_and_duties": [
+            "Kushiriki kikamilifu katika shughuli za chama na kuhudhuria mikutano yote inayohusika.",
+            "Kushiriki katika kuchangia mawazo na kutoa uamuzi wa mambo mbalimbali katika Mikutano Mikuu.",
+            "Kushiriki katika kupiga au kupigiwa kura chini ya misingi ya mtu mmoja kura moja bila kujali idadi ya Hisa anazomiliki.",
+            "Kuwa tayari kuchagua na/au kuchaguliwa katika madaraka yoyote katika chama hiki cha ushirika.",
+            "Kuwa na haki sawa kuhusu mali ya chama na kudhibiti ipasavyo matumizi yake.",
+            "Kupatiwa huduma zozote zinazotolewa na chama.",
+            "Kufuata sheria na kanuni za vyama vya Ushirika, masharti ya chama na maamuzi ya Mikutano Mikuu.",
+            "Kutoa michango mbalimbali katika kuendeleza madhumuni ya chama.",
+            "Kukagua masharti, mizania, mihtasari ya mikutano na nyaraka zingine za chama.",
+            "Kuitisha mikutano ya wanachama kwa mujibu wa kanuni na masharti haya."
+          ],
+          "special_rights_for_mentally_ill_member": [
+            "Kulipia mikopo na gharama zingine ambazo mwanachama anadaiwa na chama.",
+            "Kulipwa kwa mrithi wake kama ilivyoonyeshwa katika daftari la wanachama.",
+            "Dhima ya mwanachama Kwa madeni ya chama, hazitazidi kiwango cha Hisa zake chamani, ziwe zimelipwa au bado hazijalipwa."
+          ]
+        }
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU IV",
+      "sectionTitle": "UONGOZI",
+      "content": {
+        "Bodi_ya_Uongozi": {
+          "composition": "MKUTANO MKUU utachagua Bodi ya Uongozi wa chama ambayo itakuwa na wajumbe wasiopungua watano (5) na wasiozidi tisa (9).",
+          "election": "Wajumbe wa bodi waliochaguliwa miongoni mwao watachagua mwenyekiti, makamu mwenyekiti, katibu makamu mwenyekiti na mtuinza hazina.",
+          "method": "Uongozi utapatikana kwenye mkutano kwa njia ya kupiga kura.",
+          "qualities": "Viongozi wote watapaswa kuwa na uwezo wa kuongoza kikundi, waaminifu, kuheshimu na kulinda katiba ya kikundi.",
+          "term": "Viongozi watakuwa madarakani kwa muda wa miaka mitano (5) na wanaweza kuchaguliwa tena kulingana na matakwa ya wanakikundi kwa kufuata demokrasia.",
+          "board_structure": [
+            "Mwenyekiti",
+            "Makamu Mwenyekiti",
+            "Katibu",
+            "Makamu Katibu",
+            "Mweka Hazina",
+            "Wajumbe wa bodi"
+          ]
+        },
+        "Additional_Leadership_Info": {
+          "committees": "Uongozi wa bodi utaunda kamati mbalimbali kama itakavyokubalika na mkutano mkuu wa chama.",
+          "staff_employment": "Bodi inaweza kuajiri wafanyakazi kama itakavyokubaliwa na mkutano mkuu na ambao watawajibika kwa katibu wa bodi."
+        },
+        "Majukumu_ya_Viongozi": [
+          "Kuongoza chama kwa mujibu wa katiba na sio kwa kufuata matakwa yao binafsi",
+          "Kukusanya, kuhifadhi na kutumia fedha za chama kwa kufuata utaratibu uliowekwa.",
+          "Kuandaa na kutoa taarifa za mikutano",
+          "Kuwakilisha wanachama ndani na nje kwa maendeleo ya chama.",
+          "Kubuni miradi yenye tija ya chama.",
+          "Kubuni vyanzo vya mapato kwa lengo la kuongeza kipato cha wanachama.",
+          "Kuweka mikakati ya muda mrefu, muda wa kati na muda mfupi kwa maendeleo ya chama."
+        ],
+        "Wajibu_wa_Viongozi": {
+          "MWENYEKITI": [
+            "Ataongoza vikao na mikutano yote",
+            "Ndiyo msemaji mkuu wa chama",
+            "Msimamizi mkuu wa shughuli zote za chama kwa niaba ya wanachama",
+            "Kutoa maamuzi ya dharula akisaidiwa na bodi",
+            "Ataidhinisha mihtasari yote ya vikao na mikutano atakayoongoza kwa niaba ya wanachama.",
+            "Mwakilishi wa chama ndani na nje ya chama"
+          ],
+          "KATIBU": [
+            "Atakuwa katibu wa bodi",
+            "Atakuwa mshauri mkuu wa mwenyekeiti",
+            "Atakuwa kiungo wa mawasiliano ya ndani nje ya chama",
+            "Atakuwa mtendaji mkuu wa shughuli za chama",
+            "Ataratibu kazi zote za chama",
+            "Atatoa taarifa za maendeleo ya chama",
+            "Atatunza mali za chama",
+            "Atakuwa mtia saini Bank"
+          ],
+          "MWEKA_HAZINA": [
+            "Atakusanya mapato ya chama",
+            "Atatoa taarifa ya mapato na matumizi",
+            "Kubuni mbinu ya kupata mapato",
+            "Atapokea na kupeleka Bank fedha za chama",
+            "Atakuwa mjumbe wa bodi"
+          ]
+        },
+        "AJIRA": {
+          "description": "CHAMA KINAWEZA KUAJIRI MTU YEYOTE ASIYEKUWA MWANACHAMA KWA MASHARITI YAFFUATAYO",
+          "conditions": [
+            "Mwenye ujuzi maalum ambao wanachama hawana.",
+            "Kwa kazi ambazo siyo za kitaalam kama vile kazi za kibarua na ulinzi",
+            "Kwa kazi za muda maalum."
+          ]
+        }
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA NNE",
+      "sectionTitle": "FEDHA NA MALI YA CHAMA",
+      "content": {
+        "Fedha_za_chama_zitatokana_na": [
+          "Viingilio.",
+          "Hisa za wanachama.",
+          "Mikopo na misaada kutoka vyombo vinavyotambulika.",
+          "Ziada kutokana na shughuli na miradi ya kiuchumi ya chama.",
+          "Fedha za malimbikizo.",
+          "Nafuu za kibiashara na mapato mengineyo.",
+          "Ushuru wa biashara.",
+          "Michango ya wanachama."
+        ],
+        "Mali_za_chama_zitakuwa": [
+          "Fedha taslimu na fedha Benki",
+          "Mawekezo katika Taasisi za kibiashara",
+          "Vifaa na zana zote zinazohusiana na shughuli za chama",
+          "Majengo, Mashamba na mali nyingine za chama zilivyoonyeshwa kwenye mizania ya chama."
+        ]
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA TANO",
+      "sectionTitle": "MGAO WA ZIADA",
+      "content": {
+        "distribution": [
+          "15% itawekwa kukombolea Hisa (mafungu)",
+          "20% katika fungu la malimbikizo ya ziada kwa ajili ya kukiendeleza chama",
+          "15% itawekwa kukabiliana na madeni mabaya na yenye mashaka ikizingatiwa kuwa madeni yote ya Chama hayajazidi asilimia kumi na tano."
+        ],
+        "remaining_distribution": [
+          "Kwa ajili ya kulipia faida juu ya hisa",
+          "Gawio la ziada kwa wanachama",
+          "Honoraria kwa bodi na watumishi wa kujitolea",
+          "Kuchangia mifuko ya maendeleo",
+          "Mambo mengine kwa mujibu wa sheria ya vyama vya Ushirika ya mwaka 2013."
+        ],
+        "usage_restriction": "Fedha za chama zitatumika tu kwa madhumuni yaliyotajwa kwenye sharti Na.6 na sehemu nyingine yeyote ya masharti haya."
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA SITA",
+      "sectionTitle": "DHIMA YA WANACHAMA",
+      "content": {
+        "description": "Kudaiwa kwa wanachama kwa ajili ya madeni ya chama hakutazidi kiwango cha hisa zake katika chama."
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA SABA",
+      "sectionTitle": "USIMAMIZI NA UONGOZI WA CHAMA",
+      "content": {
+        "Mikutano_Mikuu": {
+          "authority": "Mikutano Mikuu ya wanachama ndiyo itakayokuwa na mamlaka na madaraka ya juu katika kuongoza na kusimamia shughuli zote za maendeleo ya chama.",
+          "scope": "Madaraka ya juu ya chama yatakuwa mikononi mwa wanachama waliohudhuria na kupiga kura katika Mkutano wa Mwaka, Mkutano Mkuu wa kawaida na Mkutano Mkuu Maalum.",
+          "Mkutano_Mkuu_wa_Mwaka": {
+            "timing": "Mkutano Mkuu wa mwaka utafanyika katika mwezi wa 3(tatu) kwa mwaka husika au ukichelewa sana isizidi miezi sita (6) kabla ya kufunga mwaka wa fedha.",
+            "agenda": [
+              "Kusoma na kuthibitisha mambo ya mkutano uliopita.",
+              "Kupokea na kujadili taarifa ya mwaka ya Hesabu za chama pamoja na taarifa zilizoelezwa katika Kanuni 42(2b) ya Kanuni ya Vyama vya Ushirika, 2015.",
+              "Kupokea na kujadili Hesabu zilizokaguliwa, taarifa ya ukaguzi wa Menejimenti pamoja na taarifa ya ukaguzi ya Mrajisi wa vyama vya ushirika.",
+              "Kupokea na kujadili taarifa ya Mwenyekiti.",
+              "Kujadili namna ya kugawana ziada kwa mujibu wa sheria ya Vyama vya Ushirika, 2013.",
+              "Kuidhinisha mpango mkakati na mpango wa biashara wa chama na programu za utekelezaji",
+              "Kuweka kiwango cha michango itakayotozwa.",
+              "Kujadili na kuidhinisha Makisio ya mapato na matumizi ya chama kwa mwaka unaofuata.",
+              "Kuteua Mkaguzi wa nje kwa ajili ya ukaguzi wa mwaka unaofuata.",
+              "Kujadili na kuweka Ukomo wa Madeni ya chama kwa mwaka unaofuata.",
+              "Kujadili na kupitisha kiwango cha zawadi (honoraria) kwa viongozi na watumishi wanaojitokea kadiri itakavyoonekana inafaa na kwa kuzingatia ushauri wa mrajisi wa vyama vya ushirika.",
+              "Kujadili mambo mengineyo yote yahusuyo maendeleo ya chama"
+            ]
+          },
+          "Mikutano_Mikuu_ya_Kawaida": {
+            "frequency": "Mkutano Mkuu wa kawaida utafanyika angalau mara moja kwa mwaka",
+            "agenda": [
+              "Kusoma na kuthibitisha mambo ya mkutano uliopita",
+              "Kujadili na kuidhinisha ununuzi na/au uuzaji wa mali ya chama inayohamishika na isiyohamishika inayozidi shilingi milioni mbili (2,000,000/=).",
+              "Kufanya marekebisho ya masharti inapoonekana haja ya kufanya hivyo",
+              "Kuidhinisha idadi ya wajumbe wa Bodi ya ushirika",
+              "Kutafakari namna ya kuitekeleza Sera ya Ushirika",
+              "Kujadili na kuidhinisha mikataba",
+              "Kuthibitisha wanachama wapya na kuchukua hatua za kinidhamu kwa wanachama wakorofi",
+              "Kuchagua au kuwaondoa wajumbe wa bodi wasiokidhi vigezo",
+              "Kuchagua wajumbe wa kukiwakilisha chama katika vyama vingine na taasisi zinazohusika na chama",
+              "Kujadili na kupitisha utaratibu wa kazi na kutathmii shughuli za utendaji kuleta ufanisi",
+              "Kufanya mambo mengineyo yanayohusu maendeleo ya chama"
+            ]
+          },
+          "Mikutano_Mkuu_Maalum": {
+            "description": "Kutakuwepo na Mkutano Mkuu maalumu wakati wowote unapohitajika na unaweza kuitishwa na:",
+            "called_by": [
+              "Mrajis wa Vyama vya Ushirika au Afisa yeyote aliyeidhinishwa naye. Mkutano huo utaongozwa na Mrajis mwenyewe au mwakilishi wake na ataelekeza mambo yatakayojadiliwa",
+              "Kwa maombi ya maandishi ya wanachama wasiopungua theluthi moja (1/3) ya jumuiya ya wanachama wote. Maombi ya wanachama hao ni lazima yaeleze jambo litakalozungumzwa na yawekewe saini au alama ya dole gumba na waombaji wenyewe na nakala ya maombi hayo itapelekwa kwa Afisa ushirika wa wilaya, Mrajis Msaidizi wa Mkoa na Mrajis. Mkutano Mkuu utakaoitishwa na wanachamama utakuwa na agenda moja tu."
+            ],
+            "notifications": {
+              "a": "Matangazo ya Mikutano Mikuu lazima yabandikwe katika Ofisi ya chama na kwenye mbao za matangazo. Vile vile zinaweza kutumika taratibu za kutangaza na kuitisha mikutano zinazokubalika katika sehemu hiyo. Tangazo hilo ni lazima lionyeshe wazi tarehe, saa na mahali utakapofanyika mkutano pamoja na agenda.",
+              "b": "Muda wa matangazo ya Mikutano Mikuu utakuwa ni Mkutano Mkuu wa kawaida siyo chini ya siku 21 na Mikutano Mikuu Maalum siyo chini ya siku 7"
+            },
+            "attendance": {
+              "a": "Akidi/ mahudhurio katika Mikutano Mikuu yote itakuwa si chini ya nusu (1/2) ya wanachama wote au wanachama 100 ikichukuliwa idadi yoyote iliyo ndogo.",
+              "b": "Ikiwa katika Mkutano mkuu wa mwaka au katika mikutano mikuu ya kawaida akidi/ mahudhurio hayatatimia baada ya kupita saa moja na nusu ya muda uliopangwa kuanza Mkutano, Mwenyekiti ataahirisha mkutano huo kwa muda wa siku saba na utakapoitishwa tena mambo yatakayozungumzwa yatakuwa yale ya mkutano ulioahirishwa. Iwapo katika mkutano huo akidi/ mahudhurio hayatoshi tena baada ya kupita saa moja na nusu ya muda uliopangwa kuanza mkutano, mkutano huo utafutwa na taarifa kupelekwa kwa afisa ushirika wa wilaya, Mrajis au Mrajis Msaidizi wa vyama vya ushirika.",
+              "c": "Mkutano Mkuu maalum ulioitishwa na Mrajis au mwakilishi wake, utafanyika hata kama akidi haijatimia na maamizio yatakayopitishwa katika mkutano huo yatakuwa halali."
+            },
+            "chairing": {
+              "description": "Mwenyekiti wa chama cha Ushirika ataongoza Mikutano Mikuu yote Mikuu isipokuwa Mkutano Mkuu maalum ulioitishwa na Mrajis ambao Mrajis au mtu atakayemteua atakuwa Mwenyekiti. Mwenyekiti kama hayupo Makamu Mwenyekiti ataongoza mkutano. Iwapo wote wawili hawapo katika muda wa nusu saa (dakika 30) Baada ya muda uliopangwa kuanza Mkutano ama hawataki kuongoza mkutano huo mwanachama yeyote katika waliohudhuria atachaguliwa kuwa Mwenyekiti wa muda na ataongoza mkutano huo tu."
+            },
+            "voting": {
+              "a": "Mwanachama yeyote ambaye ametimiza masharti ya uanachama kama ilivyo katika mashartii haya atakuwa na kura moja katika mikutano ya chama na hakuna kura ya uwakilishi.",
+              "b": "Upigaji kura katika masuala yote ya uchaguzi yatafanyika kwa kura ya siri.",
+              "c": "Maazimio ya mkutano yatafanywa kwa kupiga kura ya wazi kwa kunyoosha mkono isipokuwa kama kura ya siri itahitajika na wanachama wasiopungua watatu,kutaka kufanyika kwa kura hiyo ya siri.",
+              "d": "Katika Mikutano mikuu maamuzi ya wengi yatachukuliwa na endapo kura zitalingana jambo hilo litaahirishwa au kufutwa."
+            },
+            "recording": "Maamuzi na maazimio yote yatakayokubaliwa katika Mikutano mikuu na Mikutano ya bodi yataandikwa katika kitabu kinachohusika cha mambo ya mikutano inayofuata na yatatiwa saini na Mwenyekiti wa mkutano pamoja na Katibu na nakala zake kutumwa kwa Afisa Ushirika wa Wilaya na mrajisi msaidizi anaweza kupewa nakala."
+          }
+        }
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA NANE",
+      "sectionTitle": "SIFA ZA MJUMBE WA BODI",
+      "content": {
+        "requirements": [
+          "Awe na elimu ya kutosha kumwezesha kusimamia shughuli za chama",
+          "Awe mwadilifu na mwaminifu",
+          "Awe na uwezo wa kuongoza",
+          "Awe amelipa hisa zote chamani kwa mujibu wa masharti haya",
+          "Awe hajawahi kupoteza sifa za uongozi katika ngazi yoyote ya Chama cha Ushirika",
+          "Awe anashiriki kikamilifu katika shughuli zote za chama",
+          "Hajawahi kusababisha hasara katika Chama chochote cha Ushirika",
+          "Asiwe na deni alilolipata nje ya utaratibu",
+          "Asiwe na tabia ya kulaza madeni",
+          "Awe hajawahi kuwa mjumbe wa Bodi iliyoshindwa kusimamia vizuri shughuli za chama na kikapata hasara"
+        ]
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA TISA",
+      "sectionTitle": "BODI YA CHAMA",
+      "content": {
+        "composition_and_election": {
+          "a": "Bodi ya Chama itakuwa na wajumbe 5 hadi 9 akiwemo Mwenyekiti na Makamu wake watakaochaguliwa na Mkutano Mkuu.Ka chama hiki wajumbe wa Bodi wako sita (6).",
+          "b": "Wajumbe wa Bodi ya Chama watachaguliwa kwa kuzingatia kifungu 63 cha Sheria ya vyama vya Ushirika Na 6, 2013 pamoja na Kanuni ya 48, (1,2na3) za kanuni za vyama vya Ushirika za mwaka 2015.",
+          "c": "Bodi ya Chama itaongoza chama kwa kipindi cha miaka sita. Kifungu cha 68 na aya ya 3 ya jedwali la tatu la sheria inawataka viongozi wa vyama vya Ushirika kukaa katika uongozi kwa kipindi cha miaka mitatu na kwamba wanaweza kuchaguliwa kwa kipindi kingine cha miaka mitatu na baada ya hapo hawatakuwa na sifa ya kuchaguliwa.Mwenyekiti na makamu watachaguliwa miongoni mwa wajumbe wote wa Bodi.",
+          "d": "Mikutano ya Bodi itafanyika mara nne (4) kwa mwaka kila baada ya miezi mitatu, Mwenyekiti ataongoza mikutano ya Bodi. Endapo hatakuwepo Makamu Mwenyekiti ataongoza mikutano. Iwapo wote wawili hawatakuwepo katika saa iliyopangwa au hawapendi kushiriki katika mkutano huo, mjumbe wa Bodi mwingine yeyote katika ya waliohudhuria atachaguliwa kuwa Mwenyekiti wa muda na ataongoza mkutano huo tu.",
+          "e": "Mikutano ya bodi itakuwa ni halali iwapo wajumbe waliohudhuria sio chini ya wajumbe watano (5)."
+        },
+        "removal": {
+          "conditions": [
+            "Kwa sababu zozote zilizomo katika Kanuni ya 50 ya Kanuni za Vyama vya Ushirika, 2015.",
+            "Kwa kushindwa kuhudhuria mikutano ya Bodi mitatu mfululizo bila sababu za msingi."
+          ]
+        },
+        "meetings": {
+          "a": "Mikutano ya Bodi itaitishwa na Mwenyekiti wa Chama kwa kushauriana na Katibu/Meneja",
+          "voting": "Kila mjumbe wa Bodi atakuwa na kura moja. Iwapo kura zitalingana Mwenyekiti atakuwa na kura ya ziada",
+          "recording": "Mambo yote yaliyozungumzwa yataandikwa ndani ya kitabu cha Mambo ya mikutano ya Bodi na kuwekewa saini na Mwenyekiti na Katibu/Meneja"
+        },
+        "powers_and_duties": {
+          "description": "Bodi ya Chama itakuwa na uwezo wa kusimamia chama kwa mujibu wa Sheria ya Vyama vya Ushirika 2013, Kanuni za Vyama vya Ushirika,2015 na kwa matakwa ya masharti haya.",
+          "responsibilities": [
+            "Kusimamia shughuli zote za uchumi za chama na kuhakikisha kuwa zinaendeshwa ipasavyo",
+            "Kutekeleza kikamilifu maazimio na maelekezo ya mikutano mikuu",
+            "Kutunza Hesabu sahihi na za kweli",
+            "Kuweka kwa usahihi Daftari ya wanachama na kumbukumbu za mihtasari ya Mikutano Mikuu na mikutano ya Bodi.",
+            "Kuhakikisha kuwa lakiri ya chama inakuwepo na inatumika ipasavyo",
+            "Kuchukua uamuzi, ikingojea uthibitisho wa mkuktano mkuu, juu ya kupokelewa wanachama wapya, kujiuzulu wanachama na kusimamishwa au kufukuzwa kwa wajumbe wa Bodi, na kuajiriwa kwa watumishi wa chama.",
+            "Kubuni na kutayarisha Sera na Kanuni za uendeshaji wa chama zinazohusu fedha, biashara, utawala, bohari n.k. ili kufanikisha madhumuni ya chama.",
+            "Kuwasilisha kwenye Mkutano Mkuu wa wanachama taarifa ya hali ya uchumi na maendeleo ya chama ikiwa ni pamoja na hesabu ya mapato na matumizi, mizania iliyothibitishwa kwa mwka uliopita, na makisio ya mapato na matumizi kwa mwaka unaofuata.",
+            "Kumwezesha mtu aliyeidhinishwa kukagua vitabu vya chama na kuhakikisha kuwa hatua zinachukuliwa kutokana na ripoti ya ukaguzi",
+            "Kuhakikisha kuwa wanachama wanafuata na kuzingatia masharti haya, taratibu na mikataba mbalimbali.",
+            "Kufungua akaunti Benki na kuhakikisha kuwa fedha zote za chama zinatunzwa katika benki.",
+            "Kutafakari namna ya kutekeleza Sera ya Maendeleo ya Ushirika",
+            "Kuandaa mpango mkakati na mpango wa biashara wa chama.",
+            "Kuhakikisha kwamba Chama kinawakilishwa katika mashitaka yoyote",
+            "Kuhakikisha kuwa mali, bidhaa, vifaa, Hati na nyaraka nyingine za Chama zinahifadhiwa vizuri na kwa usalama.",
+            "Kuamua idadi, uwezo na sifa za watu ambao wanaweza kuajiriwa kuendesha shughuli za chama.",
+            "Kuteua wajumbe watakaotia saini kwenye hundi na mikataba ya chama hiki cha ushirika.",
+            "Kuajiri au kuteua Katibu/Meneja, Mhasibu/Mweka Hazina au Watumishi wengine kutokana ama miongoni mwa wanachama au nje ya wanachama ambao wataendesha shughuli za kila siku za chama.",
+            "Kuingia mikataba mbalimbali kwa niaba ya chama.",
+            "Kuandaa marekebisho ya masharti ya chama pale itakapobidi na kuwasilisha kwenye Mkutano Mkuu.",
+            "Kuandikisha mikataba yote ya kibiashara kwa Mrajis wa Vyama vya Ushirika.",
+            "Kuchunguza mara kwa mara shughuli za chama kwa kumtaka Katibu/Meneja atoe taarifa ya matokeo ya uendeshaji wa shughuli za chama, kwenye vikao vya bodi.",
+            "Kutayarisha/kuchapisha Hati za kumiliki hisa kwa ajili ya wanachama.",
+            "Kufanya mambo mengine yote ambayo yataonekana ni lazima katika kutimiza matakwa ya Sheria, Kanuni na Masharti ya chama kwa ujumla."
+          ],
+          "additional": [
+            "Bodi ya Ushirika inaweza kuunda kamati ndogo kwa ajili ya utekelezaji mzuri wa kazi",
+            "Wajumbe wa Bodi watatakiwa kupata semina/mafunzo ya elimu ya ushirika juu ya uongozi wa Vyama vya Ushirika itakayoandaliwa na Chama."
+          ]
+        },
+        "Mwenyekiti": {
+          "duties": [
+            "Kuongoza Mikutano Mikuu yote isipokuwa Mkutano Mkuu maalum ulioitishwa na Mrajisi wa vyama vya ushirika.",
+            "Kuongoza mikutano yote ya Bodi ya Chama",
+            "Kuitisha mikutano mikuu yote na ya bodi kufuatana na masharti haya",
+            "Kuweka saini kumbukumbu za mikutano mikuu na mikutano ya bodi ambayo ameiongoza",
+            "Kuweka saini kwa niaba ya chama kumbukumbu zote ikiwa ni pamoja na zinazohitaji kuwekwa lakiri na/au muhuri wa chama",
+            "Kuwa msemaji mkuu wa Chama, kama haitaamriwa vinginevyo na Bodi au Mkutano Mkuuu wa wanachama"
+          ]
+        },
+        "Makamu_Mwenyekiti": {
+          "duties": "Atafanya kazi zote za Mwenyekiti wakati Mwenyekiti hayupo na au zile atakazoagizwa na mwenyekiti."
+        },
+        "Meneja_Katibu": {
+          "duties": [
+            "Kuweka mahali pa usalama na kwa usahihi fedha, vitabu, nyaraka, hati na kumbukumbu za chama na mali za chama.",
+            "Kufanya mawasiliano yote kwa niaba ya chama",
+            "Kupokea na kulipa fedha kwa niaba ya chama",
+            "Kutayarisha/kuandaa mipango ya maendeleo ya muda mrefu na mfupi pamoja na Makisio ya Mapato na Matumizi",
+            "Kuishauri bodi katika shughuli za kifedha kibiashara, kiutaalamu na kiuongozi.",
+            "Kuweka saini kwa niaba ya chama kumbukumbu zote ikiwa ni pamoja na zinazohitaji kuweka lakiri na/au muhuri wa Chama.",
+            "Kuishauri Bodi kuhusu upatikanaji, uajiri, na uendelezaji watumishi",
+            "Kusimamia na kuratibu mipango yote ya uchumi ya kimaendeleo ya chama",
+            "Kuajiri watumishi wa chama wa ngazi ya chini baada ya kuidhinishwa na vikao halali vya bodi.",
+            "Kutayarisha taarifa za mwezi, robo nusu na mwaka mzima na kuziwasilisha kwenye vikao vya bodi.",
+            "Kuweka kwa usahihi Daftari ya wanachama, na kumbukumbu nyingine.",
+            "Kuwa Katibu wa vikao vya Bodi na Mikutano Mikuu na kuandika kumbukumbu za mikutano hiyo na kuzitia saini, baada ya kuthibitishwa na vikao husika.",
+            "Kuhifadhi nakala za masharti haya, kanuni na sheria ya Vyama vya Ushirika,2013 na nyaraka hizi ziwe wazi kukaguliwa na wanachama wanapohitaji.",
+            "Kuandaa Hesabu za mwaka na kuziwasilisha kwa vikao vya Bodi.",
+            "Kusimamia uendeshaji wa kazi za chama za kila siku.",
+            "Kutoa matangazo yote ya mikutano kwa mujibu wa masharti haya.",
+            "Kufanya kazi nyinginezo ambazo atapewa/ataagizwa na bodi."
+          ]
+        }
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA TISA",
+      "sectionTitle": "KUFUTWA KWA CHAMA",
+      "content": {
+        "conditions": [
+          "Kwa amri ya Mrajis wa Vyama vya Ushirika",
+          "Kwa maombi ya robo ya tatu (3/4) ya wanachama wote"
+        ],
+        "procedure": "Kufutwa kwa chama kutafuta utaratibu kama ulivyowekwa katika Sheria ya Vyama vya Ushirika ya mwaka 2013."
+      }
+    },
+    {
+      "sectionNumber": "SEHEMU YA KUMI",
+      "sectionTitle": "MENGINEYO",
+      "content": {
+        "confidentiality": "Wajumbe wa Bodi, watendaji wakuu na watumishi wa chama hiki, watatunza SIRI kuhusu kumbukumbu zote za Chama. Pia Chama kitahimiza uanzishaji wa mpango wa Kujenga makazi kuwa na Dirisha la akiba na mikopo kwa wanachama kwa ajili ya kuwasaidia kuweka akiba na kukopeshana.",
+        "dispute_resolution": {
+          "description": "Migogoro yote kuhusiana na shughuli za chama kati ya mwanachama na mwanachama na bodi au mtumishi wa chama, au kati ya chama na chama kingine, utapelekwa kwa Mrajis wa Vyama vya Ushirika.",
+          "initiation": "Mgogoro huo unaweza kupelekwa na Bodi ya chama au kwa azimio la Mkutano Mkuu au na mwanachama anayehusika.",
+          "interpretation_dispute": "Endapo kutatokea ubishi au shaka kuhusu tafsiri ya masharti haya, suala hilo litapelekwa kwa Mrajis wa Vyama vya Ushirika."
+        },
+        "collaboration": {
+          "a": "Chama kinaweza kuungana na Chama/Vyama/Shirika/Kampuni na kuanzisha mradi wa pamoja/wa ushirika.",
+          "b": "Chama kinaweza kuungana na Vyama vingine na kuunda chama kikuu"
+        },
+        "insurance": "Chama kitajiwekea bima ya mali na fedha kwa ajili ya kulinda mali za chama.",
+        "signatures": "Hundi zote za chama zitatakiwa saini na wajumbe wawili wa bodi pamoja na Katibu / Meneja au Mweka Hazina.",
+        "amendments": "Masharti haya yanaweza kubadilishwa au kurekebishwa kwa kufuata taratibu iliyowekwa na sheria ya Vyama vya Ushirika, 2013 na Kanuni za Vyama vya Ushirika,2015 na hayatakuwa halali mpaka yatakapokuwa yameidhinishwa na Mrajisi wa vyama vya ushirika.",
+        "employee_guarantee": "Kila mwajiriwa wa chama atatakiwa kudhaminiwa na kulingana na kanuni ya Ushirika ya mwaka 2015",
+        "board_member_declaration": "Kila mjumbe wa Bodi atatakiwa kutangaza mali na biashara anazomiliki kama inavyotamka Kanuni ya Vyama vya Ushirika ya mwaka 2015 Kifungu cha 87(1-7)."
+      }
+    },
+    {
+      "sectionNumber": "MWISHO",
+      "sectionTitle": "KANUNI ZA UENDESHAJI WA CHAMA CHA USHIRIKA CHA WAKULIMA WA MAZAO MCHANGANYIKO MGOWELO",
+      "content": {
+        "description": "Katiba, kanuni na maamuzi ya vikao na mikutano ndiyo miongozo halali ya chama hiki. Kila mwanachama atalazimika kuzingatia katiba na kanuni ili kufikia malengo ya ushirika.",
+        "rules": [
+          "Fedha zote za Chama cha Ushirika cha Wakulima wa Mazao Mchanganyiko Mgowelo zitawekwa benki itakayoidhishwa na bodi na bodi itafungua akaunti kwa ajili ya kutunza fedha za chama.",
+          "Kiingilio cha Uanachama ni shilingi 100,000/- tu",
+          "Atakaejiunga na ushirika huu baada ya chama kusajiliwa atalipa kiingilio sh 200,000/- tu.",
+          "Ni wajibu wa kila mwanachama kununua HISA.",
+          "Kila mwanachama atachangia shamba lenye ukubwa usiopungua ekari 10 na anaweza kuchangia zaidi.",
+          "Mwanachama atalipwa fedha za mauzo ya mazao baada ya kutoa gharama za uendeshaji kama itakavyokubaliwa na wanachama.",
+          "Mwanachama atalipwa fedha za mauzo ya mazao kulingana na idadi ya ekari alizochangia kutokana na mapato ya mauzo ya mazao yaliyolimwa.",
+          "Faida za chama zitagawanywa kulingana na hisa za mwanachama",
+          "Ni marufuku kutumia mali ya chama kwa matumizi binafsi",
+          "Mali zote za chama zitatuzwa mahali ambapo wanachama watakubaliana",
+          "Mwanakikundi anaruhusiwa kukopa fedha kiasi kitakachokubalika katika chama na kurejesha kwa muda utakaopangwa na mkutano mkuu.",
+          "Mikutano itaitishwa na mwenyekiti siku saba (7) hadi ishirini na moja (21) kabla ya tarehe ya mkutano;",
+          "Mambo yote yanayozungumzwa katika vikao vya bodi ni siri",
+          "Endapo chama kitavunjika, mali za ushirika zitagawanywa kulingana na hisa za mwanachama",
+          "Katiba hii inaweza kubadilishwa, na Mabadiliko ya katiba yatafanywa na MKUTANO mkuu;"
+        ]
+      }
+    },
+    {
+      "sectionNumber": null,
+      "sectionTitle": "ORODHA YA WANACHAMA WAANZILISHI WA CHAMA CHA USHIRIKA CHA MAZAO MCHANGANYIKO MGOWELO",
+      "alternateTitle": "MGOWELO MULTI-FARMERS COOPERATIVE SOCIETY",
+      "members": [
+        {
+          "No": 1,
+          "Jina_la_Mwanachama": "ALLY A. NGWEJA",
+          "Ekari_Anazomiliki": 100,
+          "No_Simu": "0742169814"
+        },
+        {
+          "No": 2,
+          "Jina_la_Mwanachama": "ATHUMAN J. ABDUL",
+          "Ekari_Anazomiliki": 300,
+          "No_Simu": "0658869165"
+        },
+        {
+          "No": 3,
+          "Jina_la_Mwanachama": "BAKARI MATANDURA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0627869732"
+        },
+        {
+          "No": 4,
+          "Jina_la_Mwanachama": "BONIPHAS MGWALE",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0620278316"
+        },
+        {
+          "No": 5,
+          "Jina_la_Mwanachama": "DEBORAH L. ROTHBLETZ",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0736490267"
+        },
+        {
+          "No": 6,
+          "Jina_la_Mwanachama": "DERICK RWAMUGILA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": ""
+        },
+        {
+          "No": 7,
+          "Jina_la_Mwanachama": "DOMINA MUKAMA",
+          "Ekari_Anazomiliki": 30,
+          "No_Simu": "0786733563"
+        },
+        {
+          "No": 8,
+          "Jina_la_Mwanachama": "DR. ALFED MWAKALABELA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0767054453"
+        },
+        {
+          "No": 9,
+          "Jina_la_Mwanachama": "EZEKIEL LAWA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0763033209"
+        },
+        {
+          "No": 10,
+          "Jina_la_Mwanachama": "EDMUNDI MKWAMA",
+          "Ekari_Anazomiliki": 30,
+          "No_Simu": "0762522420"
+        },
+        {
+          "No": 11,
+          "Jina_la_Mwanachama": "GRACE NYAMHOKYA",
+          "Ekari_Anazomiliki": 20,
+          "No_Simu": "0672883277"
+        },
+        {
+          "No": 12,
+          "Jina_la_Mwanachama": "GREGORY G. CHIGWIYE",
+          "Ekari_Anazomiliki": 100,
+          "No_Simu": "0622779778"
+        },
+        {
+          "No": 13,
+          "Jina_la_Mwanachama": "HALIMA O. DENDEGO",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0655303397"
+        },
+        {
+          "No": 14,
+          "Jina_la_Mwanachama": "KUMBUKA MALENDA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0626210372"
+        },
+        {
+          "No": 15,
+          "Jina_la_Mwanachama": "MOHAMED H. MOYO",
+          "Ekari_Anazomiliki": 100,
+          "No_Simu": "0767707673"
+        },
+        {
+          "No": 16,
+          "Jina_la_Mwanachama": "MUSSA M. MOHAMED",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0769490048"
+        },
+        {
+          "No": 17,
+          "Jina_la_Mwanachama": "PAULINE MASUMBUKIO",
+          "Ekari_Anazomiliki": 300,
+          "No_Simu": "0752411658"
+        },
+        {
+          "No": 18,
+          "Jina_la_Mwanachama": "PERES MAGIRI",
+          "Ekari_Anazomiliki": 100,
+          "No_Simu": "0764979999"
+        },
+        {
+          "No": 19,
+          "Jina_la_Mwanachama": "RICHARD SWAI",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0785266006"
+        },
+        {
+          "No": 20,
+          "Jina_la_Mwanachama": "ROBERT GEORGE",
+          "Ekari_Anazomiliki": 26,
+          "No_Simu": "0754591237"
+        },
+        {
+          "No": 21,
+          "Jina_la_Mwanachama": "RUAHA MILLING CO. LTD",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0754641088"
+        },
+        {
+          "No": 22,
+          "Jina_la_Mwanachama": "SHADECO CO. LTD",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0754310270"
+        },
+        {
+          "No": 23,
+          "Jina_la_Mwanachama": "VITUS KIWONDE",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0621326195"
+        },
+        {
+          "No": 24,
+          "Jina_la_Mwanachama": "WEMA PELLA",
+          "Ekari_Anazomiliki": 50,
+          "No_Simu": "0762543118"
+        }
+      ],
+      "total": {
+        "Ekari": 1806
+      }
+    }
+  ]
+}

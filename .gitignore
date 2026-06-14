@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+fallback_db.sqlite3
+MKUU_WA_MKOA.sqlite3
+media/
+staticfiles/
+backups/
+runtime/db_status.json
+runtime/fallback_sync.json
+runtime/*.sqlite3
+
+# Secrets & local config
+.env
+*.pem
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+
+# Migrations cache (optional - keep migrations, ignore pyc only)

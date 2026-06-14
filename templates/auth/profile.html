@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{% t "Wasifu Wangu" "My Profile" %}{% endblock %}
+{% block page_title %}{% t "Wasifu Wangu" "My Profile" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:720px;">
+    <div class="card-header"><h3>{% t "Taarifa Zangu" "My Information" %}</h3></div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Jina la Kwanza" "First Name" %}</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ profile_user.first_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>{% t "Jina la Ukoo" "Last Name" %}</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ profile_user.last_name }}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Simu" "Phone" %}</label>
+                    <input type="text" class="form-control" value="{{ profile_user.phone }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ profile_user.email }}" required>
+                </div>
+            </div>
+            {% if member %}
+            <p class="text-muted" style="font-size:0.85rem;">
+                {% t "Namba ya mwanachama" "Member no" %}: <strong>{{ member.member_number }}</strong>
+            </p>
+            {% endif %}
+            {% if leadership_role %}
+            <p class="text-muted" style="font-size:0.85rem;">
+                {% t "Cheo cha uongozi" "Leadership role" %}: <strong>{{ leadership_role }}</strong>
+            </p>
+            {% endif %}
+            <div class="form-group">
+                <label>{% t "Anwani" "Address" %}</label>
+                <textarea name="address" class="form-control" rows="2">{{ profile_user.address }}</textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Mji" "City" %}</label>
+                    <input type="text" name="city" class="form-control" value="{{ profile_user.city }}">
+                </div>
+                <div class="form-group">
+                    <label>{% t "Mkoa" "Region" %}</label>
+                    <input type="text" name="region" class="form-control" value="{{ profile_user.region }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{% t "Picha ya Wasifu" "Profile Photo" %}</label>
+                <input type="file" name="profile_image" class="form-control" accept="image/*">
+                {% if profile_user.profile_image %}
+                <p style="margin-top:0.5rem;"><img src="{{ profile_user.profile_image.url }}" alt="" style="max-height:80px;border-radius:8px;"></p>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">{% t "Hifadhi" "Save" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

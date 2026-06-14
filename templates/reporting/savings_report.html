@@ -1,0 +1,40 @@
+﻿{% extends 'base.html' %}
+{% block title %}Savings Report{% endblock %}
+{% block page_title %}Savings Report{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_balance|floatformat:0 }}</h4><p>Total Balance (TZS)</p></div></div>
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_accounts }}</h4><p>Total Accounts</p></div></div>
+</div>
+<div class="card">
+    <div class="card-header"><h3>Savings Summary</h3></div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account No</th>
+                        <th>Member ID</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                        <th>Interest Rate</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in accounts %}
+                    <tr>
+                        <td>{{ a.account_number }}</td>
+                        <td>{{ a.member_id }}</td>
+                        <td>{{ a.get_account_type_display }}</td>
+                        <td>{{ a.balance|floatformat:0 }}</td>
+                        <td>{{ a.interest_rate }}%</td>
+                        <td>{{ a.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

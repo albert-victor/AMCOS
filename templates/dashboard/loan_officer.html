@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Afisa Mikopo Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><span class="lang-sw">Karibu Afisa Mikopo, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome Loan Officer, {{ user.get_full_name|default:user.username }}</span></h2>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Kukagua, kuidhinisha, na kusimamia mikopo ya wanachama</span>
+        <span class="lang-en">Review, approve, and manage member loans</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" onclick="location.href='{% url 'loans:list' %}?status=under_review'">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ pending_review }}</h4><p><span class="lang-sw">Yanayokaguliwa</span><span class="lang-en">Under Review</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'loans:list' %}?status=approved'">
+        <div class="stat-icon blue"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ approved_awaiting }}</h4><p><span class="lang-sw">Yaliyoidhinishwa</span><span class="lang-en">Approved</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'loans:list' %}?status=active'">
+        <div class="stat-icon green"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ active_loans }}</h4><p><span class="lang-sw">Mikopo Hai</span><span class="lang-en">Active Loans</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-coins" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ total_disbursed|floatformat:0 }}</h4><p><span class="lang-sw">Jumla Iliyotolewa (TZS)</span><span class="lang-en">Total Disbursed</span></p></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="{% url 'loans:list' %}?status=under_review" class="btn btn-primary"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>  <span class="lang-sw">Kagua Mikopo</span><span class="lang-en">Review Loans</span></a>
+            <a href="{% url 'loans:list' %}" class="btn btn-outline"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>  <span class="lang-sw">Mikopo Yote</span><span class="lang-en">All Loans</span></a>
+            <a href="{% url 'members:list' %}" class="btn btn-outline"><i class="fa-solid fa-users" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+            <a href="{% url 'loans:products' %}" class="btn btn-outline"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>  <span class="lang-sw">Bidhaa za Mikopo</span><span class="lang-en">Loan Products</span></a>
+        </div>
+    </div>
+</div>
+
+{% if recent_loans %}
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Mikopo ya Hivi Karibuni</span><span class="lang-en">Recent Loans</span></h3></div>
+    <div class="card-body table-container">
+        <table>
+            <thead><tr><th>#</th><th>Member</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                {% for l in recent_loans %}
+                <tr>
+                    <td>{{ l.loan_number }}</td>
+                    <td>{{ l.member_id }}</td>
+                    <td>{{ l.amount|floatformat:0 }}</td>
+                    <td><span class="badge badge-warning">{{ l.status }}</span></td>
+                    <td><a href="{% url 'loans:detail' l.id %}" class="btn btn-sm btn-outline">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang|default:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% t "Stakabadhi" "Receipt" %} — MGOWELO AMCOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 13px;
+            line-height: 1.45;
+            color: #1a2e1c;
+            background: #eef2ef;
+            padding: 24px 16px;
+        }
+        .receipt-wrap { max-width: 380px; margin: 0 auto; }
+        .receipt {
+            background: #fff;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(13, 59, 18, 0.08);
+        }
+        .receipt-head {
+            background: linear-gradient(180deg, #0d3b12 0%, #1b5e20 100%);
+            color: #fff;
+            text-align: center;
+            padding: 1.25rem 1rem 1rem;
+        }
+        .receipt-head h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.2rem;
+        }
+        .receipt-head .org {
+            font-size: 0.65rem;
+            font-weight: 500;
+            opacity: 0.9;
+            line-height: 1.35;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .receipt-head .loc {
+            margin-top: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #F9A825;
+        }
+        .receipt-badge {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.35rem 1rem;
+            background: rgba(249, 168, 37, 0.15);
+            border: 1px solid #F9A825;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: #F9A825;
+        }
+        .receipt-body { padding: 1rem 1.15rem 1.15rem; }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f0f4f1;
+            font-size: 0.8rem;
+        }
+        .row:last-of-type { border-bottom: none; }
+        .row .label { color: #5f6f62; font-weight: 500; flex-shrink: 0; }
+        .row .value { font-weight: 600; color: #0d3b12; text-align: right; word-break: break-word; }
+        .total-box {
+            margin: 0.85rem 0 0.5rem;
+            padding: 0.85rem;
+            background: #0d3b12;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .total-box .lbl {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.85);
+            text-transform: uppercase;
+        }
+        .total-box .amt {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #F9A825;
+            margin-top: 0.15rem;
+        }
+        .status-ok {
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #2e7d32;
+            padding: 0.5rem 0;
+            letter-spacing: 0.04em;
+        }
+        .status-ok i { margin-right: 0.25rem; }
+        .receipt-foot {
+            text-align: center;
+            padding: 0.75rem 1rem 1rem;
+            border-top: 1px dashed #c8e6c9;
+            font-size: 0.68rem;
+            color: #6b7c6e;
+        }
+        .no-print {
+            text-align: center;
+            margin-top: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .no-print .btn {
+            background: #0d3b12;
+            color: #fff;
+            border: none;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: inherit;
+        }
+        .no-print .btn:hover { background: #1b5e20; }
+        .no-print .btn-outline {
+            background: #fff;
+            color: #0d3b12;
+            border: 1px solid #0d3b12;
+        }
+        .no-print .back {
+            display: block;
+            width: 100%;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #0d3b12;
+            text-decoration: none;
+        }
+        .no-print .back:hover { text-decoration: underline; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .receipt { box-shadow: none; border: 1px solid #0d3b12; }
+            .no-print { display: none !important; }
+            @page { margin: 0.6cm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-wrap">
+        <div class="receipt">
+            <div class="receipt-head">
+                <h1>MGOWELO AMCOS</h1>
+                <p class="org">MGOWELO Agricultural Marketing Cooperative Society</p>
+                <p class="loc">Iringa, Tanzania</p>
+                <div class="receipt-badge">{% t "STAKABADHI" "RECEIPT" %}</div>
+            </div>
+            <div class="receipt-body">
+                <div class="row">
+                    <span class="label">{% t "Namba ya stakabadhi" "Receipt No" %}</span>
+                    <span class="value">{{ payment.receipt_number|default:payment.reference_number }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Rejea" "Reference" %}</span>
+                    <span class="value">{{ payment.reference_number }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Transaction ID" "Transaction ID" %}</span>
+                    <span class="value">{{ payment.transaction_id|default:"—" }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Tarehe" "Date" %}</span>
+                    <span class="value">{{ payment.payment_date|default:payment.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Mwanachama" "Member" %}</span>
+                    <span class="value">{{ payment.member_id|default:"—" }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Aina" "Type" %}</span>
+                    <span class="value">{{ payment.get_payment_type_display }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Njia" "Method" %}</span>
+                    <span class="value">{{ payment.get_payment_method_display }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">{% t "Uthibitisho" "Verification" %}</span>
+                    <span class="value">{{ payment.get_verification_method_display|default:"Manual" }}</span>
+                </div>
+                <div class="total-box">
+                    <div class="lbl">{% t "JUMLA" "TOTAL" %}</div>
+                    <div class="amt">{{ payment.amount|floatformat:2 }} TZS</div>
+                </div>
+                {% if payment.description %}
+                <div class="row" style="margin-top:0.5rem;">
+                    <span class="label">{% t "Maelezo" "Notes" %}</span>
+                    <span class="value">{{ payment.description }}</span>
+                </div>
+                {% endif %}
+                <p class="status-ok"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>{% t "MALIPO YAMETHIBITISHWA" "PAYMENT CONFIRMED" %}</p>
+            </div>
+            <div class="receipt-foot">
+                <p>{% t "Asante kwa malipo yako." "Thank you for your payment." %}</p>
+                <p>{% t "Stakabadhi ya kompyuta." "Computer-generated receipt." %}</p>
+                <p style="margin-top:0.35rem;">MGOWELO AMCOS &copy; {% now "Y" %}</p>
+            </div>
+        </div>
+        <div class="no-print">
+            <button type="button" class="btn" onclick="window.print()"><i class="fa-solid fa-print" aria-hidden="true"></i>{% t "Chapisha" "Print" %}</button>
+            <button type="button" class="btn" onclick="window.print()"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i>PDF</button>
+            {% if payment.id %}
+            <a href="{% url 'payments:detail' payment.id %}" class="back">&larr; {% t "Rudi kwenye malipo" "Back to payment" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        if (window.location.search.includes('print=true')) {
+            window.onload = function () { window.print(); };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Loans{% endblock %}
+{% block page_title %}Loan Management{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_disbursed|floatformat:0 }}</h4><p>Total Disbursed</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_outstanding|floatformat:0 }}</h4><p>Outstanding</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ pending_count }}</h4><p>Pending Review</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> All Loans</h3>
+        <div class="flex gap-2">
+            {% can 'loans.apply' as can_apply %}{% if can_apply %}<a href="{% url 'loans:apply' %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> New Loan</a>{% endif %}
+            {% can 'loans.products' as can_products %}{% if can_products %}<a href="{% url 'loans:products' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i> Products</a>{% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <form method="get" style="margin-bottom:1rem;">
+            <select name="status" class="form-control" style="max-width:200px;" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="submitted" {% if request.GET.status == 'submitted' %}selected{% endif %}>Submitted</option>
+                <option value="under_review" {% if request.GET.status == 'under_review' %}selected{% endif %}>Under Review</option>
+                <option value="approved" {% if request.GET.status == 'approved' %}selected{% endif %}>Approved</option>
+                <option value="disbursed" {% if request.GET.status == 'disbursed' %}selected{% endif %}>Disbursed</option>
+                <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="defaulted" {% if request.GET.status == 'defaulted' %}selected{% endif %}>Defaulted</option>
+                <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </form>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan No</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Interest</th>
+                        <th>Duration</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in loans %}
+                    <tr>
+                        <td><strong>{{ l.loan_number }}</strong></td>
+                        <td>{{ l.member_id }}</td>
+                        <td>{{ l.amount|floatformat:0 }}</td>
+                        <td>{{ l.interest_rate }}%</td>
+                        <td>{{ l.duration_months }} mo</td>
+                        <td>{{ l.balance|floatformat:0 }}</td>
+                        <td><span class="badge badge-{% if l.status == 'active' or l.status == 'disbursed' %}success{% elif l.status == 'completed' %}info{% elif l.status == 'defaulted' %}danger{% elif l.status == 'rejected' or l.status == 'cancelled' %}danger{% elif l.status == 'approved' %}purple{% else %}warning{% endif %}">{{ l.status }}</span></td>
+                        <td class="actions-cell">
+                            <div class="table-actions table-actions--compact">
+                                <a href="{% url 'loans:detail' l.id %}" class="btn btn-sm btn-outline">View</a>
+                                {% can 'loans.review' as can_review %}
+                                {% if can_review %}
+                                    {% if user.role == 'board_member' %}
+                                        {% if l.status == 'under_review' or l.status == 'submitted' %}
+                                            <a href="{% url 'loans:review' l.id %}" class="btn btn-sm btn-primary">Review</a>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if l.status == 'under_review' or l.status == 'submitted' %}
+                                            <a href="{% url 'loans:review' l.id %}" class="btn btn-sm btn-primary">Review</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                {% can 'loans.disburse' as can_disburse %}
+                                {% if can_disburse and l.status == 'approved' %}
+                                <a href="{% url 'loans:disburse' l.id %}" class="btn btn-sm btn-success">Disburse</a>
+                                {% endif %}
+                                {% can 'loans.repay' as can_repay %}
+                                {% if can_repay and l.status == 'active' %}
+                                <a href="{% url 'loans:repay' l.id %}" class="btn btn-sm btn-warning">Repay</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--gray-400);">No loans found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

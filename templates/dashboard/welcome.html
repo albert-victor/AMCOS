@@ -1,0 +1,542 @@
+﻿{% extends 'base.html' %}
+{% block title %}MGOWELO AMCOS{% endblock %}
+{% block auth_content %}
+{% load static %}
+
+<div class="welcome-landing">
+    <header class="welcome-nav fade-up fade-up--0">
+        <div class="welcome-nav-inner">
+            <a href="{% url 'home' %}" class="welcome-nav-brand" aria-label="MGOWELO AMCOS">
+                <img src="{% static 'images/logo1.png' %}" alt="Serikali ya Tanzania — Wizara ya Kilimo" class="welcome-nav-logo welcome-nav-logo--gov">
+                <span class="welcome-nav-divider" aria-hidden="true"></span>
+                <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="welcome-nav-logo welcome-nav-logo--amcos">
+                <span class="welcome-nav-title">
+                    <strong>MGOWELO AMCOS</strong>
+                    <small><span class="lang-sw">Iringa, Tanzania</span><span class="lang-en">Iringa, Tanzania</span></small>
+                </span>
+            </a>
+            <nav class="welcome-nav-actions" aria-label="Primary">
+                <a href="#about" class="welcome-nav-link">
+                    <span class="lang-sw">Kuhusu Sisi</span><span class="lang-en">About Us</span>
+                </a>
+                <a href="#contact" class="welcome-nav-link">
+                    <span class="lang-sw">Mawasiliano</span><span class="lang-en">Contact</span>
+                </a>
+                <a href="#faq" class="welcome-nav-link">
+                    <span class="lang-sw">Maswali</span><span class="lang-en">FAQ</span>
+                </a>
+                <div class="lang-switch lang-switch--welcome lang-switch--nav" role="group" aria-label="Language">
+                    <button type="button" onclick="setLang('sw')" id="lang-sw" class="lang-btn">KISW</button>
+                    <button type="button" onclick="setLang('en')" id="lang-en" class="lang-btn active">ENG</button>
+                </div>
+                <a href="{% url 'auth:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="welcome-nav-cta">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    <span class="lang-sw">Ingia</span><span class="lang-en">Login</span>
+                </a>
+            </nav>
+            <button type="button" class="welcome-nav-toggle" id="welcomeNavToggle" aria-label="Menu" aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="welcome-nav-mobile" id="welcomeNavMobile" hidden>
+            <a href="#about" class="welcome-nav-link">
+                <span class="lang-sw">Kuhusu Sisi</span><span class="lang-en">About Us</span>
+            </a>
+            <a href="#contact" class="welcome-nav-link">
+                <span class="lang-sw">Mawasiliano</span><span class="lang-en">Contact</span>
+            </a>
+            <a href="#faq" class="welcome-nav-link">
+                <span class="lang-sw">Maswali</span><span class="lang-en">FAQ</span>
+            </a>
+            <a href="{% url 'auth:register_member' %}" class="welcome-nav-link">
+                <span class="lang-sw">Jiunga na Ushirika</span><span class="lang-en">Join as Member</span>
+            </a>
+            <a href="{% url 'auth:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="welcome-nav-cta welcome-nav-cta--block">
+                <span class="lang-sw">Ingia</span><span class="lang-en">Login</span>
+            </a>
+        </div>
+    </header>
+
+    <section class="welcome-hero" aria-label="Hero">
+        {% include 'dashboard/_welcome_slideshow.html' %}
+        <div class="welcome-hero-scrim" aria-hidden="true"></div>
+
+        <div class="welcome-hero-body">
+            <div class="welcome-hero-logos fade-up fade-up--1">
+                <img src="{% static 'images/logo1.png' %}" alt="Serikali ya Tanzania" class="welcome-hero-logo">
+                <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="welcome-hero-logo">
+            </div>
+
+            <p class="welcome-hero-badge fade-up fade-up--2">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span class="lang-sw">Mfumo Rasmi wa Ushirika wa Kilimo na Masoko</span>
+                <span class="lang-en">Official Agricultural Marketing Cooperative Platform</span>
+            </p>
+
+            <h1 class="welcome-hero-title fade-up fade-up--3">
+                MGOWELO AGRICULTURAL MARKETING<br>
+                COOPERATIVE SOCIETY<br>
+                <span class="welcome-hero-title-sub">(MGOWELO AMCOS)</span>
+            </h1>
+
+            <p class="welcome-hero-tagline fade-up fade-up--4">
+                <span class="lang-sw">Iringa, Tanzania — Uwazi, Ufanisi na Uongozi wa Kisasa kwa Wanachama</span>
+                <span class="lang-en">Iringa, Tanzania — Transparency, Efficiency &amp; Modern Leadership for Members</span>
+            </p>
+
+            <div class="welcome-hero-ctas fade-up fade-up--5">
+                <a href="{% url 'auth:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="welcome-cta welcome-cta--primary">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    <span class="lang-sw">Ingia kwenye Mfumo</span><span class="lang-en">Sign In to System</span>
+                </a>
+                <a href="{% url 'auth:register_member' %}" class="welcome-cta welcome-cta--outline">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                    <span class="lang-sw">Jiunga na Ushirika</span><span class="lang-en">Join as Member</span>
+                </a>
+                <a href="#about" class="welcome-cta welcome-cta--ghost">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    <span class="lang-sw">Jifunze Zaidi</span><span class="lang-en">Learn More</span>
+                </a>
+            </div>
+
+            <ul class="welcome-hero-stats fade-up fade-up--6" id="welcomeHeroStats" aria-label="Statistics">
+                <li>
+                    <strong class="welcome-stat-value" aria-live="polite">
+                        <span class="welcome-stat-counter" data-target="5">0</span>
+                    </strong>
+                    <span class="lang-sw welcome-stat-label">Mazao Makuu</span><span class="lang-en welcome-stat-label">Key Crops</span>
+                </li>
+                <li>
+                    <strong class="welcome-stat-value" aria-live="polite">
+                        <span class="welcome-stat-counter" data-target="24">0</span><span class="welcome-stat-affix">/7</span>
+                    </strong>
+                    <span class="lang-sw welcome-stat-label">Huduma ya Kidijitali</span><span class="lang-en welcome-stat-label">Digital Access</span>
+                </li>
+                <li>
+                    <strong class="welcome-stat-value" aria-live="polite">
+                        <span class="welcome-stat-counter" data-target="100">0</span><span class="welcome-stat-affix">%</span>
+                    </strong>
+                    <span class="lang-sw welcome-stat-label">Uwazi wa Kifedha</span><span class="lang-en welcome-stat-label">Financial Transparency</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="about" class="welcome-about" aria-labelledby="about-heading">
+        <div class="welcome-about-inner">
+            <header class="welcome-about-header reveal-on-scroll">
+                <span class="welcome-section-label">
+                    <span class="lang-sw">Kuhusu Sisi</span><span class="lang-en">About Us</span>
+                </span>
+                <h2 id="about-heading" class="welcome-about-title">
+                    <span class="lang-sw">MGOWELO AMCOS — Ushirika wa Kilimo na Masoko</span>
+                    <span class="lang-en">MGOWELO AMCOS — Agricultural Marketing Cooperative</span>
+                </h2>
+            </header>
+
+            <div class="welcome-about-grid">
+                <div class="welcome-about-text reveal-on-scroll reveal-on-scroll--delay-1">
+                    <p class="lang-block">
+                        <span class="lang-sw">MGOWELO AMCOS ni ushirika wa wakulima wa Mgowelo, Iringa, unaowahudumia wanachama kupitia usimamizi wa masoko ya mazao, huduma za kifedha za ushirika, na uratibu wa taarifa za wanachama kwa uwazi.</span>
+                        <span class="lang-en">MGOWELO AMCOS is a farmer cooperative based in Mgowelo, Iringa, serving members through crop marketing coordination, cooperative financial services, and transparent member records management.</span>
+                    </p>
+                    <p class="lang-block">
+                        <span class="lang-sw">Mfumo huu wa kidijitali unarahisisha usajili, malipo, hisa, mikutano ya uongozi, na mawasiliano ya taarifa ndani ya ushirika.</span>
+                        <span class="lang-en">This digital platform simplifies registration, payments, shares, governance meetings, and internal communication across the cooperative.</span>
+                    </p>
+                    <ul class="welcome-features welcome-features--about">
+                        <li><i class="fa-solid fa-users" aria-hidden="true"></i><span class="lang-sw">Usimamizi wa Wanachama</span><span class="lang-en">Member Management</span></li>
+                        <li><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i><span class="lang-sw">Akiba na Mikopo</span><span class="lang-en">Savings &amp; Loans</span></li>
+                        <li><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i><span class="lang-sw">Malipo ya Kidijitali</span><span class="lang-en">Digital Payments</span></li>
+                        <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i><span class="lang-sw">Ripoti za Kifedha</span><span class="lang-en">Financial Reports</span></li>
+                        <li><i class="fa-solid fa-calculator" aria-hidden="true"></i><span class="lang-sw">Uhasibu wa Sarafu Mbili</span><span class="lang-en">Dual Currency Accounting</span></li>
+                    </ul>
+                </div>
+
+                <div class="welcome-crops reveal-on-scroll reveal-on-scroll--delay-2" aria-label="Crops gallery">
+                    <article class="welcome-crop-card welcome-crop-card--featured">
+                        <div class="welcome-crop-img" style="background-image:url('{% static 'images/sugarcne1.jpg' %}');"></div>
+                        <div class="welcome-crop-overlay">
+                            <h3><span class="lang-sw">Miwa</span><span class="lang-en">Sugarcane</span></h3>
+                            <p><span class="lang-sw">Sugarcane — zao kuu</span><span class="lang-en">Flagship crop</span></p>
+                        </div>
+                    </article>
+                    <article class="welcome-crop-card">
+                        <div class="welcome-crop-img" style="background-image:url('{% static 'images/beans.jpg' %}');"></div>
+                        <div class="welcome-crop-overlay">
+                            <h3><span class="lang-sw">Maharage</span><span class="lang-en">Beans</span></h3>
+                        </div>
+                    </article>
+                    <article class="welcome-crop-card">
+                        <div class="welcome-crop-img" style="background-image:url('{% static 'images/peanut.jpg' %}');"></div>
+                        <div class="welcome-crop-overlay">
+                            <h3><span class="lang-sw">Kachanga</span><span class="lang-en">Peanut</span></h3>
+                        </div>
+                    </article>
+                    <article class="welcome-crop-card">
+                        <div class="welcome-crop-img" style="background-image:url('{% static 'images/pigeon.jpg' %}');"></div>
+                        <div class="welcome-crop-overlay">
+                            <h3><span class="lang-sw">Njugu Mbaazi</span><span class="lang-en">Pigeon Pea</span></h3>
+                        </div>
+                    </article>
+                    <article class="welcome-crop-card">
+                        <div class="welcome-crop-img" style="background-image:url('{% static 'images/sesame2.jpg' %}');"></div>
+                        <div class="welcome-crop-overlay">
+                            <h3><span class="lang-sw">Ufuta</span><span class="lang-en">Sesame</span></h3>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="welcome-about-official reveal-on-scroll reveal-on-scroll--delay-3">
+                <img src="{% static 'images/logo1.png' %}" alt="Wizara ya Kilimo — Serikali ya Tanzania" class="welcome-official-logo">
+                <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="welcome-official-logo">
+                <p>
+                    <span class="lang-sw">Chama kinafuatilia viwango vya ushirika na sera za Serikali ya Jamhuri ya Muungano wa Tanzania.</span>
+                    <span class="lang-en">The cooperative adheres to cooperative standards and policies of the United Republic of Tanzania.</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="welcome-contact" aria-labelledby="contact-heading">
+        <div class="welcome-contact-inner">
+            <header class="welcome-section-head reveal-on-scroll">
+                <span class="welcome-section-label">
+                    <span class="lang-sw">Mawasiliano</span><span class="lang-en">Contact Us</span>
+                </span>
+                <h2 id="contact-heading" class="welcome-section-title">
+                    <span class="lang-sw">Wasiliana na MGOWELO AMCOS</span>
+                    <span class="lang-en">Get in Touch with MGOWELO AMCOS</span>
+                </h2>
+                <p class="welcome-section-desc">
+                    <span class="lang-sw">Makao Makuu ya MGOWELO AMCOS — Mgowelo, Iringa. Wasiliana nasi kwa taarifa za wanachama na huduma za ushirika.</span>
+                    <span class="lang-en">MGOWELO AMCOS Head Office — Mgowelo, Iringa. Contact us for member support and cooperative services.</span>
+                </p>
+            </header>
+
+            <div class="welcome-contact-grid">
+                <article class="welcome-contact-card reveal-on-scroll reveal-on-scroll--delay-1">
+                    <div class="welcome-contact-icon"><i class="fa-solid fa-phone" aria-hidden="true"></i></div>
+                    <h3><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></h3>
+                    <p class="welcome-contact-main">
+                        <a href="tel:+255712000011">+255 712 000 011</a>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw">Mwenyekiti wa Ushirika</span><span class="lang-en">Cooperative Chairperson</span>
+                    </p>
+                    <p class="welcome-contact-main">
+                        <a href="tel:+255712000012">+255 712 000 012</a>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw">Katibu wa Ushirika</span><span class="lang-en">Cooperative Secretary</span>
+                    </p>
+                </article>
+
+                <article class="welcome-contact-card reveal-on-scroll reveal-on-scroll--delay-2">
+                    <div class="welcome-contact-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+                    <h3><span class="lang-sw">Barua Pepe</span><span class="lang-en">Email</span></h3>
+                    <p class="welcome-contact-main">
+                        <a href="mailto:info@mgoweloamcos.co.tz">info@mgoweloamcos.co.tz</a>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw">Maswali ya jumla na wanachama</span><span class="lang-en">General &amp; member enquiries</span>
+                    </p>
+                    <p class="welcome-contact-main">
+                        <a href="mailto:support@mgoweloamcos.co.tz">support@mgoweloamcos.co.tz</a>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw">Msaada wa mfumo wa kidijitali</span><span class="lang-en">Digital system support</span>
+                    </p>
+                </article>
+
+                <article class="welcome-contact-card reveal-on-scroll reveal-on-scroll--delay-3">
+                    <div class="welcome-contact-icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div>
+                    <h3><span class="lang-sw">Anwani &amp; Saa za Kazi</span><span class="lang-en">Address &amp; Hours</span></h3>
+                    <p class="welcome-contact-main lang-block">
+                        <span class="lang-sw">MGOWELO AMCOS,<br>Mgowelo, Iringa, Tanzania</span>
+                        <span class="lang-en">MGOWELO AMCOS,<br>Mgowelo, Iringa, Tanzania</span>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw"><strong>Saa za kazi:</strong> Jumatatu – Ijumaa, 08:00 – 17:00</span>
+                        <span class="lang-en"><strong>Office hours:</strong> Monday – Friday, 08:00 – 17:00</span>
+                    </p>
+                    <p class="welcome-contact-sub">
+                        <span class="lang-sw"><strong>Jumamosi:</strong> 08:00 – 13:00 (mikopo &amp; malipo)</span>
+                        <span class="lang-en"><strong>Saturday:</strong> 08:00 – 13:00 (loans &amp; payments)</span>
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="welcome-faq" aria-labelledby="faq-heading">
+        <div class="welcome-faq-inner">
+            <header class="welcome-section-head reveal-on-scroll">
+                <span class="welcome-section-label">
+                    <span class="lang-sw">Maswali Yanayoulizwa Mara kwa Mara</span><span class="lang-en">Frequently Asked Questions</span>
+                </span>
+                <h2 id="faq-heading" class="welcome-section-title">
+                    <span class="lang-sw">Maswali ya Kawaida</span>
+                    <span class="lang-en">Common Questions</span>
+                </h2>
+            </header>
+
+            <div class="welcome-faq-list">
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-1">
+                    <summary>
+                        <span class="lang-sw">Nani anaweza kutumia mfumo huu?</span>
+                        <span class="lang-en">Who can use this system?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Mfumo huu ni kwa wanachama, viongozi, wafanyakazi na wasimamizi wa MGOWELO AMCOS. Kila mtumiaji ana akaunti na jukumu lake (mfano PA-RC, mhasibu, karani).</span>
+                            <span class="lang-en">This system is for members, leaders, staff and administrators of MGOWELO AMCOS. Each user has an account and role (e.g. PA-RC, accountant, secretary).</span>
+                        </p>
+                    </div>
+                </details>
+
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-2">
+                    <summary>
+                        <span class="lang-sw">Ninawezaje kuingia kwa mara ya kwanza?</span>
+                        <span class="lang-en">How do I sign in for the first time?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Bofya <strong>Ingia</strong> juu ya ukurasa, ingiza namba yako ya simu na nenosiri ulilopewa na ofisi. Ikiwa huna akaunti, wasiliana na karani wa ushirika wako.</span>
+                            <span class="lang-en">Click <strong>Login</strong> at the top, enter your phone number and password provided by the office. If you have no account, contact your cooperative secretary.</span>
+                        </p>
+                    </div>
+                </details>
+
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-3">
+                    <summary>
+                        <span class="lang-sw">Je, ninaweza kuona akiba na mikopo yangu mtandaoni?</span>
+                        <span class="lang-en">Can I view my savings and loans online?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Ndiyo. Baada ya kuingia, wanachama wanaweza kuona salio la akiba, historia ya malipo, hali ya mikopo na ripoti zingine kwa uwazi.</span>
+                            <span class="lang-en">Yes. After signing in, members can view savings balance, payment history, loan status and other reports transparently.</span>
+                        </p>
+                    </div>
+                </details>
+
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-4">
+                    <summary>
+                        <span class="lang-sw">Mfumo unasaidia malipo ya kidijitali?</span>
+                        <span class="lang-en">Does the system support digital payments?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Ndiyo. Mfumo unasaidia kurekodi na kufuatilia malipo kupitia M-Pesa, Tigo Pesa, Airtel Money, benki na fedha taslimu — kwa uwazi wa kifedha.</span>
+                            <span class="lang-en">Yes. The system records and tracks payments via M-Pesa, Tigo Pesa, Airtel Money, bank and cash — for financial transparency.</span>
+                        </p>
+                    </div>
+                </details>
+
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-5">
+                    <summary>
+                        <span class="lang-sw">Ninapata msaada wapi ikiwa nimesahau nenosiri?</span>
+                        <span class="lang-en">Where do I get help if I forgot my password?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Tumia kiungo cha <strong>Weka Upya Nenosiri</strong> kwenye ukurasa wa kuingia, au piga simu ofisi yetu: <a href="tel:+255754800123">+255 754 800 123</a>.</span>
+                            <span class="lang-en">Use the <strong>Reset Password</strong> link on the login page, or call our office: <a href="tel:+255754800123">+255 754 800 123</a>.</span>
+                        </p>
+                    </div>
+                </details>
+
+                <details class="welcome-faq-item reveal-on-scroll reveal-on-scroll--delay-6">
+                    <summary>
+                        <span class="lang-sw">Je, data yangu salama?</span>
+                        <span class="lang-en">Is my data secure?</span>
+                        <i class="fa-solid fa-chevron-down welcome-faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <div class="welcome-faq-answer">
+                        <p class="lang-block">
+                            <span class="lang-sw">Ndiyo. Mfumo unatumia uthibitishaji salama, kumbukumbu za ukaguzi (audit trails) na udhibiti wa majukumu ili kulinda taarifa za ushirika na wanachama.</span>
+                            <span class="lang-en">Yes. The system uses secure authentication, audit trails and role-based access to protect cooperative and member information.</span>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="welcome-footer">
+        <div class="welcome-footer-inner">
+            <p>
+                <span class="lang-sw">&copy; {% now "Y" %} MGOWELO AMCOS — Iringa, Tanzania. Haki zote zimehifadhiwa.</span>
+                <span class="lang-en">&copy; {% now "Y" %} MGOWELO AMCOS — Iringa, Tanzania. All rights reserved.</span>
+            </p>
+            <p class="welcome-footer-sub">
+                <span class="lang-sw">Mfumo wa Usimamizi wa Ushirika wa Kilimo na Masoko</span>
+                <span class="lang-en">Agricultural Marketing Cooperative Management System</span>
+            </p>
+        </div>
+    </footer>
+</div>
+
+<a href="{% url 'auth:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="ai-float-btn ai-float-btn--landing" title="Ingia — AMCOS AI">
+    <span class="ai-fab-pulse" aria-hidden="true"></span>
+    <span class="ai-fab-icon" aria-hidden="true"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
+    <span class="ai-fab-label">
+        <span class="lang-sw">AMCOS AI</span>
+        <span class="lang-en">AMCOS AI</span>
+    </span>
+</a>
+
+<script>
+function setLang(lang) {
+    var sw = document.querySelectorAll('.lang-sw');
+    var en = document.querySelectorAll('.lang-en');
+    var btnSw = document.getElementById('lang-sw');
+    var btnEn = document.getElementById('lang-en');
+    if (lang === 'sw') {
+        for (var i = 0; i < sw.length; i++) { sw[i].style.display = ''; }
+        for (var i = 0; i < en.length; i++) { en[i].style.display = 'none'; }
+        if (btnSw) { btnSw.classList.add('active'); }
+        if (btnEn) { btnEn.classList.remove('active'); }
+    } else {
+        for (var i = 0; i < sw.length; i++) { sw[i].style.display = 'none'; }
+        for (var i = 0; i < en.length; i++) { en[i].style.display = ''; }
+        if (btnEn) { btnEn.classList.add('active'); }
+        if (btnSw) { btnSw.classList.remove('active'); }
+    }
+    document.documentElement.lang = lang;
+    localStorage.setItem('welcome_lang', lang);
+    if (typeof window.updateWelcomeCaption === 'function') {
+        window.updateWelcomeCaption();
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/dashboard/set-lang/?lang=' + lang + '&next=' + encodeURIComponent(window.location.pathname), true);
+    xhr.send();
+}
+(function() {
+    var saved = localStorage.getItem('welcome_lang');
+    var lang = (saved === 'sw' || saved === 'en') ? saved : 'en';
+    setLang(lang);
+
+    var toggle = document.getElementById('welcomeNavToggle');
+    var mobile = document.getElementById('welcomeNavMobile');
+    if (toggle && mobile) {
+        toggle.addEventListener('click', function() {
+            var open = mobile.hasAttribute('hidden');
+            if (open) {
+                mobile.removeAttribute('hidden');
+                toggle.setAttribute('aria-expanded', 'true');
+            } else {
+                mobile.setAttribute('hidden', '');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    var revealEls = document.querySelectorAll('.welcome-landing .reveal-on-scroll');
+    if ('IntersectionObserver' in window && revealEls.length) {
+        var revealObs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                } else {
+                    entry.target.classList.remove('is-visible');
+                }
+            });
+        }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+        revealEls.forEach(function(el) { revealObs.observe(el); });
+    } else {
+        revealEls.forEach(function(el) { el.classList.add('is-visible'); });
+    }
+
+    function runHeroCounters() {
+        var counters = document.querySelectorAll('#welcomeHeroStats .welcome-stat-counter');
+        if (!counters.length) return;
+        var duration = 900;
+        counters.forEach(function(el, i) {
+            var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+            var delay = i * 70;
+            setTimeout(function() {
+                var t0 = null;
+                el.textContent = '0';
+                function tick(now) {
+                    if (!t0) t0 = now;
+                    var p = Math.min((now - t0) / duration, 1);
+                    var eased = 1 - Math.pow(1 - p, 4);
+                    el.textContent = String(Math.round(target * eased));
+                    if (p < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = String(target);
+                    }
+                }
+                requestAnimationFrame(tick);
+            }, delay);
+        });
+    }
+
+    function initHeroCounters() {
+        var stats = document.getElementById('welcomeHeroStats');
+        if (!stats || stats.dataset.countStarted === '1') return;
+
+        function startCounters() {
+            if (stats.dataset.countStarted === '1') return;
+            stats.dataset.countStarted = '1';
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelectorAll('#welcomeHeroStats .welcome-stat-counter').forEach(function(el) {
+                    el.textContent = el.getAttribute('data-target');
+                });
+                return;
+            }
+            runHeroCounters();
+        }
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            startCounters();
+            return;
+        }
+
+        /* Counter must run AFTER fade-up — otherwise animation finishes while stats are invisible */
+        stats.addEventListener('animationend', function onFadeEnd(e) {
+            if (e.target === stats && e.animationName === 'welcomeFadeUp') {
+                stats.removeEventListener('animationend', onFadeEnd);
+                startCounters();
+            }
+        });
+
+        var fadeDelay = 650;
+        var fadeDuration = 850;
+        setTimeout(startCounters, fadeDelay + fadeDuration + 80);
+    }
+
+    initHeroCounters();
+
+    document.querySelectorAll('.welcome-landing a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+            var id = this.getAttribute('href');
+            if (!id || id === '#') return;
+            var target = document.querySelector(id);
+            if (!target) return;
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            var mobile = document.getElementById('welcomeNavMobile');
+            var toggle = document.getElementById('welcomeNavToggle');
+            if (mobile && !mobile.hasAttribute('hidden')) {
+                mobile.setAttribute('hidden', '');
+                if (toggle) toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+})();
+</script>
+{% endblock %}
+
+{% block ai_assistant %}
+{% include 'includes/ai_assistant.html' with ai_variant='landing' %}
+{% endblock %}

@@ -1,0 +1,98 @@
+﻿{% extends 'base.html' %}
+{% block title %}Mhasibu Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><span class="lang-sw">Karibu Mhasibu, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome Accountant, {{ user.get_full_name|default:user.username }}</span></h2>
+    <p>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY &bull; IRINGA TANZANIA</p>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Kusimamia fedha za chama, mapato/matumizi, payroll, na kuhakikisha compliance</span>
+        <span class="lang-en">Manage cooperative finances, income/expenses, payroll, and ensure compliance</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_income|floatformat:0 }}</h4><p><span class="lang-sw">Jumla ya Mapato</span><span class="lang-en">Total Income</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_expenses|floatformat:0 }}</h4><p><span class="lang-sw">Jumla ya Matumizi</span><span class="lang-en">Total Expenses</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ balance|floatformat:0 }}</h4><p><span class="lang-sw">Mizani</span><span class="lang-en">Balance</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-table-cells" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_budget|floatformat:0 }}</h4><p><span class="lang-sw">Bajeti</span><span class="lang-en">Budget</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_savings|floatformat:0 }}</h4><p><span class="lang-sw">Akiba</span><span class="lang-en">Savings</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_loans|floatformat:0 }}</h4><p><span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></p></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Malipo ya Hivi Karibuni</span><span class="lang-en">Recent Payments</span></h3></div>
+        <div class="card-body">
+            {% if recent_transactions %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>Ref</th><th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th><th><span class="lang-sw">Kiasi</span><span class="lang-en">Amount</span></th><th><span class="lang-sw">Tarehe</span><span class="lang-en">Date</span></th></tr></thead>
+                <tbody>{% for p in recent_transactions %}
+                <tr><td>{{ p.reference_number|truncatechars:10 }}</td><td>{{ p.get_payment_type_display }}</td><td>{{ p.amount|floatformat:0 }}</td><td>{{ p.created_at|date:"d/m/Y" }}</td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna malipo bado</span><span class="lang-en">No payments yet</span></p></div>{% endif %}
+            <div style="margin-top:0.5rem;"><a href="{% url 'payments:list' %}" class="btn btn-outline btn-sm"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Malipo Yote</span><span class="lang-en">All Payments</span></a></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Muhtasari wa Fedha</span><span class="lang-en">Financial Summary</span></h3></div>
+        <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div style="text-align:center;padding:1rem;background:#f0f9f0;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#0d3b12;">{{ total_income|floatformat:0 }}</div>
+                    <small><span class="lang-sw">Jumla ya Mapato</span><span class="lang-en">Total Income</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#fce4ec;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#c62828;">{{ total_expenses|floatformat:0 }}</div>
+                    <small><span class="lang-sw">Jumla ya Matumizi</span><span class="lang-en">Total Expenses</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#e8f5e9;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#2e7d32;">{{ balance|floatformat:0 }}</div>
+                    <small><span class="lang-sw">Mizani Halisi</span><span class="lang-en">Net Balance</span></small>
+                </div>
+                <div style="text-align:center;padding:1rem;background:#fff8e1;border-radius:8px;">
+                    <div style="font-size:1.5rem;font-weight:800;color:#F9A825;">{{ pending_payments }}</div>
+                    <small><span class="lang-sw">Malipo Yanayosubiri</span><span class="lang-en">Pending Payments</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="{% url 'accounting:income_create' %}" class="btn btn-primary"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Mapato</span><span class="lang-en">Record Income</span></a>
+            <a href="{% url 'accounting:expense_create' %}" class="btn btn-primary"><i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Matumizi</span><span class="lang-en">Record Expense</span></a>
+            <a href="{% url 'accounting:budget_create' %}" class="btn btn-primary"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Tengeneza Bajeti</span><span class="lang-en">Create Budget</span></a>
+            <a href="{% url 'payments:make' %}" class="btn btn-outline"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Malipo</span><span class="lang-en">Record Payment</span></a>
+            <a href="{% url 'accounting:income_statement' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Taarifa ya Mapato</span><span class="lang-en">Income Statement</span></a>
+            <a href="{% url 'accounting:trial_balance' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Majaribio</span><span class="lang-en">Trial Balance</span></a>
+            <a href="{% url 'accounting:balance_sheet' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Mizani</span><span class="lang-en">Balance Sheet</span></a>
+            <a href="{% url 'reporting:dashboard' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Ripoti za Fedha</span><span class="lang-en">Financial Reports</span></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

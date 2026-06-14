@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Elections{% endblock %}
+{% block page_title %}Election Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Elections</h3>
+        {% can 'governance.manage' as can_manage %}
+        {% if can_manage %}
+        <a href="{% url 'governance:election_create' %}" class="btn btn-primary btn-sm">+ Create Election</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Position</th>
+                        <th>Voting Period</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in elections %}
+                    <tr>
+                        <td><strong>{{ e.title }}</strong></td>
+                        <td>{{ e.position }}</td>
+                        <td>{{ e.voting_start|date:"d/m/Y H:i" }} - {{ e.voting_end|date:"d/m/Y H:i" }}</td>
+                        <td><span class="badge badge-{% if e.status == 'voting' %}success{% elif e.status == 'completed' %}info{% elif e.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ e.status }}</span></td>
+                        <td><a href="{% url 'governance:election_detail' e.id %}" class="btn btn-sm btn-outline">View</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray-400);">No elections created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

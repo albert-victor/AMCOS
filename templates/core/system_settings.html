@@ -1,0 +1,167 @@
+﻿{% extends 'base.html' %}
+{% block title %}System Settings{% endblock %}
+{% block page_title %}<span class="lang-sw">Mipangilio ya Mfumo</span><span class="lang-en">System Settings</span>{% endblock %}
+{% block content %}
+<div class="welcome-section" style="background:linear-gradient(135deg,#0d3b12,#1B5E20);">
+    <h2><i class="fa-solid fa-gear" aria-hidden="true"></i>  <span class="lang-sw">Mipangilio ya Mfumo</span><span class="lang-en">System Settings</span></h2>
+    <p><span class="lang-sw">Dhibiti usanidi wa mfumo mzima</span><span class="lang-en">Manage system-wide configuration</span></p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Taarifa za Msingi</span><span class="lang-en">Basic Information</span></h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label><span class="lang-sw">Jina la Mfumo</span><span class="lang-en">Site Name</span></label>
+                <input type="text" name="site_name" class="form-control" value="{{ settings.site_name }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Anuani</span><span class="lang-en">Address</span></label>
+                <input type="text" name="site_address" class="form-control" value="{{ settings.site_address }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></label>
+                <input type="text" name="site_phone" class="form-control" value="{{ settings.site_phone }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Barua Pepe</span><span class="lang-en">Email</span></label>
+                <input type="email" name="site_email" class="form-control" value="{{ settings.site_email }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Sarafu</span><span class="lang-en">Currency</span></label>
+                <input type="text" name="site_currency" class="form-control" value="{{ settings.site_currency }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i>  <span class="lang-sw">Barua Pepe (SMTP)</span><span class="lang-en">Email (SMTP)</span></h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>SMTP Host</label>
+                <input type="text" name="email_host" class="form-control" value="{{ settings.email_host }}">
+            </div>
+            <div class="form-group">
+                <label>SMTP Port</label>
+                <input type="text" name="email_port" class="form-control" value="{{ settings.email_port }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Mtumiaji</span><span class="lang-en">Username</span></label>
+                <input type="text" name="email_host_user" class="form-control" value="{{ settings.email_host_user }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Nywila</span><span class="lang-en">Password</span></label>
+                <input type="password" name="email_host_password" class="form-control" value="{{ settings.email_host_password }}">
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="email_use_tls" {% if settings.email_use_tls == 'True' %}checked{% endif %}>
+                    <span>Use TLS</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-comment-sms" aria-hidden="true"></i>  <span class="lang-sw">SMS</span><span class="lang-en">SMS</span></h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label><span class="lang-sw">Funguo la API</span><span class="lang-en">API Key</span></label>
+                <input type="text" name="sms_api_key" class="form-control" value="{{ settings.sms_api_key }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Kitambulisho cha Mtumaji</span><span class="lang-en">Sender ID</span></label>
+                <input type="text" name="sms_sender_id" class="form-control" value="{{ settings.sms_sender_id }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-id-card" aria-hidden="true"></i>   M-Pesa</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Consumer Key</label>
+                <input type="text" name="mpesa_consumer_key" class="form-control" value="{{ settings.mpesa_consumer_key }}">
+            </div>
+            <div class="form-group">
+                <label>Consumer Secret</label>
+                <input type="text" name="mpesa_consumer_secret" class="form-control" value="{{ settings.mpesa_consumer_secret }}">
+            </div>
+            <div class="form-group">
+                <label>Passkey</label>
+                <input type="text" name="mpesa_passkey" class="form-control" value="{{ settings.mpesa_passkey }}">
+            </div>
+            <div class="form-group">
+                <label>Shortcode</label>
+                <input type="text" name="mpesa_shortcode" class="form-control" value="{{ settings.mpesa_shortcode }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Mazingira</span><span class="lang-en">Environment</span></label>
+                <select name="mpesa_environment" class="form-control">
+                    <option value="sandbox" {% if settings.mpesa_environment == 'sandbox' %}selected{% endif %}>Sandbox</option>
+                    <option value="production" {% if settings.mpesa_environment == 'production' %}selected{% endif %}>Production</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Malipo Mengine</span><span class="lang-en">Other Payments</span></h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Tigo Pesa API Key</label>
+                <input type="text" name="tigo_api_key" class="form-control" value="{{ settings.tigo_api_key }}">
+            </div>
+            <div class="form-group">
+                <label>Airtel Money API Key</label>
+                <input type="text" name="airtel_api_key" class="form-control" value="{{ settings.airtel_api_key }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Mipangilio ya Mikopo na Akiba</span><span class="lang-en">Loan & Savings Settings</span></h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label><span class="lang-sw">Riba ya Mkopo (%)</span><span class="lang-en">Loan Interest Rate (%)</span></label>
+                <input type="number" step="0.1" name="loan_interest_rate" class="form-control" value="{{ settings.loan_interest_rate }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Kiwango cha Juu cha Mkopo (TZS)</span><span class="lang-en">Max Loan Amount (TZS)</span></label>
+                <input type="number" name="loan_max_amount" class="form-control" value="{{ settings.loan_max_amount }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Muda wa Juu wa Mkopo (miezi)</span><span class="lang-en">Max Loan Duration (months)</span></label>
+                <input type="number" name="loan_max_duration_months" class="form-control" value="{{ settings.loan_max_duration_months }}">
+            </div>
+            <div class="form-group">
+                <label><span class="lang-sw">Riba ya Akiba (%)</span><span class="lang-en">Savings Interest Rate (%)</span></label>
+                <input type="number" step="0.1" name="savings_interest_rate" class="form-control" value="{{ settings.savings_interest_rate }}">
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:1rem;">
+        <button type="submit" class="btn btn-success" style="padding:0.75rem 2rem;font-size:1rem;">
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>  <span class="lang-sw">Hifadhi Mipangilio</span><span class="lang-en">Save Settings</span>
+        </button>
+        <a href="{% url 'core:super_admin_dashboard' %}" class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem;">
+            <span class="lang-sw">Ghairi</span><span class="lang-en">Cancel</span>
+        </a>
+    </div>
+</form>
+{% endblock %}

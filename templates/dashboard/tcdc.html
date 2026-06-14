@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}TCDC Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2>
+        <span class="lang-sw">Karibu TCDC ({{ level_sw }}), {{ user.get_full_name|default:user.username }}</span>
+        <span class="lang-en">Welcome TCDC ({{ level_en }}), {{ user.get_full_name|default:user.username }}</span>
+    </h2>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Tume ya Maendeleo ya Ushirika — ufuatiliaji na ripoti (kusoma tu, hakuna kubadilisha)</span>
+        <span class="lang-en">Cooperative Development Commission — oversight and reports (read-only, no edits)</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" onclick="location.href='{% url 'members:list' %}'">
+        <div class="stat-icon green"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ total_members_all|default:0 }}</h4><p><span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'payments:list' %}'">
+        <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ total_payments|default:0 }}</h4><p><span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'audit:trails' %}'">
+        <div class="stat-icon purple"><i class="fa-solid fa-table-cells" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ audit_entries }}</h4><p><span class="lang-sw">Kumbukumbu za Ukaguzi</span><span class="lang-en">Audit Entries</span></p></div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'reporting:dashboard' %}'">
+        <div class="stat-icon orange"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+        <div class="stat-info"><h4>{{ active_loans|default:0 }}</h4><p><span class="lang-sw">Mikopo Hai</span><span class="lang-en">Active Loans</span></p></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-header"><h3><span class="lang-sw">Ripoti na Ufuatiliaji (Kusoma Tu)</span><span class="lang-en">Reports & Oversight (Read-only)</span></h3></div>
+    <div class="card-body">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+            <a href="{% url 'reporting:dashboard' %}" class="btn btn-primary"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>  <span class="lang-sw">Ripoti</span><span class="lang-en">Reports</span></a>
+            <a href="{% url 'accounting:dashboard' %}" class="btn btn-primary"><i class="fa-solid fa-calculator" aria-hidden="true"></i>  <span class="lang-sw">Uhasibu</span><span class="lang-en">Accounting</span></a>
+            <a href="{% url 'audit:trails' %}" class="btn btn-outline"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>  <span class="lang-sw">Ukaguzi</span><span class="lang-en">Audit</span></a>
+            <a href="{% url 'members:list' %}" class="btn btn-outline"><i class="fa-solid fa-users" aria-hidden="true"></i>  <span class="lang-sw">Wanachama</span><span class="lang-en">Members</span></a>
+            <a href="{% url 'payments:list' %}" class="btn btn-outline"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i>  <span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></a>
+            <a href="{% url 'loans:list' %}" class="btn btn-outline"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>  <span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

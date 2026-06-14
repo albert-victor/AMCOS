@@ -1,0 +1,51 @@
+﻿{% extends 'base.html' %}
+{% block title %}Tangaza{% endblock %}
+{% block page_title %}{% t "Tangaza kwa Wanachama" "Broadcast to Members" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><h3><i class="fa-solid fa-bullhorn" aria-hidden="true"></i>{% t "Tangaza" "Broadcast" %}</h3></div>
+    <div class="card-body">
+        <p style="color:var(--gray-500);margin-bottom:1rem;">
+            <span class="lang-sw">Ujumbe utatumwa kwa wanachama wote wa chama chako.</span>
+            <span class="lang-en">This message will be sent to all members of your cooperative.</span>
+        </p>
+        <form method="post" action="{% url 'notifications:send' %}">
+            {% csrf_token %}
+            <input type="hidden" name="send_to" value="members">
+            <div class="form-group">
+                <label>{% t "Aina" "Type" %}</label>
+                <select name="notification_type" class="form-control">
+                    <option value="announcement">{% t "Tangazo" "Announcement" %}</option>
+                    <option value="meeting">{% t "Mkutano" "Meeting" %}</option>
+                    <option value="payment">{% t "Malipo" "Payment" %}</option>
+                    <option value="reminder">{% t "Ukumbusho" "Reminder" %}</option>
+                    <option value="alert">{% t "Tahadhari" "Alert" %}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>{% t "Kichwa" "Title" %}</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>{% t "Ujumbe" "Message" %}</label>
+                <textarea name="message" class="form-control" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="send_sms" value="yes">
+                    <span class="lang-sw">Tuma pia kwa SMS</span>
+                    <span class="lang-en">Also send via SMS</span>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <span class="lang-sw">Tuma Tangazo</span>
+                <span class="lang-en">Send Broadcast</span>
+            </button>
+            <a href="{% url 'notifications:inbox' %}" class="btn btn-outline" style="margin-left:0.5rem;">
+                <span class="lang-sw">Rudi</span>
+                <span class="lang-en">Back</span>
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

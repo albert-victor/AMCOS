@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load locale_tags static %}
+{% block title %}{% t "Ingia" "Login" %}{% endblock %}
+{% block auth_content %}
+<div class="auth-page auth-page--login">
+    {% include 'auth/_auth_slideshow_bg.html' %}
+
+    <div class="auth-container auth-container--fit">
+        <div class="auth-card auth-card--glass auth-card--login">
+            <a href="{% url 'home' %}" class="auth-back-link">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                {% t "Rudi Nyumbani" "Back to Home" %}
+            </a>
+            <header class="auth-header auth-header--compact">
+                <div class="auth-logo-wrap">
+                    <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="auth-logo">
+                </div>
+                <h1 class="auth-title">MGOWELO AMCOS</h1>
+                <p class="auth-tagline"><i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                    {% t "Kilimo · Ushirika · Tanzania" "Agriculture · Cooperative · Tanzania" %}
+                </p>
+            </header>
+
+            <div class="auth-divider">{% t "Ingia kwenye akaunti yako" "Sign in to your account" %}</div>
+
+            {% if account_locked %}
+            <p class="auth-login-error" role="alert">{% t "Akaunti imefungwa. Jaribu tena baadaye." "Account is locked. Try again later." %}</p>
+            {% elif login_error %}
+            <p class="auth-login-error" role="alert">{% t "Taarifa si sahihi" "Invalid credentials" %}</p>
+            {% elif messages and not registration_success %}
+            {% for message in messages %}
+            {% if message.tags != 'error' %}
+            <div class="alert alert-{{ message.tags }}"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{ message }}</div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'auth:login' %}" class="auth-form auth-form--compact" novalidate>
+                {% csrf_token %}
+                {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+
+                <div class="form-group">
+                    <label for="username"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+                        {% t "Namba ya Simu au Username" "Phone or Username" %}
+                    </label>
+                    <div class="auth-input-wrap">
+                        <i class="fa-solid fa-mobile-screen auth-field-icon" aria-hidden="true"></i>
+                        <input type="text" id="username" name="username" class="form-control auth-input"
+                            data-ph-sw="Simu (2557...) au username" data-ph-en="Phone (2557...) or username"
+                            placeholder="{% te 'Simu au username' 'Phone or username' %}"
+                            required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        {% t "Nywila" "Password" %}
+                    </label>
+                    <div class="auth-input-wrap">
+                        <i class="fa-solid fa-lock auth-field-icon" aria-hidden="true"></i>
+                        <input type="password" id="password" name="password" class="form-control auth-input"
+                            data-ph-sw="Weka nywila" data-ph-en="Enter password"
+                            placeholder="{% te 'Weka nywila' 'Enter password' %}"
+                            required autocomplete="current-password">
+                        <button type="button" class="auth-toggle-pw" aria-label="Toggle password" data-target="password">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-options">
+                    <label class="auth-remember">
+                        <input type="checkbox" name="remember">
+                        <i class="fa-regular fa-square-check" aria-hidden="true"></i>
+                        {% t "Nikumbuke" "Remember me" %}
+                    </label>
+                    <a href="{% url 'auth:password_reset' %}" class="auth-link">
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        {% t "Nimesahau Nywila" "Forgot Password?" %}
+                    </a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg auth-submit">
+                    <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    {% t "Ingia" "Sign In" %}
+                </button>
+            </form>
+
+            <footer class="auth-footer auth-footer--compact">
+                <a href="{% url 'auth:register_member' %}" class="auth-link auth-link--bold">
+                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                    {% t "Jiunga na Ushirika" "Join Cooperative" %}
+                </a>
+            </footer>
+
+            <div class="auth-trust-inline">
+                <span><i class="fa-solid fa-shield-halved"></i> {% t "Salama" "Secure" %}</span>
+                <span><i class="fa-solid fa-leaf"></i> {% t "Kilimo" "Agri" %}</span>
+                <span><i class="fa-solid fa-handshake"></i> {% t "Ushirika" "Co-op" %}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if registration_success %}
+<div class="modal-overlay auth-reg-success-overlay active" id="regSuccessModal" role="dialog" aria-modal="true" aria-labelledby="regSuccessTitle">
+    <div class="auth-success-card auth-success-card--login">
+        <div class="auth-success-card-accent" aria-hidden="true"></div>
+        <div class="auth-success-card-body">
+            <div class="auth-pay-calm-tick auth-pay-calm-tick--visible" aria-hidden="true">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2 id="regSuccessTitle" class="auth-pay-success-title">
+                {% t "Hongera! Umejisajili Kikamilifu" "Congratulations! Registration Successful" %}
+            </h2>
+            <p class="auth-reg-success-text">
+                {% t "Malipo yamekamilika. Subiri ukaguzi wa Bodi ya Uongozi ukamilishe usajili wako ndani ya AMCOS." "Payment completed. Please wait for the Board of Directors to review and complete your registration within AMCOS." %}
+                {% if registration_success.member_number %}
+                <br><strong>{% t "Namba ya mwanachama" "Member no" %}:</strong> {{ registration_success.member_number }}
+                {% endif %}
+            </p>
+            <button type="button" class="btn btn-primary auth-reg-success-btn" id="regSuccessDismiss">
+                <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                {% t "Ingia Sasa" "Sign In Now" %}
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    var modal = document.getElementById('regSuccessModal');
+    var btn = document.getElementById('regSuccessDismiss');
+    if (!modal || !btn) return;
+    var cleanLogin = '{% url "auth:login" %}';
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, '', cleanLogin);
+    }
+    function closeModal() {
+        modal.classList.remove('active');
+        var user = document.getElementById('username');
+        if (user) user.focus();
+    }
+    btn.addEventListener('click', function() {
+        closeModal();
+    });
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,93 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Invoices{% endblock %}
+{% block page_title %}Invoices{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <form method="get" style="display:flex;gap:0.5rem;align-items:center;">
+            <select name="status" class="form-control" style="width:auto;" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
+                <option value="issued" {% if request.GET.status == 'issued' %}selected{% endif %}>Issued</option>
+                <option value="paid" {% if request.GET.status == 'paid' %}selected{% endif %}>Paid</option>
+                <option value="overdue" {% if request.GET.status == 'overdue' %}selected{% endif %}>Overdue</option>
+                <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </form>
+    </div>
+    <div>
+        {% can 'payments.invoices' as can_invoice %}{% if can_invoice %}
+        <a href="{% url 'payments:invoice_generate' %}" class="btn btn-primary">+ Generate Invoice</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="stats-grid" style="margin-bottom:1.5rem;">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_issued|floatformat:0 }}</h4>
+            <p>Total Issued (TZS)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_paid|floatformat:0 }}</h4>
+            <p>Total Paid (TZS)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ overdue_count }}</h4>
+            <p>Overdue Invoices</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        {% if invoices %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Control Number</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invoices %}
+                <tr>
+                    <td><strong>{{ inv.invoice_number|truncatechars:15 }}</strong></td>
+                    <td style="font-family:monospace;font-weight:700;color:#0d3b12;">{{ inv.control_number|default:"-" }}</td>
+                    <td>{{ inv.amount|floatformat:0 }}</td>
+                    <td>
+                        <span class="badge badge-{% if inv.invoice_status == 'paid' %}success{% elif inv.invoice_status == 'issued' %}info{% elif inv.invoice_status == 'overdue' %}danger{% elif inv.invoice_status == 'cancelled' %}secondary{% else %}warning{% endif %}">
+                            {{ inv.invoice_status }}
+                        </span>
+                    </td>
+                    <td>{{ inv.due_date|date:"d/m/Y" }}</td>
+                    <td>{{ inv.created_at|date:"d/m/Y" }}</td>
+                    <td><a href="{% url 'payments:invoice_detail' inv.id %}" class="btn btn-sm btn-outline">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i> </div>
+            <h3>No Invoices</h3>
+            <p>Generate invoices to start collecting payments with control numbers.</p>
+            {% if can_invoice %}<a href="{% url 'payments:invoice_generate' %}" class="btn btn-primary">Generate Invoice</a>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

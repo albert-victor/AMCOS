@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Savings Account Detail{% endblock %}
+{% block page_title %}Account: {{ account.account_number }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Account Details</h3></div>
+        <div class="card-body">
+            <table>
+                <tr><td style="font-weight:600;width:160px;">Account Number</td><td>{{ account.account_number }}</td></tr>
+                <tr><td style="font-weight:600;">Member ID</td><td>{{ account.member_id }}</td></tr>
+                <tr><td style="font-weight:600;">Account Type</td><td>{{ account.get_account_type_display }}</td></tr>
+                <tr><td style="font-weight:600;">Balance</td><td><strong style="font-size:1.25rem;">{{ account.balance|floatformat:2 }}</strong></td></tr>
+                <tr><td style="font-weight:600;">Interest Rate</td><td>{{ account.interest_rate }}%</td></tr>
+                <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if account.status == 'active' %}success{% else %}danger{% endif %}">{{ account.status }}</span></td></tr>
+                <tr><td style="font-weight:600;">Opened</td><td>{{ account.opened_at|date:"d/m/Y" }}</td></tr>
+            </table>
+        </div>
+        <div class="card-footer flex gap-2">
+            {% can 'savings.deposit' as can_deposit %}
+            {% if can_deposit %}<a href="{% url 'savings:deposit' account.id %}" class="btn btn-success">Deposit</a>{% endif %}
+            {% can 'savings.withdraw' as can_withdraw %}
+            {% if can_withdraw %}<a href="{% url 'savings:withdraw' account.id %}" class="btn btn-warning">Withdraw</a>{% endif %}
+            <a href="{% url 'savings:statement' account.id %}" class="btn btn-outline">Statement</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Recent Transactions</h3></div>
+        <div class="card-body">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Balance</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td><span class="badge badge-{% if t.transaction_type == 'deposit' or t.transaction_type == 'interest' %}success{% else %}danger{% endif %}">{{ t.transaction_type }}</span></td>
+                            <td>{{ t.amount|floatformat:2 }}</td>
+                            <td>{{ t.balance_after|floatformat:2 }}</td>
+                            <td>{{ t.created_at|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" style="text-align:center;color:var(--gray-400);">No transactions yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

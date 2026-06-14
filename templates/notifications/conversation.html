@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ conversation.title|default:'Mazungumzo' }}{% endblock %}
+{% block page_title %}{% if conversation.title %}{{ conversation.title }}{% else %}{% t "Mazungumzo" "Conversation" %}{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:800px;margin:0 auto;">
+    <div class="card-header">
+        <h3>
+            {% if conversation.title %}{{ conversation.title }}{% else %}{% t "Mazungumzo" "Conversation" %}{% endif %}
+            {% if conversation.is_group %}<span class="badge badge-secondary">Group</span>{% endif %}
+        </h3>
+        <div class="flex gap-2">
+            <a href="{% url 'notifications:inbox' %}" class="btn btn-sm btn-outline">&larr; {% t "Nyuma" "Back" %}</a>
+        </div>
+    </div>
+    <div class="card-body" style="max-height:60vh;overflow-y:auto;display:flex;flex-direction:column;gap:0.75rem;padding:1rem;">
+        {% for msg in messages %}
+        <div style="display:flex;flex-direction:column;align-items:{% if msg.sender_id == user.id %}flex-end{% else %}flex-start{% endif %};">
+            <div style="background:{% if msg.sender_id == user.id %}#F9A825{% else %}#f0f0f0{% endif %};color:{% if msg.sender_id == user.id %}#0d3b12{% else %}#333{% endif %};padding:0.6rem 1rem;border-radius:12px;max-width:80%;word-wrap:break-word;">
+                <small style="font-weight:600;opacity:0.7;display:block;margin-bottom:0.2rem;">
+                    {% if msg.sender_id == user.id %}{% t "Mimi" "Me" %}{% else %}
+                    {% for pid, pu in users_map.items %}{% if pid == msg.sender_id %}{{ pu.get_full_name|default:pu.username }}{% endif %}{% endfor %}
+                    {% endif %}
+                </small>
+                <div style="white-space:pre-wrap;">{{ msg.content }}</div>
+                <small style="opacity:0.5;display:block;margin-top:0.2rem;font-size:0.7rem;">{{ msg.created_at|date:"d/m/Y H:i" }}</small>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:2rem;color:var(--gray-400);">
+            <p>{% t "Hakuna ujumbe bado" "No messages yet" %}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="card-footer">
+        <form method="post" style="display:flex;gap:0.5rem;">
+            {% csrf_token %}
+            <input type="text" name="content" class="form-control" placeholder="{% te 'Andika ujumbe' 'Type a message...' %}" required style="flex:1;">
+            <button type="submit" class="btn btn-primary">{% t "Tuma" "Send" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

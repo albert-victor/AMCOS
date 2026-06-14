@@ -1,0 +1,43 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load rbac_tags %}
+{% block title %}{% t "Kikasha" "Inbox" %}{% endblock %}
+{% block page_title %}{% t "Kikasha" "Inbox" %}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>{% t "Mazungumzo" "Conversations" %}</h3>
+        <div class="flex gap-2">
+            <a href="{% url 'notifications:new_message' %}" class="btn btn-sm btn-primary">{% t "+ Ujumbe Mpya" "New Message" %}</a>
+            {% can 'notifications.broadcast' as can_broadcast %}{% if can_broadcast %}
+            <a href="{% url 'notifications:broadcast' %}" class="btn btn-sm btn-outline">{% t "Tangaza" "Broadcast" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        {% for item in conversation_data %}
+        <a href="{% url 'notifications:conversation' item.conv.id %}" style="text-decoration:none;color:inherit;display:block;padding:1rem;border-bottom:1px solid var(--gray-100);{% if item.unread %}background:var(--primary-light);{% endif %}">
+            <div class="flex justify-between">
+                <div>
+                    <strong>{% if item.conv.title %}{{ item.conv.title }}{% else %}{% t "Mazungumzo" "Conversation" %}{% endif %}</strong>
+                    {% if item.unread %}
+                    <span class="badge badge-danger">{{ item.unread }} new</span>
+                    {% endif %}
+                    {% if item.conv.is_group %}
+                    <span class="badge badge-secondary">Group</span>
+                    {% endif %}
+                </div>
+                <small style="color:var(--gray-400);">{{ item.conv.updated_at|date:"d/m/Y H:i" }}</small>
+            </div>
+        </a>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i> </div>
+            <h3>{% t "Hakuna Mazungumzo" "No Conversations" %}</h3>
+            <p>{% t "Anza mazungumzo mpya" "Start a new conversation" %}</p>
+            <a href="{% url 'notifications:new_message' %}" class="btn btn-primary">{% t "Tuma Ujumbe" "Send Message" %}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

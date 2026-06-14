@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Meetings{% endblock %}
+{% block page_title %}Meeting Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Meetings</h3>
+        {% if can_manage %}
+        <a href="{% url 'governance:meeting_create' %}" class="btn btn-primary btn-sm">+ <span class="lang-sw">Panga Mkutano</span><span class="lang-en">Schedule Meeting</span></a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Venue</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in meetings %}
+                    <tr>
+                        <td><strong>{{ m.title }}</strong></td>
+                        <td>{{ m.get_meeting_type_display }}</td>
+                        <td>{{ m.date|date:"d/m/Y" }} {{ m.start_time|time:"H:i" }}</td>
+                        <td>{{ m.venue }}</td>
+                        <td><span class="badge badge-{% if m.status == 'completed' %}success{% elif m.status == 'scheduled' %}info{% elif m.status == 'in_progress' %}warning{% else %}secondary{% endif %}">{{ m.status }}</span></td>
+                        <td class="actions-cell">
+                            <div class="table-actions table-actions--compact">
+                                <a href="{% url 'governance:meeting_detail' m.id %}" class="btn btn-sm btn-outline"><span class="lang-sw">Angalia</span><span class="lang-en">View</span></a>
+                                {% if can_join_meeting and m.status != 'cancelled' and m.status != 'completed' %}
+                                <form method="post" action="{% url 'governance:meeting_join' m.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        <i class="fa-solid fa-video" aria-hidden="true"></i>
+                                        <span class="lang-sw">Jiunge</span><span class="lang-en">Join</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                {% if can_manage %}
+                                <a href="{% url 'governance:meeting_minutes' m.id %}" class="btn btn-sm btn-primary"><span class="lang-sw">Dakika</span><span class="lang-en">Minutes</span></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400);">No meetings scheduled.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

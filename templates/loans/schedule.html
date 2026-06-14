@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Loan Schedule{% endblock %}
+{% block page_title %}Amortization Schedule - {{ loan.loan_number }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3>Repayment Schedule</h3></div>
+    <div class="card-body">
+        <p>Loan Amount: <strong>{{ loan.amount|floatformat:2 }}</strong> | 
+           Interest: {{ loan.interest_rate }}% ({{ loan.interest_method }}) | 
+           Duration: {{ loan.duration_months }} months | 
+           Monthly Installment: <strong>{{ loan.monthly_installment|floatformat:2 }}</strong> |
+           Total Payable: <strong>{{ loan.total_payable|floatformat:2 }}</strong></p>
+        <div class="table-container" style="margin-top:1rem;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Installment</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in schedule %}
+                    <tr>
+                        <td>{{ s.month }}</td>
+                        <td>{{ s.installment|floatformat:2 }}</td>
+                        <td>{{ s.principal|floatformat:2 }}</td>
+                        <td>{{ s.interest|floatformat:2 }}</td>
+                        <td>{{ s.balance|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

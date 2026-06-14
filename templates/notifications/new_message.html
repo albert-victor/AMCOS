@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ujumbe Mpya{% endblock %}
+{% block page_title %}{% t "Ujumbe Mpya" "New Message" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><h3>{% t "Tuma Ujumbe" "Send Message" %}</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{% t "Mpokeaji" "Recipient" %}</label>
+                <select name="recipient_id" class="form-control" required>
+                    <option value="">{% t "-- Chagua" "Select --" %}</option>
+                    {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.phone }}) - {{ u.get_role_display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>{% t "Ujumbe" "Message" %}</label>
+                <textarea name="content" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{% t "Tuma" "Send" %}</button>
+            <a href="{% url 'notifications:inbox' %}" class="btn btn-outline">{% t "Ghairi" "Cancel" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

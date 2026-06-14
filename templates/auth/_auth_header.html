@@ -1,0 +1,19 @@
+{% load static %}
+<header class="auth-header">
+    <div class="auth-logo-wrap">
+        <img src="{% static 'images/logo2.jpeg' %}" alt="AMCOS Logo" class="auth-logo">
+    </div>
+    <h1 class="auth-title">AMCOS</h1>
+    {% if auth_subtitle_sw and auth_subtitle_en %}
+    <p class="auth-subtitle"><span class="lang-sw">{{ auth_subtitle_sw }}</span><span class="lang-en">{{ auth_subtitle_en }}</span></p>
+    {% elif auth_subtitle %}
+    <p class="auth-subtitle">{{ auth_subtitle }}</p>
+    {% endif %}
+    {% if auth_tagline_sw and auth_tagline_en %}
+    <p class="auth-tagline"><i class="fa-solid fa-seedling" aria-hidden="true"></i>
+        <span class="lang-sw">{{ auth_tagline_sw }}</span><span class="lang-en">{{ auth_tagline_en }}</span>
+    </p>
+    {% elif auth_tagline %}
+    <p class="auth-tagline"><i class="fa-solid fa-seedling" aria-hidden="true"></i> {{ auth_tagline }}</p>
+    {% endif %}
+</header>

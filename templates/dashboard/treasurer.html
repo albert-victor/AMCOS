@@ -1,0 +1,63 @@
+﻿{% extends 'base.html' %}
+{% block title %}Mhazini Dashboard{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><span class="lang-sw">Karibu Mhazini, {{ user.get_full_name|default:user.username }}</span><span class="lang-en">Welcome Treasurer, {{ user.get_full_name|default:user.username }}</span></h2>
+    <p>MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY &bull; IRINGA TANZANIA</p>
+    <p style="font-size:0.85rem;opacity:0.9;margin-top:0.25rem;">
+        <span class="lang-sw">Kusimamia fedha, malipo, mikopo, na ripoti za kifedha</span>
+        <span class="lang-en">Manage finances, payments, loans, and financial reports</span>
+    </p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_savings|floatformat:0 }}</h4><p><span class="lang-sw">Akiba za Wanachama</span><span class="lang-en">Member Savings</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_loans|floatformat:0 }}</h4><p><span class="lang-sw">Mikopo Iliyotolewa</span><span class="lang-en">Loans Issued</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ outstanding_loans|floatformat:0 }}</h4><p><span class="lang-sw">Mikopo Baki</span><span class="lang-en">Outstanding Loans</span></p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-money-bill-wave nav-icon" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_collected|floatformat:0 }}</h4><p><span class="lang-sw">Malipo Yaliyokusanywa</span><span class="lang-en">Total Collected</span></p></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Malipo ya Hivi Karibuni</span><span class="lang-en">Recent Payments</span></h3>
+            <a href="{% url 'payments:list' %}" class="btn btn-sm btn-outline"><span class="lang-sw">Yote</span><span class="lang-en">All</span></a>
+        </div>
+        <div class="card-body">
+            {% if recent_payments %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>Ref</th><th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th><th><span class="lang-sw">Kiasi</span><span class="lang-en">Amount</span></th><th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th></tr></thead>
+                <tbody>{% for p in recent_payments %}
+                <tr><td>{{ p.reference_number|truncatechars:10 }}</td><td>{{ p.get_payment_type_display }}</td><td>{{ p.amount|floatformat:0 }}</td><td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table>
+            </div>
+            {% else %}<div class="empty-state"><p><span class="lang-sw">Hakuna malipo bado</span><span class="lang-en">No payments yet</span></p></div>{% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><span class="lang-sw">Vitendo vya Haraka</span><span class="lang-en">Quick Actions</span></h3></div>
+        <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <a href="{% url 'payments:make' %}" class="btn btn-primary" style="justify-content:center;"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Rekodi Malipo</span><span class="lang-en">Record Payment</span></a>
+                <a href="{% url 'payments:invoice_generate' %}" class="btn btn-primary" style="justify-content:center;"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>  <span class="lang-sw">Tengeneza Invoice</span><span class="lang-en">Generate Invoice</span></a>
+                <a href="{% url 'loans:list' %}?status=active" class="btn btn-primary" style="justify-content:center;"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>  <span class="lang-sw">Mikopo Inayoendelea ({{ active_loans_count }})</span><span class="lang-en">Active Loans ({{ active_loans_count }})</span></a>
+                <a href="{% url 'payments:invoice_list' %}" class="btn btn-outline" style="justify-content:center;"><i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>  <span class="lang-sw">Angalia Invoices</span><span class="lang-en">View Invoices</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

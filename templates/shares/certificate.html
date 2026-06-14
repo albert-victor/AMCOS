@@ -1,0 +1,80 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Share Certificate - MGOWELO AMCOS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', serif; max-width: 700px; margin: 0 auto; padding: 30px; background: #f5f5f5; }
+        .certificate { background: white; border: 3px solid #0d3b12; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); text-align: center; }
+        .gold-border { border: 2px solid #F9A825; padding: 30px; }
+        h1 { font-size: 24px; color: #0d3b12; font-weight: 800; letter-spacing: 2px; margin-bottom: 5px; }
+        .subtitle { font-size: 13px; color: #1B5E20; margin-bottom: 3px; }
+        .location { color: #F9A825; font-weight: 700; font-size: 14px; margin-bottom: 20px; }
+        .cert-title { font-size: 22px; font-weight: 800; color: #0d3b12; border-top: 2px solid #0d3b12; border-bottom: 2px solid #0d3b12; padding: 10px 0; display: inline-block; margin: 15px 0; letter-spacing: 3px; }
+        .icon { font-size: 48px; margin: 15px 0; }
+        .info { text-align: left; margin: 20px 0; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #ccc; font-size: 15px; }
+        .info-label { font-weight: 700; color: #0d3b12; }
+        .info-value { font-weight: 600; }
+        .total-box { background: linear-gradient(135deg, #0d3b12, #1B5E20); color: white; padding: 15px; margin: 20px 0; border-radius: 8px; text-align: center; }
+        .total-box .big { font-size: 28px; font-weight: 800; color: #F9A825; }
+        .total-box .lbl { font-size: 12px; opacity: 0.9; }
+        .footer { margin-top: 30px; font-size: 11px; color: #666; border-top: 1px solid #ccc; padding-top: 15px; }
+        .signatures { display: flex; justify-content: space-between; margin-top: 30px; }
+        .sig-line { width: 200px; border-top: 1px solid #333; padding-top: 5px; font-size: 11px; text-align: center; }
+        .no-print { text-align: center; margin-top: 20px; }
+        .no-print button { background: #0d3b12; color: white; border: none; padding: 10px 24px; font-size: 14px; border-radius: 8px; cursor: pointer; font-weight: 600; margin: 0 5px; }
+        .no-print button:hover { background: #1B5E20; }
+        @media print {
+            body { background: white; padding: 10px; }
+            .certificate { box-shadow: none; border: 2px solid #0d3b12; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="gold-border">
+            <h1>MGOWELO AMCOS</h1>
+            <p class="subtitle">MGOWELO AGRICULTURAL MARKETING COOPERATIVE SOCIETY</p>
+            <p class="location">IRINGA TANZANIA</p>
+            <div class="icon"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i>  </div>
+            <div class="cert-title">SHARE CERTIFICATE</div>
+            <p style="font-style:italic;color:#555;margin-top:10px;">This certifies that</p>
+            <h2 style="font-size:26px;color:#0d3b12;margin:10px 0;">{{ share.member_name|default:"Member Name" }}</h2>
+            <p style="color:#666;margin-bottom:5px;">Member Number: <strong>{{ member.member_number|default:"-" }}</strong></p>
+            <p style="color:#666;">is the registered owner of</p>
+            <div class="total-box">
+                <p class="lbl">Number of Shares</p>
+                <p class="big">{{ share.total_shares }}</p>
+                <p class="lbl">Total Value: TZS {{ share.total_value|floatformat:0 }}</p>
+            </div>
+            <div class="info">
+                <div class="info-row"><span class="info-label">Certificate No:</span><span class="info-value">{{ share.certificate_number }}</span></div>
+                <div class="info-row"><span class="info-label">Date Issued:</span><span class="info-value">{{ share.created_at|date:"d F Y" }}</span></div>
+                <div class="info-row"><span class="info-label">Status:</span><span class="info-value">{{ share.status|title }}</span></div>
+                {% if cooperative %}<div class="info-row"><span class="info-label">Cooperative:</span><span class="info-value">{{ cooperative.name }}</span></div>{% endif %}
+            </div>
+            <div class="signatures">
+                <div class="sig-line">PA-RC</div>
+                <div class="sig-line">Secretary</div>
+            </div>
+            <div class="footer">
+                <p>This certificate is issued under the by-laws of MGOWELO AMCOS</p>
+                <p style="font-size:9px;margin-top:3px;">MGOWELO AMCOS &copy; {% now "Y" %} - Enterprise Cooperative Management System</p>
+            </div>
+        </div>
+    </div>
+    <div class="no-print">
+        <button onclick="window.print()"><i class="fa-solid fa-print" aria-hidden="true"></i>  Print Certificate</button>
+        <button onclick="window.print()"><i class="fa-solid fa-download" aria-hidden="true"></i>  Download PDF</button>
+        <br><br>
+        <a href="{% url 'shares:detail' share.id %}" style="color:#0d3b12;font-size:13px;">&larr; Back to Share Details</a>
+    </div>
+    <script>
+        if (window.location.search.includes('print=true')) { window.onload = function() { window.print(); }; }
+    </script>
+</body>
+</html>

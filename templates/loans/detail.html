@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Loan Detail{% endblock %}
+{% block page_title %}Loan: {{ loan.loan_number }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Loan Details</h3></div>
+        <div class="card-body">
+            <table>
+                <tr><td style="font-weight:600;width:160px;">Loan Number</td><td>{{ loan.loan_number }}</td></tr>
+                <tr><td style="font-weight:600;">Member ID</td><td>{{ loan.member_id }}</td></tr>
+                <tr><td style="font-weight:600;">Product</td><td>{{ loan.product.name|default:"N/A" }}</td></tr>
+                <tr><td style="font-weight:600;">Amount</td><td><strong>{{ loan.amount|floatformat:2 }}</strong></td></tr>
+                <tr><td style="font-weight:600;">Interest Rate</td><td>{{ loan.interest_rate }}% ({{ loan.interest_method }})</td></tr>
+                <tr><td style="font-weight:600;">Duration</td><td>{{ loan.duration_months }} months</td></tr>
+                <tr><td style="font-weight:600;">Monthly Installment</td><td>{{ loan.monthly_installment|floatformat:2 }}</td></tr>
+                <tr><td style="font-weight:600;">Total Payable</td><td>{{ loan.total_payable|floatformat:2 }}</td></tr>
+                <tr><td style="font-weight:600;">Amount Paid</td><td>{{ loan.amount_paid|floatformat:2 }}</td></tr>
+                <tr><td style="font-weight:600;">Balance</td><td><strong style="color:var(--danger);">{{ loan.balance|floatformat:2 }}</strong></td></tr>
+                <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if loan.status == 'active' or loan.status == 'disbursed' %}success{% elif loan.status == 'completed' %}info{% elif loan.status == 'defaulted' %}danger{% else %}warning{% endif %}">{{ loan.status }}</span></td></tr>
+            </table>
+        </div>
+        <div class="card-footer flex gap-2">
+            {% can 'loans.review' as can_review %}
+            {% if can_review %}{% if loan.status == 'submitted' or loan.status == 'under_review' %}
+            <a href="{% url 'loans:review' loan.id %}" class="btn btn-primary">Review</a>
+            {% endif %}{% endif %}
+            {% can 'loans.disburse' as can_disburse %}
+            {% if can_disburse and loan.status == 'approved' %}
+            <a href="{% url 'loans:disburse' loan.id %}" class="btn btn-success">Disburse</a>
+            {% endif %}
+            {% can 'loans.repay' as can_repay %}
+            {% if can_repay %}{% if loan.status == 'active' or loan.status == 'disbursed' %}
+            <a href="{% url 'loans:repay' loan.id %}" class="btn btn-warning">Record Repayment</a>
+            {% endif %}{% endif %}
+            <a href="{% url 'loans:schedule' loan.id %}" class="btn btn-outline">Amortization Schedule</a>
+            <a href="{% url 'loans:statement' loan.id %}" class="btn btn-primary"><i class="fa-solid fa-print" aria-hidden="true"></i>  Print Statement</a>
+        </div>
+    </div>
+
+    <div>
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header"><h3><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>  Loan Status History</h3></div>
+            <div class="card-body">
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid #e8f5e9;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#0d3b12;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Applied</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">{{ loan.created_at|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </div>
+                    {% if loan.reviewed_at %}
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid #e8f5e9;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#F9A825;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Reviewed by Secretary</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">{{ loan.reviewed_at|date:"d/m/Y H:i" }} (User ID: {{ loan.reviewed_by }})</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if loan.approved_at %}
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid #e8f5e9;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#1B5E20;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Approved by Chairman</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">{{ loan.approved_at|date:"d/m/Y H:i" }} (User ID: {{ loan.approved_by }})</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if loan.status == 'rejected' %}
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid #e8f5e9;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#dc2626;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Rejected</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">Reason: {{ loan.rejection_reason|default:"N/A" }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if loan.disbursed_at %}
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid #e8f5e9;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#0284c7;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Disbursed</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">{{ loan.disbursed_at|date:"d/m/Y H:i" }} via {{ loan.disbursement_method }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if loan.completion_date %}
+                    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.4rem 0;">
+                        <span style="width:12px;height:12px;border-radius:50%;background:#1B5E20;flex-shrink:0;"></span>
+                        <div style="flex:1;">
+                            <strong style="font-size:0.9rem;">Completed</strong>
+                            <span style="font-size:0.75rem;color:var(--gray-400);">{{ loan.completion_date|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header"><h3>Guarantors</h3></div>
+            <div class="card-body">
+                {% if guarantors %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Amount</th>
+                            <th>Confirmed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in guarantors %}
+                        <tr>
+                            <td>{{ g.guarantor_name }}</td>
+                            <td>{{ g.guarantor_phone }}</td>
+                            <td>{{ g.amount|floatformat:0 }}</td>
+                            <td>{% if g.is_confirmed %}<i class="fa-solid fa-check" aria-hidden="true"></i> {% else %}<i class="fa-solid fa-xmark" aria-hidden="true"></i> {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p style="color:var(--gray-400);">No guarantors</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h3>Repayment History</h3></div>
+            <div class="card-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Principal</th>
+                                <th>Balance</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in repayments %}
+                            <tr>
+                                <td>{{ r.amount|floatformat:0 }}</td>
+                                <td>{{ r.principal_paid|floatformat:0 }}</td>
+                                <td>{{ r.balance_after|floatformat:0 }}</td>
+                                <td>{{ r.created_at|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" style="text-align:center;color:var(--gray-400);">No repayments yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

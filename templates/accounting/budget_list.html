@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Budgets{% endblock %}
+{% block page_title %}Budget Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Budgets</h3>
+        {% can 'accounting.create' as can_create %}{% if can_create %}
+        <a href="{% url 'accounting:budget_create' %}" class="btn btn-primary btn-sm">+ New Budget</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fiscal Year</th>
+                        <th>Category</th>
+                        <th>Budgeted</th>
+                        <th>Actual</th>
+                        <th>Variance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in budgets %}
+                    <tr>
+                        <td><strong>{{ b.fiscal_year }}</strong></td>
+                        <td>{{ b.category }}</td>
+                        <td>{{ b.budgeted_amount|floatformat:0 }}</td>
+                        <td>{{ b.actual_amount|floatformat:0 }}</td>
+                        <td>{{ b.budgeted_amount|add:b.actual_amount|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray-400);">No budgets created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Disburse Loan{% endblock %}
+{% block page_title %}Disburse: {{ loan.loan_number }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Loan Disbursement</h3></div>
+    <div class="card-body">
+        <p>Loan Amount: <strong>{{ loan.amount|floatformat:2 }}</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Disbursement Method</label>
+                <select name="method" class="form-control" required>
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                    <option value="mpesa">M-Pesa</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Confirm Disbursement</button>
+            <a href="{% url 'loans:detail' loan.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Savings Accounts{% endblock %}
+{% block page_title %}Savings Management{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_balance|floatformat:0 }}</h4><p>Total Balance (TZS)</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ total_accounts }}</h4><p>Total Accounts</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> Savings Accounts</h3>
+        {% can 'savings.create' as can_create %}{% if can_create %}
+        <a href="{% url 'savings:create' %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus" aria-hidden="true"></i> New Account</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account No</th>
+                        <th>Member</th>
+                        <th>Type</th>
+                        <th>Balance</th>
+                        <th>Interest Rate</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in accounts %}
+                    <tr>
+                        <td><strong>{{ a.account_number }}</strong></td>
+                        <td>{{ a.member_id }}</td>
+                        <td>{{ a.get_account_type_display }}</td>
+                        <td><strong>{{ a.balance|floatformat:2 }}</strong></td>
+                        <td>{{ a.interest_rate }}%</td>
+                        <td><span class="badge badge-{% if a.status == 'active' %}success{% elif a.is_frozen %}danger{% else %}secondary{% endif %}">{{ a.status }}</span></td>
+                        <td class="actions-cell">
+                            <div class="table-actions table-actions--compact">
+                                <a href="{% url 'savings:detail' a.id %}" class="btn btn-sm btn-outline">View</a>
+                                {% can 'savings.deposit' as can_deposit %}
+                                {% if can_deposit %}<a href="{% url 'savings:deposit' a.id %}" class="btn btn-sm btn-success">Deposit</a>{% endif %}
+                                {% can 'savings.withdraw' as can_withdraw %}
+                                {% if can_withdraw %}<a href="{% url 'savings:withdraw' a.id %}" class="btn btn-sm btn-warning">Withdraw</a>{% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-400);">No savings accounts found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

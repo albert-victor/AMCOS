@@ -1,0 +1,345 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Member Detail{% endblock %}
+{% block page_title %}Member: {{ member.member_number }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Personal Information</h3></div>
+        <div class="card-body">
+            <table>
+                <tr><td style="font-weight:600;width:150px;">Member Number</td><td>{{ member.member_number }}</td></tr>
+                <tr><td style="font-weight:600;">Full Name</td><td>{{ member.full_name }}</td></tr>
+                <tr><td style="font-weight:600;">Phone</td><td>{{ member.phone }}</td></tr>
+                <tr><td style="font-weight:600;">Email</td><td>{{ member.email|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">National ID</td><td>{{ member.national_id|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">Gender</td><td>{{ member.gender|title }}</td></tr>
+                <tr><td style="font-weight:600;">Date of Birth</td><td>{{ member.date_of_birth|date:"d/m/Y"|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">Occupation</td><td>{{ member.occupation|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-{% if member.status == 'active' %}success{% elif member.status == 'pending' %}warning{% else %}danger{% endif %}">{{ member.status }}</span></td></tr>
+                <tr><td style="font-weight:600;">Joined</td><td>{{ member.joined_at|date:"d/m/Y" }}</td></tr>
+                {% if linked_user %}
+                <tr>
+                    <td style="font-weight:600;"><span class="lang-sw">Uongozi</span><span class="lang-en">Leadership</span></td>
+                    <td>
+                        {% if linked_user.role == 'member' and linked_user.leadership_role == 'board_member' %}
+                        <span class="badge badge-info"><i class="fa-solid fa-user-tie" aria-hidden="true"></i> <span class="lang-sw">Mjumbe wa Bodi</span><span class="lang-en">Board Member</span></span>
+                        {% else %}
+                        <span class="text-muted"><span class="lang-sw">Mwanachama wa kawaida</span><span class="lang-en">Regular member</span></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
+            {% can 'members.promote_leader' as can_promote %}
+            {% if can_promote and linked_user and linked_user.role == 'member' %}
+            <div class="leadership-actions" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-100);">
+                <p style="font-size:0.85rem;color:var(--gray-500);margin-bottom:0.75rem;">
+                    <span class="lang-sw">Mwanachama anabaki na jukumu la <strong>member</strong>; uongozi wa bodi huongezwa kama cheo cha ziada.</span>
+                    <span class="lang-en">Member keeps <strong>member</strong> role; board leadership is an extra title only.</span>
+                </p>
+                {% if is_board_leader %}
+                <form method="post" action="{% url 'members:remove_leader' member.id %}" onsubmit="return confirm(uiMsg('Una uhakika unataka kumuondoa {{ member.full_name }} kwenye uongozi wa bodi?', 'Remove {{ member.full_name }} from board leadership?'));">
+                    {% csrf_token %}
+                    <input type="hidden" name="return" value="detail">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa-solid fa-user-minus" aria-hidden="true"></i>
+                        <span class="lang-sw">Ondoa kutoka Uongozini</span><span class="lang-en">Remove from Leadership</span>
+                    </button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'members:mark_leader' member.id %}" onsubmit="return confirm(uiMsg('Weka {{ member.full_name }} kama mjumbe wa bodi?', 'Mark {{ member.full_name }} as board member?'));">
+                    {% csrf_token %}
+                    <input type="hidden" name="return" value="detail">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                        <span class="lang-sw">Weka Mjumbe wa Bodi</span><span class="lang-en">Mark as Board Member</span>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header"><h3>Documents</h3></div>
+            <div class="card-body">
+                {% if documents %}
+                <ul style="list-style:none;">
+                    {% for d in documents %}
+                    <li style="padding:0.5rem 0;border-bottom:1px solid var(--gray-100);">
+                        <strong>{{ d.get_document_type_display }}</strong><br>
+                        <small style="color:var(--gray-500);">Status: {{ d.verification_status }} | {{ d.uploaded_at|date:"d/m/Y" }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p style="color:var(--gray-400);">No documents uploaded</p>
+                {% endif %}
+                {% can 'members.kyc' as can_kyc %}{% if can_kyc %}
+                <a href="{% url 'members:documents' member.id %}" class="btn btn-sm btn-outline mt-2">Upload Document</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header"><h3>Next of Kin</h3></div>
+            <div class="card-body">
+                {% if next_of_kins %}
+                {% for n in next_of_kins %}
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--gray-100);">
+                    <strong>{{ n.full_name }}</strong> ({{ n.relationship }})<br>
+                    <small style="color:var(--gray-500);">{{ n.phone }}</small>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="color:var(--gray-400);">No next of kin recorded</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="card-header"><h3>Beneficiaries</h3></div>
+            <div class="card-body">
+                {% if beneficiaries %}
+                {% for b in beneficiaries %}
+                <div style="padding:0.5rem 0;border-bottom:1px solid var(--gray-100);">
+                    <strong>{{ b.full_name }}</strong> ({{ b.relationship }}) - {{ b.percentage }}%<br>
+                    <small style="color:var(--gray-500);">{{ b.phone }}</small>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="color:var(--gray-400);">No beneficiaries recorded</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-top:1rem;">
+    <!-- SIGNATURE PAD INLINE -->
+    {% can 'members.kyc' as can_kyc %}
+    {% if can_kyc %}
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-pen-nib" aria-hidden="true"></i>{% t "Signature" "Sahihi ya Kielektroniki" %}</h3></div>
+        <div class="card-body" style="text-align:center;">
+            <p style="margin-bottom:0.75rem;font-size:0.85rem;color:var(--gray-500);">
+                <span class="lang-sw">Saini hapa chini kwa kutumia kipanya au skrini ya kugusa</span>
+                <span class="lang-en">Sign below using mouse or touch screen</span>
+            </p>
+            <div style="position:relative;display:inline-block;">
+                <canvas id="sigPad" width="460" height="160"
+                    style="border:2px solid #0d3b12;border-radius:8px;cursor:crosshair;background:white;touch-action:none;max-width:100%;">
+                </canvas>
+                <div id="sigPlaceholder" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);color:#aaa;font-size:13px;pointer-events:none;">
+                    <span class="lang-sw">Saini hapa</span><span class="lang-en">Sign here</span>
+                </div>
+            </div>
+            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-outline" onclick="clearPad()"><i class="fa-solid fa-trash" aria-hidden="true"></i>{% t "Futa" "Clear" %}</button>
+                <button class="btn btn-sm btn-success" onclick="saveSignature()"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>{% t "Hifadhi Sahihi" "Save" %}</button>
+            </div>
+            <div id="sigPreview" style="margin-top:0.75rem;display:none;">
+                <div style="border:1px solid #0d3b12;border-radius:8px;padding:8px;display:inline-block;background:#f9fff9;">
+                    <img id="sigImg" src="" style="max-width:260px;max-height:60px;">
+                </div>
+                <p style="font-size:0.8rem;color:green;margin-top:4px;"><i class="fa-solid fa-check" aria-hidden="true"></i>  <span class="lang-sw">Sahihi imehifadhiwa</span><span class="lang-en">Signature saved</span></p>
+            </div>
+            {% if member.signature_url %}
+            <script>window.addEventListener('DOMContentLoaded', function() { showExistingSig('{{ member.signature_url }}'); });</script>
+            {% endif %}
+        </div>
+    </div>
+    {% elif member.signature_url %}
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-pen-nib" aria-hidden="true"></i>{% t "Signature" "Sahihi ya Kielektroniki" %}</h3></div>
+        <div class="card-body" style="text-align:center;">
+            <img src="{{ member.signature_url }}" alt="Signature" style="max-width:260px;max-height:80px;border:1px solid #0d3b12;border-radius:8px;padding:8px;background:#f9fff9;">
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- CARD ISSUANCE TRACKING -->
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-id-card" aria-hidden="true"></i>{% t "Card Issuance" "Utoaji wa Kadi" %}</h3></div>
+        <div class="card-body">
+            {% if card_issuances %}
+            <table style="width:100%;font-size:0.85rem;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th>
+                        <th><span class="lang-sw">Tarehe</span><span class="lang-en">Date</span></th>
+                        <th><span class="lang-sw">Imetolewa na</span><span class="lang-en">Issued By</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ci in card_issuances %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            {% if ci.card_type == 'normal' %}
+                            <span class="badge badge-success">{{ ci.get_card_type_display }}</span>
+                            {% else %}
+                            <span class="badge badge-warning">{{ ci.get_card_type_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ ci.issued_at|date:"d/m/Y H:i" }}</td>
+                        <td>{{ ci.issued_by_name|default:ci.issued_by }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state" style="padding:1rem 0;">
+                <div class="empty-icon" style="font-size:2rem;"><i class="fa-solid fa-id-card" aria-hidden="true"></i>  </div>
+                <p style="color:var(--gray-400);"><span class="lang-sw">Hajawahi kupata kadi</span><span class="lang-en">No card issued yet</span></p>
+            </div>
+            {% endif %}
+            {% can 'members.id_card' as can_id_card %}
+            {% if can_id_card %}
+            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <button class="btn btn-success btn-sm" onclick="printAndRecord('normal')">
+                    <i class="fa-solid fa-print" aria-hidden="true"></i>  <span class="lang-sw">Chapisha Kadi (Mara ya Kwanza)</span><span class="lang-en">Print Card (First Issue)</span>
+                </button>
+                <button class="btn btn-warning btn-sm" onclick="printAndRecord('replacement')">
+                    <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>  <span class="lang-sw">Chapisha Kadi (Uingizwaji)</span><span class="lang-en">Print Card (Replacement)</span>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
+    {% can 'members.approve' as can_approve %}
+    {% can 'members.reject' as can_reject %}
+    {% if can_approve or can_reject %}
+        {% if member.status == 'pending' or member.status == 'under_review' or member.status == 'payment_confirmed' %}
+            {% if can_approve %}<a href="{% url 'members:approve' member.id %}" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i>{% t "Idhinisha" "Approve" %}</a>{% endif %}
+            {% if can_reject %}<a href="{% url 'members:reject' member.id %}" class="btn btn-danger"><i class="fa-solid fa-xmark" aria-hidden="true"></i>{% t "Kataa" "Reject" %}</a>{% endif %}
+        {% endif %}
+    {% endif %}
+    {% can 'members.id_card' as can_id_card %}
+    {% can 'members.suspend' as can_suspend %}
+    {% if member.status == 'active' %}
+        {% if can_id_card %}
+        <a href="{% url 'members:id_card' member.id %}" class="btn btn-primary"><i class="fa-solid fa-id-card" aria-hidden="true"></i>{% t "Fungua Kadi" "Open ID Card" %}</a>
+        <a href="{% url 'members:id_card_pdf' member.id %}" class="btn btn-outline"><i class="fa-solid fa-download" aria-hidden="true"></i>{% t "Pakua PDF" "Download PDF" %}</a>
+        {% endif %}
+        {% if can_suspend %}<a href="{% url 'members:suspend' member.id %}" class="btn btn-warning"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>{% t "Simamisha" "Suspend" %}</a>{% endif %}
+    {% endif %}
+    {% can 'payments.make' as can_pay_make %}{% if can_pay_make %}
+    <a href="{% url 'payments:make' %}?member={{ member.id }}" class="btn btn-outline"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i>   Rekodi Malipo</a>
+    {% endif %}
+    {% can 'loans.apply' as can_loan_apply %}{% if can_loan_apply %}
+    <a href="{% url 'loans:apply' %}?member={{ member.id }}" class="btn btn-outline"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>   Omba Mkopo</a>
+    {% endif %}
+</div>
+
+{% if can_kyc %}
+<style>
+canvas#sigPad { display: block; margin: 0 auto; }
+canvas#sigPad:active { cursor: crosshair; }
+</style>
+
+<script>
+var canvas = document.getElementById('sigPad');
+var ctx = canvas.getContext('2d');
+var drawing = false;
+var sigData = null;
+
+function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseleave', stopDraw);
+canvas.addEventListener('touchstart', function(e) { e.preventDefault(); startDraw(e); });
+canvas.addEventListener('touchmove', function(e) { e.preventDefault(); draw(e); });
+canvas.addEventListener('touchend', stopDraw);
+
+function startDraw(e) {
+    drawing = true;
+    var pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    document.getElementById('sigPlaceholder').style.display = 'none';
+}
+function draw(e) {
+    if (!drawing) return;
+    var pos = getPos(e);
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#0d3b12';
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+}
+function stopDraw() { drawing = false; sigData = canvas.toDataURL('image/png'); }
+
+function clearPad() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    sigData = null;
+    document.getElementById('sigPlaceholder').style.display = 'block';
+    document.getElementById('sigPreview').style.display = 'none';
+}
+
+function showExistingSig(url) {
+    document.getElementById('sigPreview').style.display = 'block';
+    document.getElementById('sigImg').src = url + '?t=' + Date.now();
+}
+
+function saveSignature() {
+    if (!sigData) { alert(uiMsg('Tafadhali saini kwanza', 'Please sign first')); return; }
+    saveSigData(sigData);
+}
+
+function saveSigData(data) {
+    fetch('{% url "members:signature" member.id %}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ signature: data })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.status === 'ok') { showExistingSig(d.url); }
+        else { alert('Error: ' + (d.message || 'Unknown')); }
+    })
+    .catch(function() { alert('Network error'); });
+}
+
+clearPad();
+</script>
+{% endif %}
+
+<script>
+function printAndRecord(cardType) {
+    var url = '{% url "members:id_card" member.id %}' + '?print=1';
+    window.open(url, '_blank');
+    fetch('{% url "members:record_card" member.id %}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: 'card_type=' + cardType
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.status === 'ok') { location.reload(); }
+    })
+    .catch(function() {});
+}
+</script>
+{% endblock %}

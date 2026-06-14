@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% t "Ununuzi wa Hisa" "Purchase Shares" %}{% endblock %}
+{% block page_title %}{% t "Ununuzi wa Hisa" "Purchase Shares" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:720px;">
+    <div class="card-header">
+        <h3>{% t "Nunua Hisa" "New Share Purchase" %}</h3>
+    </div>
+    <div class="card-body">
+        <div style="background:linear-gradient(135deg,#0d3b12,#1B5E20);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.25rem;color:white;">
+            <p style="font-weight:700;color:#F9A825;font-size:0.95rem;">
+                <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
+                {% t "Bei ya Hisa" "Share Price" %}
+            </p>
+            <p style="font-size:0.85rem;opacity:0.95;margin:0;">
+                {% t "Hisa 1 =" "1 share =" %}
+                <strong style="color:#F9A825;">TZS {{ share_price_int|floatformat:0 }}</strong>
+                {% if cooperative %}<span style="opacity:0.8;"> ({{ cooperative.name }})</span>{% endif %}
+            </p>
+        </div>
+
+        <div id="member-share-info" style="display:none;background:#f8fdf8;border:1px solid #c8e6c9;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;"></div>
+
+        <form method="post" id="share-purchase-form" class="pay-sim-form">
+            {% csrf_token %}
+
+            {% if own_member %}
+            <p class="text-muted" style="font-size:0.85rem;margin-bottom:0.75rem;">
+                <span class="lang-sw">Chagua mwenyewe au mwanachama mwingine unayemununulia hisa. Mwanachama atapata arifa.</span>
+                <span class="lang-en">Select yourself or another member to buy shares for. They will receive a notification.</span>
+            </p>
+            {% endif %}
+
+            <div class="form-group">
+                <label style="font-weight:600;">{% t "Aina ya Mwanachama" "Member Type" %}</label>
+                <div class="flex gap-2" style="margin-top:0.5rem;flex-wrap:wrap;">
+                    <label class="btn btn-outline" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;">
+                        <input type="radio" name="member_mode" value="existing" checked>
+                        {% t "Mwanachama Aliyepo" "Existing Member" %}
+                    </label>
+                    {% if not own_member %}
+                    <label class="btn btn-outline" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;">
+                        <input type="radio" name="member_mode" value="new">
+                        {% t "Mwanachama Mpya" "New Member" %}
+                    </label>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="panel-existing">
+                <div class="form-group">
+                    <label>{% t "Chagua Mwanachama" "Select Member" %} *</label>
+                    <select name="member_id" id="member-select" class="form-control" required>
+                        <option value="">{% t "-- Chagua mwanachama --" "-- Select member --" %}</option>
+                        {% for m in members %}
+                        <option value="{{ m.id }}" {% if own_member and own_member.id == m.id %}selected{% endif %}>
+                            {{ m.member_number }} — {{ m.first_name }} {{ m.last_name }} ({{ m.phone }})
+                            {% if own_member and own_member.id == m.id %} — {% t "Mimi" "Me" %}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div id="panel-new" style="display:none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>{% t "Jina la Kwanza" "First Name" %} *</label>
+                        <input type="text" name="new_first_name" class="form-control" autocomplete="given-name">
+                    </div>
+                    <div class="form-group">
+                        <label>{% t "Jina la Ukoo" "Last Name" %} *</label>
+                        <input type="text" name="new_last_name" class="form-control" autocomplete="family-name">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>{% t "Simu" "Phone" %} *</label>
+                        <input type="tel" name="new_phone" class="form-control" placeholder="2557XXXXXXXX" autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label>{% t "Barua Pepe" "Email" %}</label>
+                        <input type="email" name="new_email" class="form-control" autocomplete="email">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>{% t "NIDA" "National ID" %}</label>
+                        <input type="text" name="new_national_id" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>{% t "Jinsia" "Gender" %}</label>
+                        <select name="new_gender" class="form-control">
+                            <option value="male">{% t "Mwanaume" "Male" %}</option>
+                            <option value="female">{% t "Mwanamke" "Female" %}</option>
+                            <option value="other">{% t "Nyingine" "Other" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin:1.25rem 0;border-color:var(--gray-200);">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Idadi ya Hisa" "Number of Shares" %} *</label>
+                    <select name="quantity" id="quantity-select" class="form-control" required>
+                        <option value="">{% t "-- Chagua idadi --" "-- Select quantity --" %}</option>
+                        {% for n in quantity_options_limited %}
+                        <option value="{{ n }}" data-total="{{ n|add:0 }}">
+                            {{ n }} {% if n == 1 %}{% t "hisa" "share" %}{% else %}{% t "hisa" "shares" %}{% endif %}
+                            — TZS {% widthratio share_price_int 1 n %}
+                        </option>
+                        {% endfor %}
+                        <option value="other">{% t "Nyingine (andika)" "Other (please specify)" %}</option>
+                    </select>
+                    <input type="number" name="quantity_custom" id="quantity-custom" class="form-control"
+                        min="1" max="{{ max_quantity }}" step="1" style="display:none;margin-top:0.5rem;"
+                        placeholder="{% te 'Andika idadi ya hisa' 'Enter number of shares' %}">
+                </div>
+                <div class="form-group">
+                    <label>{% t "Bei kwa Hisa (TZS)" "Price per Share (TZS)" %}</label>
+                    <input type="number" name="price_per_share" id="price-per-share" class="form-control"
+                        value="{{ share_price_int }}" readonly step="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{% t "Jumla ya Malipo (TZS)" "Total Amount (TZS)" %}</label>
+                <input type="text" id="total-display" class="form-control" readonly
+                    style="font-weight:700;font-size:1.1rem;background:#f0fdf4;color:#0d3b12;"
+                    placeholder="{% te 'Chagua idadi ya hisa' 'Select number of shares' %}">
+            </div>
+
+            <h4 style="margin:1rem 0 0.75rem;font-weight:600;">{% t "Malipo" "Payment" %}</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>{% t "Njia ya Malipo" "Payment Method" %}</label>
+                    <select name="payment_method" class="form-control" required
+                        data-opt-sw="-- Chagua njia --" data-opt-en="-- Select method --">
+                        <option value="">{% t "-- Chagua njia --" "-- Select method --" %}</option>
+                        <option value="cash" class="pay-opt">{% t "Fedha Taslimu" "Cash" %}</option>
+                        <option value="mixx_yas" class="pay-opt pay-opt--mobile">Mixx by Yas</option>
+                        <option value="mpesa" class="pay-opt pay-opt--mobile">M-PESA</option>
+                        <option value="halopesa" class="pay-opt pay-opt--mobile">HALOPESA</option>
+                        <option value="airtel_money" class="pay-opt pay-opt--mobile">AIRTEL MONEY</option>
+                        <option value="selcom_pesa" class="pay-opt pay-opt--mobile">SELCOM PESA</option>
+                        <option value="nmb" class="pay-opt pay-opt--bank">NMB</option>
+                        <option value="crdb" class="pay-opt pay-opt--bank">CRDB</option>
+                        <option value="other" class="pay-opt pay-opt--other">OTHERS</option>
+                    </select>
+                    {% include 'includes/_payment_method_other_field.html' %}
+                </div>
+                <div class="form-group">
+                    <label>{% t "Namba ya Simu" "Phone Number" %} *</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="255XXXXXXXXX">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{% t "Maelezo" "Description" %}</label>
+                <textarea name="description" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="flex gap-2" style="margin-top:1rem;">
+                <button type="button" class="btn btn-primary" data-pay-sim-submit>
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <span class="lang-sw">Lipa Sasa na Nunua</span><span class="lang-en">Pay Now & Purchase</span>
+                </button>
+                <a href="{% url 'shares:list' %}" class="btn btn-outline">{% t "Ghairi" "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    var sharePrice = {{ share_price_int }};
+    var shareData = {{ share_data_json|safe }};
+    var form = document.getElementById('share-purchase-form');
+    var memberSelect = document.getElementById('member-select');
+    var ownMemberId = {% if own_member %}'{{ own_member.id }}'{% else %}null{% endif %};
+    var quantitySelect = document.getElementById('quantity-select');
+    var priceInput = document.getElementById('price-per-share');
+    var totalDisplay = document.getElementById('total-display');
+    var infoBox = document.getElementById('member-share-info');
+    var panelExisting = document.getElementById('panel-existing');
+    var panelNew = document.getElementById('panel-new');
+    var modeRadios = form.querySelectorAll('input[name="member_mode"]');
+
+    function formatTzs(n) {
+        return 'TZS ' + Number(n).toLocaleString('en-US');
+    }
+
+    function updateTotal() {
+        var qty = 0;
+        if (quantitySelect.value === 'other') {
+            qty = parseInt(document.getElementById('quantity-custom').value, 10) || 0;
+        } else {
+            qty = parseInt(quantitySelect.value, 10) || 0;
+        }
+        var total = qty * sharePrice;
+        priceInput.value = sharePrice;
+        if (qty > 0) {
+            totalDisplay.value = formatTzs(total);
+        } else {
+            totalDisplay.value = '';
+        }
+    }
+
+    function toggleCustomQuantity() {
+        var custom = document.getElementById('quantity-custom');
+        var isOther = quantitySelect.value === 'other';
+        custom.style.display = isOther ? 'block' : 'none';
+        custom.required = isOther;
+        if (!isOther) custom.value = '';
+        updateTotal();
+        updateMemberInfo();
+    }
+
+    function updateMemberInfo() {
+        var id = ownMemberId || (memberSelect && memberSelect.value);
+        if (!id || !shareData[id]) {
+            infoBox.style.display = 'none';
+            return;
+        }
+        var sd = shareData[id];
+        infoBox.style.display = 'block';
+        var after = (parseInt(quantitySelect.value, 10) || 0) + sd.total_shares;
+        infoBox.innerHTML =
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;text-align:center;">' +
+            '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Hisa sasa</p>' +
+            '<p style="font-weight:700;color:#0d3b12;font-size:1.1rem;">' + sd.total_shares + '</p></div>' +
+            '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Thamani</p>' +
+            '<p style="font-weight:700;color:#0d3b12;font-size:1.1rem;">' + formatTzs(sd.total_value) + '</p></div>' +
+            '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Baada ya ununuzi</p>' +
+            '<p style="font-weight:700;color:#F9A825;font-size:1.1rem;">' + after + ' hisa</p></div></div>';
+    }
+
+    function setMemberMode() {
+        var mode = form.querySelector('input[name="member_mode"]:checked').value;
+        var isNew = mode === 'new';
+        panelExisting.style.display = isNew ? 'none' : 'block';
+        panelNew.style.display = isNew ? 'block' : 'none';
+        memberSelect.required = !isNew;
+        form.querySelectorAll('#panel-new input[name^="new_"]').forEach(function(el) {
+            if (el.name === 'new_email' || el.name === 'new_national_id') return;
+            el.required = isNew && (el.name === 'new_first_name' || el.name === 'new_last_name' || el.name === 'new_phone');
+        });
+        if (isNew) {
+            infoBox.style.display = 'none';
+        } else {
+            updateMemberInfo();
+        }
+    }
+
+    if (modeRadios.length) {
+        modeRadios.forEach(function(r) {
+            r.addEventListener('change', setMemberMode);
+        });
+    }
+    if (memberSelect) {
+        memberSelect.addEventListener('change', updateMemberInfo);
+    }
+    quantitySelect.addEventListener('change', toggleCustomQuantity);
+    document.getElementById('quantity-custom').addEventListener('input', function() {
+        updateTotal();
+        updateMemberInfo();
+    });
+
+    form.addEventListener('submit', function(e) {
+        var mode = form.querySelector('input[name="member_mode"]:checked').value;
+        if (mode === 'existing' && !memberSelect.value) {
+            e.preventDefault();
+            alert('Chagua mwanachama / Select a member');
+            return;
+        }
+        if (mode === 'new') {
+            var fn = form.querySelector('[name="new_first_name"]').value.trim();
+            var ln = form.querySelector('[name="new_last_name"]').value.trim();
+            var ph = form.querySelector('[name="new_phone"]').value.trim();
+            if (!fn || !ln || !ph) {
+                e.preventDefault();
+                alert('Jaza jina na simu ya mwanachama mpya / Fill new member name and phone');
+                return;
+            }
+        }
+        if (!quantitySelect.value) {
+            e.preventDefault();
+            alert('Chagua idadi ya hisa / Select number of shares');
+            return;
+        }
+        if (quantitySelect.value === 'other') {
+            var customQty = parseInt(document.getElementById('quantity-custom').value, 10) || 0;
+            if (customQty < 1) {
+                e.preventDefault();
+                alert('Andika idadi sahihi ya hisa / Enter a valid share quantity');
+                return;
+            }
+        }
+        if (typeof validatePaymentMethodOther === 'function' && !validatePaymentMethodOther(form)) {
+            e.preventDefault();
+        }
+    });
+
+    setMemberMode();
+    if (ownMemberId) {
+        updateMemberInfo();
+    }
+    toggleCustomQuantity();
+})();
+</script>
+<script src="{% static 'js/payment-method-other.js' %}"></script>
+<script src="{% static 'js/pay-simulation.js' %}"></script>
+{% endblock %}

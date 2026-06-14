@@ -1,0 +1,232 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="{{ current_lang|default:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk ID Cards - MGOWELO AMCOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        .page-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .page-info h1 { font-size: 22px; color: #0d3b12; }
+        .page-info p { color: #666; }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+        .card-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            max-width: 340px;
+            width: 100%;
+        }
+        .card-actions {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .card-actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #0d3b12;
+            background: #fff;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .card-actions a:hover {
+            background: #e8f5e9;
+            border-color: #0d3b12;
+        }
+        .card-actions a i { font-size: 0.8rem; color: #2e7d32; }
+        .id-card {
+            width: 340px;
+            height: 540px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border: 1px solid #0d3b12;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-top {
+            background: linear-gradient(135deg, #0d3b12, #1B5E20);
+            color: white;
+            padding: 16px 14px 10px;
+            text-align: center;
+        }
+        .card-top .brand { font-size: 10px; font-weight: 700; color: #F9A825; }
+        .card-top .title {
+            background: #F9A825; color: #0d3b12;
+            display: inline-block; padding: 3px 16px;
+            border-radius: 20px; font-size: 10px; font-weight: 800;
+            margin-top: 4px; letter-spacing: 0.5px;
+        }
+        .card-photo {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid #0d3b12;
+            margin: 10px auto 6px;
+            overflow: hidden;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .card-photo .no-photo { font-size: 28px; color: #999; }
+        .card-name { text-align: center; padding: 0 12px; }
+        .card-name h2 { font-size: 15px; font-weight: 800; color: #0d3b12; }
+        .card-name .id-number {
+            font-size: 16px; font-weight: 900; color: #F9A825;
+            background: #0d3b12; display: inline-block;
+            padding: 3px 14px; border-radius: 6px; letter-spacing: 1px;
+            margin-top: 3px;
+        }
+        .card-details { padding: 8px 16px; flex: 1; }
+        .card-details .row {
+            display: flex; justify-content: space-between;
+            padding: 2px 0; border-bottom: 1px solid #eee;
+            font-size: 11px;
+        }
+        .card-details .row .label { font-weight: 700; color: #0d3b12; }
+        .card-details .row .value { font-weight: 600; }
+        .card-qr { text-align: center; padding: 4px 0; }
+        .card-qr img { width: 60px; height: 60px; }
+        .card-footer {
+            background: #0d3b12; color: #F9A825;
+            text-align: center; padding: 4px;
+            font-size: 7px; font-weight: 700;
+        }
+        .no-print {
+            text-align: center; margin: 20px 0;
+        }
+        .no-print button {
+            background: #0d3b12; color: white;
+            border: none; padding: 12px 32px;
+            border-radius: 10px; font-size: 15px; font-weight: 700;
+            cursor: pointer; margin: 0 8px;
+        }
+        .no-print button:hover { background: #1B5E20; }
+        .no-print a { display: inline-block; margin-top: 12px; color: #0d3b12; font-size: 14px; }
+        @media print {
+            body { background: white; padding: 10px; }
+            .no-print, .card-actions { display: none !important; }
+            .id-card { box-shadow: none; break-inside: avoid; }
+            .card-wrap { break-inside: avoid; }
+            .cards-grid { gap: 16px; }
+            @page { margin: 0.3cm; size: A4 landscape; }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print page-info">
+        <h1>MGOWELO AMCOS - ID Card</h1>
+        <p>
+            {% t "Inaonyeshwa" "Showing" %} <strong>{{ shown_count }}</strong>
+            {% t "kati ya" "of" %} <strong>{{ total_active }}</strong>
+            {% t "wanachama walio hai" "active members" %}
+        </p>
+        {% if not show_all and total_active > demo_limit %}
+        <p style="font-size:0.85rem;margin-top:0.35rem;">
+            <a href="?all=1" style="color:#0d3b12;font-weight:600;">{% t "Onyesha zaidi (hadi 48)" "Show more (up to 48)" %}</a>
+        </p>
+        {% elif show_all and total_active > shown_count %}
+        <p style="font-size:0.85rem;margin-top:0.35rem;">
+            <a href="{% url 'members:id_card_bulk' %}" style="color:#0d3b12;font-weight:600;">{% t "Rudi kwenye demo (12)" "Back to demo (12)" %}</a>
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="cards-grid">
+        {% for item in cards %}
+        <div class="card-wrap">
+        <div class="id-card">
+            <div class="card-top">
+                <div class="brand">MGOWELO AMCOS</div>
+                <div class="title">MEMBERSHIP CARD</div>
+            </div>
+            <div class="card-photo">
+                {% if item.member.photo_url %}
+                <img src="{{ item.member.photo_url }}" alt="Photo">
+                {% else %}
+                <span class="no-photo"><i class="fa-solid fa-user" aria-hidden="true"></i>  </span>
+                {% endif %}
+            </div>
+            <div class="card-name">
+                <h2>{{ item.member.full_name }}</h2>
+                <div class="id-number">{{ item.member.member_number }}</div>
+            </div>
+            <div class="card-details">
+                <div class="row"><span class="label">Phone</span><span class="value">{{ item.member.phone }}</span></div>
+                <div class="row"><span class="label">Gender</span><span class="value">{{ item.member.get_gender_display }}</span></div>
+                <div class="row"><span class="label">Region</span><span class="value">{{ item.member.region|default:"Iringa" }}</span></div>
+                <div class="row"><span class="label">Since</span><span class="value">{{ item.member.joined_at|date:"M Y" }}</span></div>
+                <div class="row"><span class="label">Status</span><span class="value" style="color:#0d3b12;font-weight:800;">{{ item.member.get_status_display|upper }}</span></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:2px 16px;">
+                <div style="flex:1;text-align:left;">
+                    {% if item.member.signature_url %}
+                    <img src="{{ item.member.signature_url }}" alt="Sig" style="max-width:80px;max-height:28px;">
+                    {% else %}
+                    <div style="width:80px;height:20px;border-bottom:1px solid #333;"></div>
+                    {% endif %}
+                </div>
+                <div class="card-qr" style="padding:2px 0;">
+                    {% if item.qr_base64 %}
+                    <img src="data:image/png;base64,{{ item.qr_base64 }}" alt="QR" style="width:50px;height:50px;">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer">MGOWELO AMCOS &bull; IRINGA &bull; TANZANIA</div>
+        </div>
+        <div class="card-actions no-print">
+            <a href="{% url 'members:id_card' item.member.id %}" title="{% te 'Angalia' 'View' %}">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>{% t "Angalia" "View" %}
+            </a>
+            <a href="{% url 'members:id_card' item.member.id %}?print=1" target="_blank" rel="noopener" title="{% te 'Chapisha' 'Print' %}">
+                <i class="fa-solid fa-print" aria-hidden="true"></i>{% t "Chapisha" "Print" %}
+            </a>
+            <a href="{% url 'members:id_card_pdf' item.member.id %}" title="{% te 'PDF' 'PDF' %}">
+                <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>PDF
+            </a>
+        </div>
+        </div>
+        {% empty %}
+        <div style="text-align:center;padding:40px;color:#666;grid-column:1/-1;">
+            <h2>{% t "Hakuna wanachama walio hai" "No active members" %}</h2>
+            <p>{% t "Id card hazipatikani mpaka mwanachama akiwa active" "ID cards available only for active members" %}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="no-print" style="margin-top:30px;">
+        <button onclick="window.print()"><i class="fa-solid fa-print" aria-hidden="true"></i>{% t "Chapisha Zote" "Print All" %}</button>
+        <a href="{% url 'members:id_card_bulk_pdf' %}" class="btn" style="background:#0d3b12;color:white;border:none;padding:12px 32px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:0 8px;"><i class="fa-solid fa-download" aria-hidden="true"></i>{% t "Pakua PDF Zote" "Download All PDF" %}</a>
+        <br>
+        <a href="{% url 'members:list' %}">&larr; {% t "Rudi kwa Wanachama" "Back to Members" %}</a>
+    </div>
+    <script>if (window.location.search.includes('print=true')) { window.onload = function() { window.print(); }; }</script>
+</body>
+</html>

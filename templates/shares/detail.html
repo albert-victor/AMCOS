@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Share Detail{% endblock %}
+{% block page_title %}Share: {{ share.certificate_number }}{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3>Share Details</h3></div>
+        <div class="card-body">
+            <table>
+                <tr><td style="font-weight:600;width:160px;">Certificate No</td><td>{{ share.certificate_number }}</td></tr>
+                <tr><td style="font-weight:600;">Member</td><td>{% if member %}{{ member.member_number }} — {{ member.full_name }}{% else %}{{ share.member_id }}{% endif %}</td></tr>
+                <tr><td style="font-weight:600;">Total Shares</td><td><strong>{{ share.total_shares }}</strong></td></tr>
+                <tr><td style="font-weight:600;">Total Value</td><td><strong>{{ share.total_value|floatformat:2 }}</strong></td></tr>
+                <tr><td style="font-weight:600;">Status</td><td><span class="badge badge-success">{{ share.status }}</span></td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>Transaction History</h3></div>
+        <div class="card-body">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td>{{ t.transaction_type }}</td>
+                            <td>{{ t.quantity }}</td>
+                            <td>{{ t.price_per_share|floatformat:0 }}</td>
+                            <td>{{ t.total_amount|floatformat:0 }}</td>
+                            <td>{{ t.created_at|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" style="text-align:center;color:var(--gray-400);">No transactions.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+    <div class="card-body flex gap-2" style="justify-content:center;">
+        <a href="{% url 'shares:certificate' share.id %}" class="btn btn-primary"><i class="fa-solid fa-print" aria-hidden="true"></i>  Print Certificate</a>
+        <a href="{% url 'shares:receipt' share.id %}?print=true" class="btn btn-outline"><i class="fa-solid fa-download" aria-hidden="true"></i>  Download PDF</a>
+    </div>
+</div>
+{% endblock %}

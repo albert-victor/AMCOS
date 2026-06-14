@@ -1,0 +1,122 @@
+﻿{% extends 'base.html' %}
+{% block title %}Carder Dashboard{% endblock %}
+{% block page_title %}{% endblock %}
+{% block content %}
+<div class="welcome-section">
+    <h2><i class="fa-solid fa-id-card" aria-hidden="true"></i>  <span class="lang-sw">DASHIBODI YA CARDER (ID OFFICER)</span><span class="lang-en">CARDER DASHBOARD (ID OFFICER)</span></h2>
+    <p><span class="lang-sw">Usimamizi wa Vitambulisho na Usajili wa Wanachama</span><span class="lang-en">Member Registration & ID Management</span></p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" onclick="location.href='{% url 'members:list' %}'">
+        <div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ total_members }}</h4>
+            <p><span class="lang-sw">Jumla Wanachama</span><span class="lang-en">Total Members</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'members:list' %}?status=active'">
+        <div class="stat-icon green"><i class="fa-solid fa-check" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ active_members }}</h4>
+            <p><span class="lang-sw">Wanachama Waliohai</span><span class="lang-en">Active Members</span></p>
+        </div>
+    </div>
+    <div class="stat-card" onclick="location.href='{% url 'members:list' %}?status=pending'">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ pending_members }}</h4>
+            <p><span class="lang-sw">Wanasubiri Usajili</span><span class="lang-en">Pending Registration</span></p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-id-card" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ cards_issued }}</h4>
+            <p><span class="lang-sw">Kadi Zimetolewa</span><span class="lang-en">Cards Issued</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-bottom:1.5rem;">
+    <a href="{% url 'members:create' %}" class="btn btn-primary btn-lg" style="justify-content:center;padding:1.5rem;font-size:1.1rem;"><i class="fa-solid fa-plus" aria-hidden="true"></i>  <span class="lang-sw">Sajili Mwanachama Mpya</span><span class="lang-en">Register New Member</span></a>
+    <a href="{% url 'members:id_card_bulk' %}" class="btn btn-success btn-lg" style="justify-content:center;padding:1.5rem;font-size:1.1rem;"><i class="fa-solid fa-id-card" aria-hidden="true"></i>  <span class="lang-sw">Chapisha Kadi za Vitambulisho</span><span class="lang-en">Print ID Cards</span></a>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Wanachama Wapya</span><span class="lang-en">Recent Members</span></h3>
+            <a href="{% url 'members:list' %}" class="btn btn-sm btn-outline"><span class="lang-sw">Ona Wote</span><span class="lang-en">View All</span></a>
+        </div>
+        <div class="card-body">
+            {% if recent_members %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr>
+                        <th><span class="lang-sw">Namba</span><span class="lang-en">Number</span></th>
+                        <th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th>
+                        <th><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></th>
+                        <th><span class="lang-sw">Hali</span><span class="lang-en">Status</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in recent_members %}
+                    <tr>
+                        <td>{{ m.member_number|default:'-' }}</td>
+                        <td><a href="{% url 'members:detail' m.id %}">{{ m.first_name }} {{ m.last_name }}</a></td>
+                        <td>{{ m.phone }}</td>
+                        <td><span class="badge badge-{% if m.status == 'active' %}success{% elif m.status == 'pending' %}warning{% else %}secondary{% endif %}">{{ m.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+                <h3><span class="lang-sw">Hakuna Wanachama Bado</span><span class="lang-en">No Members Yet</span></h3>
+                <p><span class="lang-sw">Anza kusajili wanachama</span><span class="lang-en">Start registering members</span></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3><span class="lang-sw">Kadi Zilizotolewa Hivi Karibuni</span><span class="lang-en">Recent Card Issuances</span></h3>
+        </div>
+        <div class="card-body">
+            {% if recent_cards %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr>
+                        <th><span class="lang-sw">Mwanachama</span><span class="lang-en">Member</span></th>
+                        <th><span class="lang-sw">Aina</span><span class="lang-en">Type</span></th>
+                        <th><span class="lang-sw">Tarehe</span><span class="lang-en">Date</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in recent_cards %}
+                    <tr>
+                        <td>{{ c.member.first_name }} {{ c.member.last_name }}</td>
+                        <td><span class="badge badge-{% if c.card_type == 'normal' %}success{% else %}warning{% endif %}">{{ c.get_card_type_display }}</span></td>
+                        <td>{{ c.issued_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fa-solid fa-id-card" aria-hidden="true"></i> </div>
+                <h3><span class="lang-sw">Hakuna Kadi Zimetolewa</span><span class="lang-en">No Cards Issued Yet</span></h3>
+                <p><span class="lang-sw">Kadi zitaonekana hapa baada ya kuchapishwa</span><span class="lang-en">Cards will appear here after printing</span></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

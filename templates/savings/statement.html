@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Account Statement{% endblock %}
+{% block page_title %}Statement: {{ account.account_number }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Account Statement</h3>
+        <div>
+            <form method="get" class="flex gap-2">
+                <input type="date" name="from" class="form-control" value="{{ start_date }}" style="max-width:160px;">
+                <input type="date" name="to" class="form-control" value="{{ end_date }}" style="max-width:160px;">
+                <button type="submit" class="btn btn-sm btn-outline">Filter</button>
+                <button onclick="window.print()" class="btn btn-sm btn-outline">Print</button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <p>Member ID: {{ account.member_id }} | Account Type: {{ account.get_account_type_display }} | Balance: <strong>{{ account.balance|floatformat:2 }}</strong></p>
+        <div class="table-container" style="margin-top:1rem;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td>{{ t.created_at|date:"d/m/Y" }}</td>
+                        <td><span class="badge badge-{% if t.transaction_type == 'deposit' %}success{% else %}danger{% endif %}">{{ t.transaction_type }}</span></td>
+                        <td>{{ t.amount|floatformat:2 }}</td>
+                        <td>{{ t.balance_after|floatformat:2 }}</td>
+                        <td>{{ t.description|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;color:var(--gray-400);">No transactions in this period.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

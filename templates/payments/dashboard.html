@@ -1,0 +1,140 @@
+﻿{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Payment Dashboard{% endblock %}
+{% block page_title %}{% t "Dashibodi ya Malipo" "Payment Dashboard" %}{% endblock %}
+{% block content %}
+
+<div class="stats-grid stats-grid--dense">
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ stats.total_collected|floatformat:0 }}</h4>
+            <p>{% t "Jumla" "Total Collected" %}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ stats.today_collected|floatformat:0 }}</h4>
+            <p>{% t "Leo" "Today" %}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#e8f5e9;color:#2e7d32;"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i>  </div>
+        <div class="stat-info">
+            <h4>{{ stats.month_collected|floatformat:0 }}</h4>
+            <p>{% t "Mwezi Huu" "This Month" %}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ stats.pending_count }}</h4>
+            <p>{% t "Hawajathibitishwa" "Pending" %}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ stats.failed_count }}</h4>
+            <p>{% t "Imeshindwa" "Failed" %}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#e3f2fd;color:#1565c0;"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> </div>
+        <div class="stat-info">
+            <h4>{{ stats.total_transactions }}</h4>
+            <p>{% t "Jumla ya Miamala" "Transactions" %}</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2 mt-6">
+    <div class="card">
+        <div class="card-header"><h3>{% t "Kwa Aina" "By Type" %}</h3></div>
+        <div class="card-body">
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>{% t "Aina" "Type" %}</th><th>{% t "Idadi" "Count" %}</th><th>{% t "Jumla" "Total" %}</th></tr></thead>
+                <tbody>
+                    {% for item in type_breakdown %}
+                    <tr>
+                        <td>{{ item.payment_type }}</td>
+                        <td>{{ item.count }}</td>
+                        <td><strong>{{ item.total|floatformat:0 }}</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--gray-400);">{% t "Hakuna data" "No data" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3>{% t "Kwa Njia" "By Method" %}</h3></div>
+        <div class="card-body">
+            <div class="table-container table-container--compact">
+            <table>
+                <thead><tr><th>{% t "Njia" "Method" %}</th><th>{% t "Idadi" "Count" %}</th><th>{% t "Jumla" "Total" %}</th></tr></thead>
+                <tbody>
+                    {% for item in method_breakdown %}
+                    <tr>
+                        <td>{{ item.payment_method }}</td>
+                        <td>{{ item.count }}</td>
+                        <td><strong>{{ item.total|floatformat:0 }}</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--gray-400);">{% t "Hakuna data" "No data" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-6">
+    <div class="card-header">
+        <h3>{% t "Miamala ya Hivi Karibuni" "Recent Transactions" %}</h3>
+        <div class="flex gap-2">
+            <a href="{% url 'payments:list' %}" class="btn btn-sm btn-outline">{% t "Malipo Yote" "All Payments" %}</a>
+            {% can 'payments.make' as can_pay_make %}{% if can_pay_make %}
+            <a href="{% url 'payments:make' %}" class="btn btn-sm btn-primary">{% t "+ Rekodi" "Record" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-container table-container--scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{% t "Rejea" "Reference" %}</th>
+                        <th>{% t "Aina" "Type" %}</th>
+                        <th>{% t "Njia" "Method" %}</th>
+                        <th>{% t "Kiasi" "Amount" %}</th>
+                        <th>{% t "Hali" "Status" %}</th>
+                        <th>{% t "Tarehe" "Date" %}</th>
+                        <th>{% t "Hatua" "Action" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in recent %}
+                    <tr>
+                        <td><strong>{{ p.reference_number|truncatechars:10 }}</strong></td>
+                        <td>{{ p.get_payment_type_display }}</td>
+                        <td>{{ p.get_payment_method_display }}</td>
+                        <td><strong>{{ p.amount|floatformat:0 }}</strong></td>
+                        <td><span class="badge badge-{% if p.status == 'completed' %}success{% elif p.status == 'pending' %}warning{% elif p.status == 'failed' %}danger{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+                        <td>{{ p.created_at|date:"d/m H:i" }}</td>
+                        <td><a href="{% url 'payments:detail' p.id %}" class="btn btn-sm btn-outline">{% t "Angalia" "View" %}</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-400);">{% t "Hakuna miamala" "No transactions" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

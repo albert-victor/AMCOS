@@ -1,0 +1,70 @@
+{% load static %}
+
+{# AMCOS AI — dash: compact icon | landing: AMCOS AI pill (guests) #}
+{% with variant=ai_variant|default:'dash' %}
+
+<div class="ai-panel-overlay" id="aiOverlay" onclick="closeAI()"></div>
+
+<button type="button"
+    class="ai-float-btn {% if variant == 'landing' %}ai-float-btn--landing{% else %}ai-float-btn--dash{% endif %}"
+    id="aiBtn" onclick="toggleAI()"
+    title="AMCOS AI" aria-label="AMCOS AI">
+    <span class="ai-fab-pulse" aria-hidden="true"></span>
+    {% if variant == 'landing' %}
+    <span class="ai-fab-icon" aria-hidden="true"><i class="fa-solid fa-robot"></i></span>
+    <span class="ai-fab-label">AMCOS AI</span>
+    {% else %}
+    <span class="ai-fab-icon" aria-hidden="true"><i class="fa-solid fa-robot"></i></span>
+    {% endif %}
+</button>
+
+<div class="ai-panel ai-panel--right" id="aiPanel" role="dialog" aria-label="AMCOS AI">
+    <div class="ai-header">
+        <div class="ai-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+        <div>
+            <h3>AMCOS AI</h3>
+            <p><span class="lang-sw">Uliza kuhusu mfumo wa MGOWELO AMCOS</span><span class="lang-en">Ask about the MGOWELO AMCOS system</span></p>
+        </div>
+        <button type="button" class="close-btn" onclick="closeAI()" aria-label="Close">&times;</button>
+    </div>
+    <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot ai-msg--welcome">
+            <i class="fa-solid fa-robot" aria-hidden="true"></i>
+            <span class="ai-msg-body">
+                {% if user.is_authenticated %}
+                <span class="lang-sw">Habari! Mimi ni AMCOS AI. Ninaweza kukusaidia kuhusu huduma zako (wanachama, malipo, mikopo, akiba, hisa) — kwa Kiswahili au Kiingereza.</span>
+                <span class="lang-en">Hello! I am AMCOS AI. I can help with your services (members, payments, loans, savings, shares) — in Swahili or English.</span>
+                {% else %}
+                <span class="lang-sw">Habari! Mimi ni AMCOS AI. Ninaweza kueleza MGOWELO AMCOS, jinsi ya kujiunga na kuingia — taarifa za jumla tu. Ingia kwa maswali ya akaunti yako.</span>
+                <span class="lang-en">Hello! I am AMCOS AI. I can explain MGOWELO AMCOS, how to join and sign in — general info only. Sign in for personal account questions.</span>
+                {% endif %}
+            </span>
+            <span class="time">{% te 'sasa hivi' 'just now' %}</span>
+        </div>
+    </div>
+    <div class="ai-suggestions" id="aiSuggestions">
+        {% if user.is_authenticated %}
+        <button type="button" onclick="askAI('Jinsi ya kusajili mwanachama na malipo')"><span class="lang-sw">Usajili</span><span class="lang-en">Register</span></button>
+        <button type="button" onclick="askAI('Malipo na M-Pesa transaction ID')"><span class="lang-sw">Malipo</span><span class="lang-en">Payments</span></button>
+        <button type="button" onclick="askAI('Mikopo na hisa')"><span class="lang-sw">Mikopo</span><span class="lang-en">Loans</span></button>
+        <button type="button" onclick="askAI('How does admin register a member?')"><span class="lang-en">Admin register</span><span class="lang-sw">Sajili (admin)</span></button>
+        <button type="button" onclick="askAI('Vitambulisho vya wanachama')"><span class="lang-sw">Vitambulisho</span><span class="lang-en">ID cards</span></button>
+        {% else %}
+        <button type="button" onclick="askAI('MGOWELO AMCOS ni nini?')"><span class="lang-sw">AMCOS ni nini?</span><span class="lang-en">What is AMCOS?</span></button>
+        <button type="button" onclick="askAI('Jinsi ya kujiunga na ushirika')"><span class="lang-sw">Jiunga</span><span class="lang-en">Join</span></button>
+        <button type="button" onclick="askAI('Jinsi ya kuingia kwenye mfumo')"><span class="lang-sw">Ingia</span><span class="lang-en">Sign in</span></button>
+        <button type="button" onclick="askAI('Huduma za ushirika kwa wanachama')"><span class="lang-sw">Huduma</span><span class="lang-en">Services</span></button>
+        {% endif %}
+    </div>
+    <div class="ai-input-area">
+        <input type="text" id="aiInput" autocomplete="off"
+            placeholder="{% te 'Andika swali lako hapa...' 'Type your question here...' %}"
+            aria-label="{% te 'Swali' 'Question' %}">
+        <button type="button" id="aiSendBtn" onclick="sendAI()" aria-label="{% te 'Tuma' 'Send' %}">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
+<script src="{% static 'js/ai-assistant.js' %}"></script>
+{% endwith %}

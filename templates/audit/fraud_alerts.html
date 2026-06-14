@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Fraud Alerts{% endblock %}
+{% block page_title %}Fraud Detection & Alerts{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ new_count }}</h4><p>New Alerts</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ alerts|length }}</h4><p>Total Alerts</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><h3>Fraud Alerts</h3></div>
+    <div class="card-body">
+        {% for a in alerts %}
+        <div style="padding:1rem;border-bottom:1px solid var(--gray-100);border-left:4px solid {% if a.severity == 'critical' %}var(--danger){% elif a.severity == 'high' %}var(--warning){% else %}var(--info){% endif %};margin-bottom:0.5rem;">
+            <div class="flex justify-between">
+                <div>
+                    <strong>{{ a.title }}</strong>
+                    <span class="badge badge-{% if a.severity == 'critical' %}danger{% elif a.severity == 'high' %}warning{% else %}info{% endif %}">{{ a.severity }}</span>
+                </div>
+                <small style="color:var(--gray-400);">{{ a.detected_at|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p style="font-size:0.875rem;color:var(--gray-600);margin:0.25rem 0;">{{ a.description }}</p>
+            <div class="flex gap-2">
+                <span class="badge badge-{% if a.status == 'new' %}danger{% elif a.status == 'investigating' %}warning{% elif a.status == 'resolved' %}success{% else %}secondary{% endif %}">{{ a.status }}</span>
+                {% if a.entity_type %}<span class="badge badge-secondary">{{ a.entity_type }} #{{ a.entity_id }}</span>{% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> </div>
+            <h3>No Fraud Alerts</h3>
+            <p>No suspicious activities detected. System is secure.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Income{% endblock %}
+{% block page_title %}Income Records{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Income (Total: {{ total|floatformat:0 }} TZS)</h3>
+        {% can 'accounting.create' as can_create %}{% if can_create %}
+        <a href="{% url 'accounting:income_create' %}" class="btn btn-success btn-sm">+ Record Income</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Received From</th>
+                        <th>Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in incomes %}
+                    <tr>
+                        <td>{{ i.category }}</td>
+                        <td><strong>{{ i.amount|floatformat:0 }}</strong></td>
+                        <td>{{ i.income_date|date:"d/m/Y" }}</td>
+                        <td>{{ i.received_from|default:"-" }}</td>
+                        <td>{{ i.payment_method|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray-400);">No income recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

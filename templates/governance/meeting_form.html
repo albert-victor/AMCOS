@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Schedule Meeting{% endblock %}
+{% block page_title %}Schedule Meeting{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><h3>New Meeting</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Meeting Type</label>
+                <select name="meeting_type" class="form-control" required>
+                    <option value="annual_general">Annual General Meeting</option>
+                    <option value="board">Board Meeting</option>
+                    <option value="committee">Committee Meeting</option>
+                    <option value="special">Special Meeting</option>
+                    <option value="emergency">Emergency Meeting</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Venue</label>
+                    <input type="text" name="venue" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time</label>
+                    <input type="time" name="start_time" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>End Time</label>
+                    <input type="time" name="end_time" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Agenda</label>
+                <textarea name="agenda" class="form-control" rows="5" placeholder="1. Opening&#10;2. Reading of minutes&#10;3. ..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Google Meet Link (Demo)</label>
+                <input type="url" name="meeting_link" class="form-control" placeholder="https://meet.google.com/abc-defg-hij">
+                <small class="text-muted">If blank, demo link is added automatically.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Schedule Meeting</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

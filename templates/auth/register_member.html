@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% load locale_tags static %}
+{% block title %}{% t "Usajili" "Register" %} — MGOWELO AMCOS{% endblock %}
+{% block auth_content %}
+<div class="auth-page auth-page--register">
+    {% include 'auth/_auth_slideshow_bg.html' %}
+
+    <div class="auth-container auth-container--wide auth-container--wizard">
+        <div class="auth-card auth-card--glass auth-card--register" id="registerCard">
+            <header class="auth-header auth-header--compact">
+                <div class="auth-logo-wrap">
+                    <img src="{% static 'images/logo2.jpeg' %}" alt="MGOWELO AMCOS" class="auth-logo">
+                </div>
+                <h1 class="auth-title">MGOWELO AMCOS</h1>
+                <p class="auth-subtitle">{% t "Jiunge na Chama cha Ushirika" "Join the Cooperative" %}</p>
+            </header>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}"><i class="fa-solid fa-circle-info"></i> {{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="auth-fee-banner auth-fee-banner--compact">
+                <span class="auth-fee-label"><i class="fa-solid fa-star"></i> {% t "Kiingilio" "Entry Fee" %}</span>
+                <strong class="auth-fee-amount">TZS {{ reg_fee|floatformat:0 }}</strong>
+            </div>
+
+            <div class="auth-wizard-progress" role="tablist">
+                <div class="auth-wizard-step active" data-step-indicator="1">
+                    <span class="auth-wizard-num">1</span><span class="auth-wizard-label">{% t "Mwanachama" "Member" %}</span>
+                </div>
+                <div class="auth-wizard-connector"></div>
+                <div class="auth-wizard-step" data-step-indicator="2">
+                    <span class="auth-wizard-num">2</span><span class="auth-wizard-label">{% t "Akaunti" "Account" %}</span>
+                </div>
+                <div class="auth-wizard-connector"></div>
+                <div class="auth-wizard-step" data-step-indicator="3">
+                    <span class="auth-wizard-num">3</span><span class="auth-wizard-label">{% t "Malipo" "Payment" %}</span>
+                </div>
+            </div>
+
+            <form method="post" class="auth-form auth-form--compact auth-form--wizard" id="registerForm" action="{% url 'auth:register_member' %}">
+                {% csrf_token %}
+
+                <div class="auth-wizard-body">
+                    <div class="auth-wizard-panel active" data-panel="1">
+                        <p class="auth-panel-intro">{% t "Taarifa zako na ekari unazomiliki (chini ya 10 haziruhusiwi)." "Your details and land owned (minimum 10 hectares)." %}</p>
+                        <div class="auth-form-grid auth-form-grid--tight">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-user"></i> {% t "Jina la Kwanza" "First Name" %}</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-user auth-field-icon"></i>
+                                    <input type="text" name="first_name" class="form-control auth-input" required
+                                        data-ph-sw="Jina la kwanza" data-ph-en="First name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-user"></i> {% t "Jina la Mwisho" "Last Name" %}</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-user auth-field-icon"></i>
+                                    <input type="text" name="last_name" class="form-control auth-input" required
+                                        data-ph-sw="Jina la mwisho" data-ph-en="Last name">
+                                </div>
+                            </div>
+                            <div class="form-group auth-form-grid--full">
+                                <label><i class="fa-solid fa-map"></i> {% t "Ekari Unazomiliki" "Hectares Owned" %}</label>
+                                <div class="auth-hectares-row">
+                                    <select name="hectares" id="hectaresSelect" class="auth-select-compact" required
+                                        data-opt-sw="Ekari" data-opt-en="Ha." title="{% te 'Ekari' 'Hectares' %}">
+                                        <option value="">{% t "Ekari" "Ha." %}</option>
+                                        <option value="10">10</option>
+                                        <option value="12">12</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                        <option value="other">{% t "Nyingine" "Other" %}</option>
+                                    </select>
+                                    <input type="text" name="hectares_other" id="hectaresOther" class="form-control auth-input auth-hectares-custom"
+                                        hidden data-ph-sw="Andika idadi" data-ph-en="Enter amount">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="auth-wizard-panel" data-panel="2">
+                        <p class="auth-panel-intro">{% t "Namba ya simu hapa itatumika kuingia na kuhifadhi kwenye mfumo." "This phone number is used to sign in and stored on your account." %}</p>
+                        <div class="auth-form-grid auth-form-grid--tight">
+                            <div class="form-group auth-form-grid--full">
+                                <label><i class="fa-solid fa-phone"></i> {% t "Namba ya Simu (Akaunti)" "Phone (Account)" %}</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-phone auth-field-icon"></i>
+                                    <input type="tel" name="phone" class="form-control auth-input" required
+                                        data-ph-sw="Mfano: 255712345678" data-ph-en="e.g. 255712345678">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-envelope"></i> Email *</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-envelope auth-field-icon"></i>
+                                    <input type="email" name="email" class="form-control auth-input" required
+                                        data-ph-sw="Barua pepe" data-ph-en="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-id-card"></i> NIDA *</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-id-card auth-field-icon"></i>
+                                    <input type="text" name="national_id" class="form-control auth-input" required
+                                        data-ph-sw="Nambari ya NIDA" data-ph-en="National ID">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-lock"></i> {% t "Nywila" "Password" %}</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-lock auth-field-icon"></i>
+                                    <input type="password" name="password" id="regPassword" class="form-control auth-input" required
+                                        data-ph-sw="Weka nywila" data-ph-en="Enter password">
+                                    <button type="button" class="auth-toggle-pw" data-target="regPassword" aria-label="Toggle password"><i class="fa-solid fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-lock"></i> {% t "Thibitisha" "Confirm" %}</label>
+                                <div class="auth-input-wrap">
+                                    <i class="fa-solid fa-lock auth-field-icon"></i>
+                                    <input type="password" name="confirm_password" id="regConfirmPassword" class="form-control auth-input" required
+                                        data-ph-sw="Rudia nywila" data-ph-en="Confirm password">
+                                    <button type="button" class="auth-toggle-pw" data-target="regConfirmPassword" aria-label="Toggle password"><i class="fa-solid fa-eye"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="auth-wizard-panel" data-panel="3">
+                        <div class="auth-payment-card-visual" aria-hidden="true">
+                            <div class="auth-payment-card-visual-inner">
+                                <span class="auth-payment-card-chip"></span>
+                                <div class="auth-payment-card-brands">
+                                    <span class="auth-card-brand auth-card-brand--visa" title="Visa" aria-hidden="true">
+                                        <i class="fa-brands fa-cc-visa"></i>
+                                    </span>
+                                    <span class="auth-card-brand auth-card-brand--mastercard" title="Mastercard" aria-hidden="true">
+                                        <span class="mc-circle mc-circle--red"></span>
+                                        <span class="mc-circle mc-circle--yellow"></span>
+                                    </span>
+                                </div>
+                                <span class="auth-payment-card-number">•••• •••• •••• ••••</span>
+                                <span class="auth-payment-card-label">{% t "Malipo salama — Simu na Benki" "Secure payment — Mobile and Bank" %}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-wallet"></i> {% t "Njia ya Malipo" "Payment Method" %}</label>
+                            <div class="auth-input-wrap auth-input-wrap--payment">
+                                <i class="fa-solid fa-wallet auth-field-icon"></i>
+                                <select name="payment_method" class="form-control auth-input auth-payment-select" required
+                                    data-opt-sw="-- Chagua njia ya malipo --" data-opt-en="-- Select payment method --">
+                                    {% include 'includes/_payment_method_options.html' %}
+                                </select>
+                            </div>
+                            {% include 'includes/_payment_method_other_field.html' %}
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-mobile-screen"></i>
+                                {% t "Simu uliyotumia kulipa" "Phone used to pay" %}
+                                <small>({% t "hiari" "optional" %})</small>
+                            </label>
+                            <div class="auth-input-wrap">
+                                <i class="fa-solid fa-mobile-screen auth-field-icon"></i>
+                                <input type="tel" name="payment_phone" class="form-control auth-input"
+                                    data-ph-sw="Hiari" data-ph-en="Optional">
+                            </div>
+                        </div>
+
+                        <label class="auth-agree-terms" id="agreeTermsLabel">
+                            <input type="checkbox" name="accept_terms" value="1" id="acceptTerms">
+                            <span class="auth-agree-box" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+                            <span class="auth-agree-text">
+                                {% t "Nakubali" "I agree to the" %}
+                                <a href="{% url 'auth:terms' %}" id="termsLink">{% t "Masharti na Vigezo" "Terms and Conditions" %}</a>
+                                {% t "ya MGOWELO AMCOS" "of MGOWELO AMCOS" %}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="auth-wizard-nav">
+                    <button type="button" class="btn btn-secondary btn-sm auth-wizard-back" id="wizardBack" hidden>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm auth-wizard-next" id="wizardNext">
+                        {% t "Endelea" "Next" %} <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm auth-wizard-submit" id="registerPayBtn" hidden disabled>
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        {% t "Sajili na Lipa" "Register and Pay" %}
+                    </button>
+                </div>
+            </form>
+
+            <footer class="auth-footer auth-footer--compact" id="registerFooter">
+                <a href="{% url 'auth:login' %}" class="auth-link"><i class="fa-solid fa-right-to-bracket"></i> {% t "Ingia" "Login" %}</a>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay auth-pay-flow-overlay" id="payFlowOverlay" aria-live="polite" aria-hidden="true">
+    <div class="auth-success-card" role="status">
+        <div class="auth-success-card-accent" aria-hidden="true"></div>
+        <div class="auth-success-card-body">
+            <div class="auth-pay-flow-stage" id="payProcessingStage">
+                <div class="auth-pay-processing-ring" aria-hidden="true"></div>
+                <p class="auth-pay-flow-label" id="payProcessingLabel">{% t "Inathibitisha na kusindika malipo..." "Validating and processing payment..." %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+select.form-control.auth-input { padding-left: 2.15rem; }
+.auth-form-grid--full { grid-column: 1 / -1; }
+.auth-panel-intro { font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.75rem; }
+.auth-wizard-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+
+<script src="{% static 'js/payment-method-other.js' %}"></script>
+<script src="{% static 'js/register-wizard-draft.js' %}"></script>
+<script>
+(function() {
+    var LANG = document.documentElement.lang || '{{ current_lang|default:"en" }}';
+    var MSG = {
+        fill: LANG === 'en' ? 'Fill required fields.' : 'Jaza sehemu zinazohitajika.',
+        terms: LANG === 'en' ? 'Accept the terms and conditions first.' : 'Kubali masharti na vigezo kwanza.',
+        pw: LANG === 'en' ? 'Passwords do not match!' : 'Nywila hazifanani!',
+        net: LANG === 'en' ? 'Network error. Please try again.' : 'Hitilafu ya mtandao. Jaribu tena.'
+    };
+
+    initPaymentMethodOther(document.getElementById('registerForm') || document);
+    var totalSteps = 3, currentStep = 1;
+    var card = document.getElementById('registerCard');
+    var footer = document.getElementById('registerFooter');
+    var panels = document.querySelectorAll('.auth-wizard-panel');
+    var indicators = document.querySelectorAll('[data-step-indicator]');
+    var backBtn = document.getElementById('wizardBack');
+    var nextBtn = document.getElementById('wizardNext');
+    var submitBtn = document.getElementById('registerPayBtn');
+    var form = document.getElementById('registerForm');
+    var hectaresSelect = document.getElementById('hectaresSelect');
+    var hectaresOther = document.getElementById('hectaresOther');
+    var acceptTerms = document.getElementById('acceptTerms');
+
+    if (hectaresSelect && hectaresOther) {
+        hectaresSelect.addEventListener('change', function() {
+            var isOther = hectaresSelect.value === 'other';
+            hectaresOther.hidden = !isOther;
+            if (isOther) {
+                hectaresOther.setAttribute('required', 'required');
+                hectaresOther.focus();
+            } else {
+                hectaresOther.removeAttribute('required');
+                hectaresOther.value = '';
+            }
+        });
+    }
+
+    if (acceptTerms && submitBtn) {
+        acceptTerms.addEventListener('change', function() {
+            if (currentStep === totalSteps) submitBtn.disabled = !acceptTerms.checked;
+        });
+    }
+
+    function persistDraft() {
+        if (window.MgoweloRegDraft) MgoweloRegDraft.save(currentStep);
+    }
+
+    form.addEventListener('input', persistDraft);
+    form.addEventListener('change', persistDraft);
+    if (window.MgoweloRegDraft) {
+        MgoweloRegDraft.bindTermsLink(persistDraft);
+    }
+
+    function showStep(n, goingBack) {
+        currentStep = n;
+        persistDraft();
+        panels.forEach(function(p) {
+            var active = parseInt(p.dataset.panel, 10) === n;
+            p.classList.toggle('active', active);
+            p.classList.toggle('slide-back', !!goingBack && active);
+        });
+        indicators.forEach(function(ind) {
+            var s = parseInt(ind.dataset.stepIndicator, 10);
+            ind.classList.remove('active', 'done');
+            if (s < n) ind.classList.add('done');
+            if (s === n) ind.classList.add('active');
+        });
+        backBtn.hidden = n === 1;
+        nextBtn.hidden = n === totalSteps;
+        submitBtn.hidden = n !== totalSteps;
+        if (n === totalSteps && acceptTerms) submitBtn.disabled = !acceptTerms.checked;
+        if (footer) footer.style.display = n === 1 ? '' : 'none';
+        if (card) card.classList.toggle('auth-card--step-later', n > 1);
+    }
+
+    function validatePanel(n) {
+        var panel = document.querySelector('.auth-wizard-panel[data-panel="' + n + '"]');
+        var ok = true;
+        panel.querySelectorAll('[required]').forEach(function(f) {
+            if (f.hidden || (f.closest('[hidden]') && f !== hectaresOther)) return;
+            if (!String(f.value || '').trim()) { ok = false; f.classList.add('error'); }
+            else f.classList.remove('error');
+        });
+        if (ok && n === 1 && hectaresSelect && hectaresSelect.value === 'other' && !hectaresOther.value.trim()) {
+            ok = false;
+            hectaresOther.classList.add('error');
+        }
+        if (ok && typeof validatePaymentMethodOther === 'function' && n === 3) {
+            ok = validatePaymentMethodOther(panel);
+        }
+        if (!ok) alert(MSG.fill);
+        return ok;
+    }
+
+    nextBtn.addEventListener('click', function() {
+        if (!validatePanel(currentStep)) return;
+        if (currentStep < totalSteps) showStep(currentStep + 1, false);
+    });
+    backBtn.addEventListener('click', function() {
+        if (currentStep > 1) showStep(currentStep - 1, true);
+    });
+
+    var overlay = document.getElementById('payFlowOverlay');
+    var procStage = document.getElementById('payProcessingStage');
+    var isSubmitting = false;
+
+    function resetPayOverlay() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        procStage.hidden = false;
+    }
+
+    function showProcessingOverlay() {
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        procStage.hidden = false;
+    }
+
+    function redirectAfterSuccess(data) {
+        window.location.href = data.redirect_url;
+    }
+
+    form.addEventListener('submit', function(e) { e.preventDefault(); });
+
+    submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (isSubmitting) return;
+        for (var s = 1; s <= totalSteps; s++) {
+            if (!validatePanel(s)) { showStep(s, false); return; }
+        }
+        if (!acceptTerms || !acceptTerms.checked) {
+            alert(MSG.terms);
+            return;
+        }
+        var pw = form.querySelector('input[name="password"]');
+        var cpw = form.querySelector('input[name="confirm_password"]');
+        if (pw.value !== cpw.value) {
+            alert(MSG.pw);
+            showStep(2, false);
+            return;
+        }
+        isSubmitting = true;
+        submitBtn.disabled = true;
+        showProcessingOverlay();
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        }).then(function(res) {
+            var ct = (res.headers.get('content-type') || '').toLowerCase();
+            if (ct.indexOf('application/json') === -1) {
+                resetPayOverlay();
+                isSubmitting = false;
+                submitBtn.disabled = !acceptTerms.checked;
+                alert(MSG.fill);
+                return;
+            }
+            return res.json().then(function(data) {
+                if (res.ok && data.success) {
+                    if (window.MgoweloRegDraft) MgoweloRegDraft.clear();
+                    redirectAfterSuccess(data);
+                    return;
+                }
+                resetPayOverlay();
+                isSubmitting = false;
+                submitBtn.disabled = !acceptTerms.checked;
+                alert(data.message || MSG.fill);
+            });
+        }).catch(function() {
+            resetPayOverlay();
+            isSubmitting = false;
+            submitBtn.disabled = !acceptTerms.checked;
+            alert(MSG.net);
+        });
+    });
+
+    var resumeStep = 1;
+    if (window.MgoweloRegDraft) {
+        var draft = MgoweloRegDraft.load();
+        if (draft) resumeStep = MgoweloRegDraft.apply(draft) || 1;
+    }
+    showStep(resumeStep, false);
+    if (resumeStep === totalSteps && acceptTerms && submitBtn) {
+        submitBtn.disabled = !acceptTerms.checked;
+    }
+})();
+</script>
+{% endblock %}

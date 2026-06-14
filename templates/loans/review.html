@@ -1,0 +1,87 @@
+﻿{% extends 'base.html' %}
+{% block title %}Review Loan{% endblock %}
+{% block page_title %}Review: {{ loan.loan_number }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:700px;">
+    <div class="card-header"><h3>Loan Review Decision</h3></div>
+    <div class="card-body">
+        <div style="background:#fff8e1;border:1px solid #F9A825;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;">
+            {% if is_board %}
+            <p style="font-size:0.85rem;font-weight:600;color:#0d3b12;">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span class="lang-sw">Mtiririko: <strong>Maombi ya Mwanachama</strong> &rarr; <strong>Idhini/Kukataliwa na Bodi</strong> &rarr; <strong>Kutolewa</strong></span>
+                <span class="lang-en">Workflow: <strong>Member Application</strong> &rarr; <strong>Board Approve/Reject</strong> &rarr; <strong>Disbursement</strong></span>
+            </p>
+            {% elif is_cash_loan %}
+            <p style="font-size:0.85rem;font-weight:600;color:#0d3b12;">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                Workflow (Cash): <strong>Board Approve/Reject</strong> &rarr; <strong>Approved/Rejected</strong>
+            </p>
+            {% else %}
+            <p style="font-size:0.85rem;font-weight:600;color:#0d3b12;">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+                Workflow: <strong>Application</strong> &rarr; <strong>Secretary Review</strong> &rarr; <strong>Chairman Final Approval</strong> &rarr; <strong>Disbursement</strong>
+            </p>
+            {% endif %}
+
+            <p style="font-size:0.8rem;color:#1b5e20;margin-top:0.35rem;">
+                Board approvals: <strong>{{ board_approvals_count|default:0 }}/{{ board_threshold|default:5 }}</strong>
+            </p>
+        </div>
+
+        <table>
+            <tr><td style="font-weight:600;">Loan Number</td><td>{{ loan.loan_number }}</td></tr>
+            <tr><td style="font-weight:600;">Member ID</td><td>{{ loan.member_id }}</td></tr>
+            <tr><td style="font-weight:600;">Amount</td><td>{{ loan.amount|floatformat:2 }}</td></tr>
+            <tr><td style="font-weight:600;">Duration</td><td>{{ loan.duration_months }} months</td></tr>
+            <tr><td style="font-weight:600;">Interest Rate</td><td>{{ loan.interest_rate }}%</td></tr>
+            <tr><td style="font-weight:600;">Purpose</td><td>{{ loan.purpose|default:"N/A" }}</td></tr>
+            <tr><td style="font-weight:600;">Current Status</td><td><span class="badge badge-warning">{{ loan.status }}</span></td></tr>
+        </table>
+
+        <form method="post" style="margin-top:1.5rem;">
+            {% csrf_token %}
+
+            {% if loan.status == 'submitted' or loan.status == 'under_review' %}
+            <div class="form-group">
+                <label>Decision</label>
+                <div class="flex gap-2" style="flex-wrap:wrap;">
+
+                    {% if not is_cash_loan and is_secretary and loan.status == 'submitted' %}
+                    <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i>  Review &amp; Forward to Chairman</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa-solid fa-xmark" aria-hidden="true"></i>  Reject</button>
+                    {% endif %}
+
+                    {% if not is_cash_loan and is_chairman and loan.status == 'under_review' %}
+                    <button type="submit" name="action" value="final_approve" class="btn btn-success" style="background:#1B5E20;"><i class="fa-solid fa-check" aria-hidden="true"></i>  Final Approval as Chairman</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa-solid fa-xmark" aria-hidden="true"></i>  Reject</button>
+                    {% endif %}
+
+                    {% if is_board %}
+                        {% if loan.status == 'under_review' or loan.status == 'submitted' %}
+                    <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i>  Board Approve</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa-solid fa-xmark" aria-hidden="true"></i>  Board Reject</button>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if is_chairman and loan.status == 'submitted' %}
+                    <div style="width:100%;margin-bottom:0.5rem;">
+                        <small style="color:var(--gray-400);"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>  Loan is waiting for Secretary review first.</small>
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'loans:detail' loan.id %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">This loan has already been processed. Current status: <strong>{{ loan.status }}</strong></div>
+            {% endif %}
+
+            <div class="form-group">
+                <label>{% t "Reason" "Notes (especially if rejecting)" %}</label>
+                <textarea name="reason" class="form-control" rows="3" placeholder="Enter reason for rejection or notes..."></textarea>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

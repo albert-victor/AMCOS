@@ -1,0 +1,62 @@
+﻿{% extends 'base.html' %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Reporting Dashboard{% endblock %}
+{% block content %}
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Standard Reports</h3></div>
+        <div class="card-body">
+            <div style="display:grid;gap:0.75rem;">
+                <a href="{% url 'reporting:members' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-users" aria-hidden="true"></i>   Member Report</a>
+                <a href="{% url 'reporting:savings' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i>   Savings Report</a>
+                <a href="{% url 'reporting:loans' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>   Loan Report</a>
+                <a href="{% url 'reporting:payments' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i> Payment Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h3><i class="fa-solid fa-calculator" aria-hidden="true"></i> Financial Reports</h3></div>
+        <div class="card-body">
+            <div style="display:grid;gap:0.75rem;">
+                <a href="{% url 'accounting:trial_balance' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>   Trial Balance</a>
+                <a href="{% url 'accounting:income_statement' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i>   Income Statement</a>
+                <a href="{% url 'accounting:balance_sheet' %}" class="btn btn-outline" style="justify-content:flex-start;"><i class="fa-solid fa-table-cells" aria-hidden="true"></i>   Balance Sheet</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header"><h3>Recent Generated Reports</h3></div>
+    <div class="card-body">
+        {% if reports %}
+        <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Format</th>
+                    <th>Generated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reports %}
+                <tr>
+                    <td>{{ r.title }}</td>
+                    <td>{{ r.report_type }}</td>
+                    <td>{{ r.format }}</td>
+                    <td>{{ r.generated_at|date:"d/m/Y H:i" }}</td>
+                    <td><a href="#" class="btn btn-sm btn-outline">Download</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <p style="color:var(--gray-400);text-align:center;">No reports generated yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

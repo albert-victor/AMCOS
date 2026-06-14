@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Reject Member{% endblock %}
+{% block page_title %}Reject: {{ member.member_number }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>Rejection Reason</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Reason for Rejection</label>
+                <textarea name="reason" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+            <a href="{% url 'members:detail' member.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

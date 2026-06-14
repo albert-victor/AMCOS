@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load locale_tags %}
+{% block title %}{% t "Dakika za Mkutano" "Meeting Minutes" %}{% endblock %}
+{% block page_title %}{% t "Dakika" "Minutes" %}: {{ meeting.title }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:760px;">
+    <div class="card-header">
+        <h3>{% t "Andika Dakika na Pakia Nyaraka" "Record Minutes & Upload Documents" %}</h3>
+    </div>
+    <div class="card-body">
+        <p>{{ meeting.date|date:"d/m/Y" }} | {{ meeting.venue }}</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{% t "Dakika za Mkutano" "Meeting Minutes" %}</label>
+                <textarea name="minutes" class="form-control" rows="12"
+                    placeholder="{% t 'Andika muhtasari wa mkutano hapa...' 'Enter meeting summary here...' %}">{{ meeting.minutes }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>{% t "Pakua Nyaraka (PDF, Word, picha)" "Upload Documents (PDF, Word, images)" %}</label>
+                <input type="file" name="documents" class="form-control" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" multiple>
+                <small class="text-muted">{% t "Unaweza kuchagua faili zaidi ya moja" "You can select multiple files" %}</small>
+            </div>
+            <div class="form-group">
+                <label>{% t "Kichwa cha Nyaraka (si lazima)" "Document Title (optional)" %}</label>
+                <input type="text" name="document_title" class="form-control"
+                    placeholder="{% t 'Mfano: Dakika Rasmi za Mkutano' 'e.g. Official Meeting Minutes' %}">
+            </div>
+            <div class="form-group">
+                <label>{% t "Maelezo" "Description" %}</label>
+                <input type="text" name="document_description" class="form-control" placeholder="">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                {% t "Hifadhi na Tangaza kwa Wanachama" "Save & Publish to Members" %}
+            </button>
+            <a href="{% url 'governance:meeting_detail' meeting.id %}" class="btn btn-secondary">{% t "Ghairi" "Cancel" %}</a>
+        </form>
+
+        {% if documents %}
+        <hr>
+        <h4 style="font-weight:600;">{% t "Nyaraka Zilizopakiwa" "Uploaded Documents" %}</h4>
+        <ul class="list-unstyled" style="font-size:0.9rem;">
+            {% for doc in documents %}
+            <li style="margin-bottom:0.35rem;">
+                <a href="{{ doc.file.url }}" target="_blank" rel="noopener">{{ doc.title }}</a>
+                <span class="text-muted">({{ doc.uploaded_at|date:"d/m/Y H:i" }})</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

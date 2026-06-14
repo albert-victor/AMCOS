@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Record Expense{% endblock %}
+{% block page_title %}Record Expense{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;">
+    <div class="card-header"><h3>New Expense Entry</h3></div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" name="category" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="amount" class="form-control" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="expense_date" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Paid To</label>
+                <input type="text" name="paid_to" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select name="payment_method" class="form-control">
+                    <option value="">Select</option>
+                    <option value="cash">Cash</option>
+                    <option value="mpesa">M-Pesa</option>
+                    <option value="bank">Bank</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger">Record Expense</button>
+            <a href="{% url 'accounting:expense_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

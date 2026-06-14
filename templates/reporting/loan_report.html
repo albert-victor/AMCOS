@@ -1,0 +1,43 @@
+﻿{% extends 'base.html' %}
+{% block title %}Loan Report{% endblock %}
+{% block page_title %}Loan Report{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_disbursed|floatformat:0 }}</h4><p>Total Disbursed</p></div></div>
+    <div class="stat-card"><div class="stat-icon yellow"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total_outstanding|floatformat:0 }}</h4><p>Outstanding Balance</p></div></div>
+    <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ defaulted }}</h4><p>Defaulted Loans</p></div></div>
+</div>
+<div class="card">
+    <div class="card-header"><h3>Loan Portfolio</h3></div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan No</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Interest</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in loans %}
+                    <tr>
+                        <td>{{ l.loan_number }}</td>
+                        <td>{{ l.member_id }}</td>
+                        <td>{{ l.amount|floatformat:0 }}</td>
+                        <td>{{ l.balance|floatformat:0 }}</td>
+                        <td>{{ l.interest_rate }}%</td>
+                        <td>{{ l.duration_months }} mo</td>
+                        <td>{{ l.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

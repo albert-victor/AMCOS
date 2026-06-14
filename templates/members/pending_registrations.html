@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{% t "Usajili Unaosubiri" "Pending Registrations" %}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3><span class="lang-sw">Maombi Mapya ya Uanachama</span><span class="lang-en">New Member Applications</span></h3>
+        <span class="badge badge-warning">{{ members|length }}</span>
+    </div>
+    <div class="card-body table-container">
+        {% if members %}
+        <table>
+            <thead>
+                <tr>
+                    <th><span class="lang-sw">Namba</span><span class="lang-en">No.</span></th>
+                    <th><span class="lang-sw">Jina</span><span class="lang-en">Name</span></th>
+                    <th><span class="lang-sw">Simu</span><span class="lang-en">Phone</span></th>
+                    <th><span class="lang-sw">Ekari</span><span class="lang-en">Ha.</span></th>
+                    <th><span class="lang-sw">Idhini</span><span class="lang-en">Approvals</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in members %}
+                <tr>
+                    <td>{{ m.member_number }}</td>
+                    <td>{{ m.full_name }}</td>
+                    <td>{{ m.phone }}</td>
+                    <td>{{ m.hectares|default:"—" }}{% if m.hectares_other_note %} <small>({{ m.hectares_other_note }})</small>{% endif %}</td>
+                    <td><strong>{{ m.approval_count }}</strong> / {{ board_required }}</td>
+                    <td><a href="{% url 'members:registration_review' m.id %}" class="btn btn-sm btn-primary"><span class="lang-sw">Angalia</span><span class="lang-en">View</span></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state"><p><span class="lang-sw">Hakuna maombi mapya</span><span class="lang-en">No pending applications</span></p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

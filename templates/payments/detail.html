@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Payment Detail{% endblock %}
+{% block page_title %}Payment: {{ payment.reference_number }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:650px;">
+    <div class="card-header"><h3>{% t "Maelezo ya Malipo" "Payment Details" %}</h3></div>
+    <div class="card-body">
+        <table>
+            <tr><td style="font-weight:600;width:190px;">{% t "Namba ya Rejea" "Reference" %}</td><td>{{ payment.reference_number }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Transaction" "USSD Code" %}</td><td>{{ payment.transaction_id|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Mwanachama" "Member" %}</td><td>{{ payment.member_id|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Aina" "Type" %}</td><td>{{ payment.get_payment_type_display }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Njia" "Method" %}</td><td>{{ payment.get_payment_method_display }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Kiasi" "Amount" %}</td><td><strong style="font-size:1.25rem;color:#0d3b12;">{{ payment.amount|floatformat:2 }} TZS</strong></td></tr>
+            <tr><td style="font-weight:600;">{% t "Simu" "Phone" %}</td><td>{{ payment.phone|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Hali" "Status" %}</td><td><span class="badge badge-{% if payment.status == 'completed' %}success{% elif payment.status == 'pending' %}warning{% elif payment.status == 'failed' %}danger{% else %}secondary{% endif %}">{{ payment.status }}</span></td></tr>
+            <tr><td style="font-weight:600;">{% t "Uthibitisho" "Verification" %}</td><td>{{ payment.get_verification_method_display|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Stakabadhi" "Receipt" %}</td><td>{{ payment.receipt_number|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Aliwasilisha" "Submitted" %}</td><td>{{ payment.submitted_at|date:"d/m/Y H:i"|default:"-" }}</td></tr>
+            <tr><td style="font-weight:600;">{% t "Tarehe" "Date" %}</td><td>{{ payment.created_at|date:"d/m/Y H:i" }}</td></tr>
+            {% if payment.sms_sent %}
+            <tr><td style="font-weight:600;">SMS</td><td><span class="badge badge-success">{% t "Imetumwa" "Sent" %}</span></td></tr>
+            {% endif %}
+            {% if payment.confirmed_by %}
+            <tr><td style="font-weight:600;">{% t "Aliyethibitisha" "Confirmed By" %}</td><td>{{ payment.confirmed_by }} at {{ payment.confirmed_at|date:"d/m/Y H:i" }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    <div class="card-footer flex gap-2" style="flex-wrap:wrap;">
+        {% can 'payments.verify' as can_verify %}
+        {% if can_verify and payment.status == 'pending' %}
+        <a href="{% url 'payments:verify' payment.id %}" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i>{% t "Thibitisha" "Verify" %}</a>
+        {% endif %}
+        <a href="{% url 'payments:receipt' payment.id %}" class="btn btn-primary"><i class="fa-solid fa-print" aria-hidden="true"></i>{% t "Chapisha" "Print Receipt" %}</a>
+        <a href="{% url 'payments:receipt' payment.id %}?print=true" class="btn btn-outline"><i class="fa-solid fa-download" aria-hidden="true"></i>  PDF</a>
+    </div>
+</div>
+{% endblock %}

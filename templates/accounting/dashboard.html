@@ -1,0 +1,86 @@
+﻿{% extends 'base.html' %}
+{% block title %}Accounting{% endblock %}
+{% block page_title %}Accounting Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ income_total|floatformat:0 }}</h4><p>Total Income (TZS)</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ expense_total|floatformat:0 }}</h4><p>Total Expenses (TZS)</p></div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-table-cells" aria-hidden="true"></i> </div>
+        <div class="stat-info"><h4>{{ net_income|floatformat:0 }}</h4><p>Net Income (TZS)</p></div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-header">
+            <h3>Recent Income</h3>
+            <a href="{% url 'accounting:income_list' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="card-body">
+            {% if recent_income %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr><th>Category</th><th>Amount</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                    {% for i in recent_income %}
+                    <tr>
+                        <td>{{ i.category }}</td>
+                        <td>{{ i.amount|floatformat:0 }}</td>
+                        <td>{{ i.income_date|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <p style="color:var(--gray-400);text-align:center;">No income recorded</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3>Recent Expenses</h3>
+            <a href="{% url 'accounting:expense_list' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="card-body">
+            {% if recent_expenses %}
+            <div class="table-container table-container--compact">
+            <table>
+                <thead>
+                    <tr><th>Category</th><th>Amount</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                    {% for e in recent_expenses %}
+                    <tr>
+                        <td>{{ e.category }}</td>
+                        <td>{{ e.amount|floatformat:0 }}</td>
+                        <td>{{ e.expense_date|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% else %}
+            <p style="color:var(--gray-400);text-align:center;">No expenses recorded</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="flex gap-2 mt-4">
+    <a href="{% url 'accounting:income_create' %}" class="btn btn-success">+ Record Income</a>
+    <a href="{% url 'accounting:expense_create' %}" class="btn btn-danger">+ Record Expense</a>
+    <a href="{% url 'accounting:trial_balance' %}" class="btn btn-outline">Trial Balance</a>
+    <a href="{% url 'accounting:income_statement' %}" class="btn btn-outline">Income Statement</a>
+    <a href="{% url 'accounting:balance_sheet' %}" class="btn btn-outline">Balance Sheet</a>
+</div>
+{% endblock %}

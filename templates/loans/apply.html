@@ -1,0 +1,197 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Apply Loan{% endblock %}
+
+{% block page_title %}New Loan Application{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:700px;">
+
+    <div class="card-header"><h3>Loan Application</h3></div>
+
+    <div class="card-body">
+
+        <div style="background:linear-gradient(135deg,#0d3b12,#1B5E20);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;color:white;">
+
+            <p style="font-weight:700;color:#F9A825;font-size:0.9rem;"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i>   <span class="lang-sw">Kikomo cha Mkopo kwa Hisa</span><span class="lang-en">Loan Limit by Shares</span></p>
+
+            <p style="font-size:0.8rem;opacity:0.9;"><span class="lang-sw">Mwanachama hawezi kuomba mkopo zaidi ya <strong style="color:#F9A825;">thamani ya hisa zake</strong>. Baada ya kuwasilisha, maombi yanaenda kwa <strong>Bodi</strong> kwa idhini au kukataliwa.</span><span class="lang-en">A member <strong style="color:#F9A825;">cannot borrow more than their total share value</strong>. After submission, applications go to the <strong>Board</strong> for approval or rejection.</span></p>
+
+        </div>
+
+
+
+        <div id="share-info" style="display:none;background:#f8fdf8;border:1px solid #c8e6c9;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;"></div>
+
+
+
+        <form method="post" id="loan-apply-form">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Member</label>
+
+                <select name="member_id" id="member-select" class="form-control" required>
+
+                    <option value="">Select Member</option>
+
+                    {% for m in members %}
+
+                    <option value="{{ m.id }}" {% if default_member_id == m.id %}selected{% endif %}>{{ m.member_number }} - {{ m.first_name }} {{ m.last_name }}</option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Loan Product</label>
+
+                <select name="product_id" class="form-control" required>
+
+                    <option value="">Select Product</option>
+
+                    {% for p in products %}
+
+                    <option value="{{ p.id }}">{{ p.name }} ({{ p.interest_rate }}%)</option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Amount</label>
+
+                    <input type="number" name="amount" id="loan-amount" class="form-control" step="0.01" min="0" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Duration (months)</label>
+
+                    <input type="number" name="duration_months" class="form-control" min="1" max="60" required>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Purpose</label>
+
+                <textarea name="purpose" class="form-control" rows="3"></textarea>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Application</button>
+
+            <a href="{% url 'loans:list' %}" class="btn btn-secondary">Cancel</a>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+var shareData = {{ share_data_json|safe }};
+
+var selectedMaxLoan = 0;
+
+
+
+function updateShareInfo() {
+
+    var info = document.getElementById('share-info');
+
+    var memberId = document.getElementById('member-select').value;
+
+    selectedMaxLoan = 0;
+
+    if (memberId && shareData[memberId]) {
+
+        var sd = shareData[memberId];
+
+        info.style.display = 'block';
+
+        if (sd.total_shares > 0 && sd.share_value > 0) {
+
+            selectedMaxLoan = sd.max_loan;
+
+            info.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;text-align:center;">' +
+
+                '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Hisa / Shares</p><p style="font-weight:700;color:#0d3b12;font-size:1.1rem;">' + sd.total_shares + '</p></div>' +
+
+                '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Thamani ya Hisa</p><p style="font-weight:700;color:#0d3b12;font-size:1.1rem;">TZS ' + sd.share_value.toLocaleString() + '</p></div>' +
+
+                '<div><p style="font-size:0.7rem;color:#1B5E20;font-weight:600;">Kikomo cha Mkopo</p><p style="font-weight:700;color:#F9A825;font-size:1.1rem;">TZS ' + sd.max_loan.toLocaleString() + '</p></div>' +
+
+                '</div>';
+
+            var amt = document.getElementById('loan-amount');
+
+            if (amt) amt.setAttribute('max', sd.max_loan);
+
+        } else {
+
+            info.innerHTML = '<div style="text-align:center;padding:0.5rem;"><p style="color:#dc2626;font-weight:600;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>   <span class="lang-sw">Mwanachama hana hisa. Nunua hisa kwanza.</span><span class="lang-en">No shares recorded. Purchase shares first.</span></p></div>';
+
+        }
+
+    } else {
+
+        info.style.display = 'none';
+
+    }
+
+}
+
+
+
+document.getElementById('member-select').addEventListener('change', updateShareInfo);
+if (document.getElementById('member-select').value) { updateShareInfo(); }
+
+
+
+document.getElementById('loan-apply-form').addEventListener('submit', function(e) {
+
+    var amt = parseFloat(document.getElementById('loan-amount').value || 0);
+
+    if (selectedMaxLoan > 0 && amt > selectedMaxLoan) {
+
+        e.preventDefault();
+
+        alert(
+
+            (document.documentElement.lang === 'en'
+
+                ? 'Loan amount cannot exceed share value (TZS '
+
+                : 'Mkopo hauwezi kuzidi thamani ya hisa (TZS ') +
+
+            selectedMaxLoan.toLocaleString() + ').'
+
+        );
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
+

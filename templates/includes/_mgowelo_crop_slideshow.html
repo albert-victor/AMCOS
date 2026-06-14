@@ -1,0 +1,103 @@
+{% load static %}
+{# Slideshow images: static/images/auth only #}
+<div class="auth-bg-slideshow mgowelo-crop-slideshow" aria-hidden="true">
+    <div class="auth-bg-slide auth-bg-slide--1 active"
+        style="background-image:url('{% static 'images/auth/slide1-maize.jpg' %}');"
+        data-caption-sw="Maharage — MGOWELO AMCOS"
+        data-caption-en="Beans — MGOWELO AMCOS"
+        data-caption="Maharage — MGOWELO AMCOS"></div>
+    <div class="auth-bg-slide auth-bg-slide--2"
+        style="background-image:url('{% static 'images/auth/peanut.jpg' %}');"
+        data-caption-sw="Kachanga — MGOWELO AMCOS"
+        data-caption-en="Groundnuts — MGOWELO AMCOS"
+        data-caption="Kachanga — MGOWELO AMCOS"></div>
+    <div class="auth-bg-slide auth-bg-slide--3"
+        style="background-image:url('{% static 'images/auth/slide3-harvest.jpg' %}');"
+        data-caption-sw="Njugu Mbaazi — MGOWELO AMCOS"
+        data-caption-en="Pigeon Peas — MGOWELO AMCOS"
+        data-caption="Njugu Mbaazi — MGOWELO AMCOS"></div>
+    <div class="auth-bg-slide auth-bg-slide--4"
+        style="background-image:url('{% static 'images/auth/sesame2.jpg' %}');"
+        data-caption-sw="Ufuta — MGOWELO AMCOS"
+        data-caption-en="Sesame — MGOWELO AMCOS"
+        data-caption="Ufuta — MGOWELO AMCOS"></div>
+    <div class="auth-bg-slide auth-bg-slide--5"
+        style="background-image:url('{% static 'images/auth/sugarcne1.jpg' %}');"
+        data-caption-sw="Miwa — MGOWELO AMCOS"
+        data-caption-en="Sugarcane — MGOWELO AMCOS"
+        data-caption="Miwa — MGOWELO AMCOS"></div>
+</div>
+{% if slideshow_bilingual %}
+<div class="auth-bg-caption welcome-hero-caption" id="welcomeBgCaption">
+    <span class="lang-sw">Maharage — MGOWELO AMCOS</span>
+    <span class="lang-en">Beans — MGOWELO AMCOS</span>
+</div>
+<div class="auth-bg-dots welcome-hero-dots" id="welcomeBgDots" role="tablist" aria-label="Slideshow">
+    <span class="active" role="tab" aria-selected="true"></span>
+    <span role="tab" aria-selected="false"></span>
+    <span role="tab" aria-selected="false"></span>
+    <span role="tab" aria-selected="false"></span>
+    <span role="tab" aria-selected="false"></span>
+</div>
+{% else %}
+<div class="auth-bg-caption" id="authBgCaption">Maharage — MGOWELO AMCOS</div>
+<div class="auth-bg-dots" id="authBgDots" aria-hidden="true">
+    <span class="active"></span><span></span><span></span><span></span><span></span>
+</div>
+{% endif %}
+<script>
+(function() {
+    var scriptEl = document.currentScript;
+    var container = scriptEl && (scriptEl.closest('.welcome-hero') || scriptEl.closest('.auth-page'));
+    var slideshowRoot = container
+        ? container.querySelector('.mgowelo-crop-slideshow')
+        : document.querySelector('.mgowelo-crop-slideshow');
+    if (!slideshowRoot) return;
+
+    var slides = slideshowRoot.querySelectorAll('.auth-bg-slide');
+    var bilingual = {{ slideshow_bilingual|yesno:"true,false" }};
+    var dots = document.querySelectorAll(bilingual ? '#welcomeBgDots span' : '#authBgDots span');
+    var caption = document.getElementById(bilingual ? 'welcomeBgCaption' : 'authBgCaption');
+    if (!slides.length) return;
+
+    var idx = 0;
+    var interval = 6000;
+
+    function captionForSlide(slide) {
+        if (!slide || !caption) return;
+        if (bilingual) {
+            var sw = caption.querySelector('.lang-sw');
+            var en = caption.querySelector('.lang-en');
+            if (sw) sw.textContent = slide.dataset.captionSw || '';
+            if (en) en.textContent = slide.dataset.captionEn || '';
+        } else if (slide.dataset.caption) {
+            caption.textContent = slide.dataset.caption;
+        }
+    }
+
+    function goTo(n) {
+        slides[idx].classList.remove('active');
+        if (dots[idx]) {
+            dots[idx].classList.remove('active');
+            if (bilingual) dots[idx].setAttribute('aria-selected', 'false');
+        }
+        idx = (n + slides.length) % slides.length;
+        slides[idx].classList.add('active');
+        if (dots[idx]) {
+            dots[idx].classList.add('active');
+            if (bilingual) dots[idx].setAttribute('aria-selected', 'true');
+        }
+        captionForSlide(slides[idx]);
+    }
+
+    setInterval(function() { goTo(idx + 1); }, interval);
+    dots.forEach(function(dot, i) {
+        dot.addEventListener('click', function() { goTo(i); });
+        dot.style.cursor = 'pointer';
+    });
+
+    if (bilingual) {
+        window.updateWelcomeCaption = function() { captionForSlide(slides[idx]); };
+    }
+})();
+</script>

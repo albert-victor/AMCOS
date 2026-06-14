@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load rbac_tags %}
+{% block title %}Branches{% endblock %}
+{% block page_title %}Branch Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>All Branches</h3>
+        {% can 'cooperative.admin' as can_admin %}{% if can_admin %}
+        <a href="{% url 'cooperative:branch_create' %}" class="btn btn-primary btn-sm">+ Add Branch</a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>City</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in branches %}
+                    <tr>
+                        <td><strong>{{ b.name }}</strong></td>
+                        <td>{{ b.code }}</td>
+                        <td>{{ b.city|default:"-" }}</td>
+                        <td>{{ b.phone|default:"-" }}</td>
+                        <td><span class="badge badge-{% if b.status == 'active' %}success{% else %}secondary{% endif %}">{{ b.status }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray-400);">No branches created.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

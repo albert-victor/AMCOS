@@ -1,0 +1,277 @@
+﻿{% extends 'base.html' %}
+
+{% load rbac_tags %}
+
+{% block title %}Members{% endblock %}
+
+{% block page_title %}Member Management{% endblock %}
+
+{% block content %}
+
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+
+        <div class="stat-info"><h4>{{ total_members }}</h4><p>{% t "Jumla" "Total" %}</p></div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-icon green"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+
+        <div class="stat-info"><h4>{{ active_members }}</h4><p>{% t "Walio hai" "Active" %}</p></div>
+
+    </div>
+
+    <div class="stat-card">
+
+        <div class="stat-icon yellow"><i class="fa-solid fa-users" aria-hidden="true"></i> </div>
+
+        <div class="stat-info"><h4>{{ pending_members }}</h4><p>{% t "Wanasubiri" "Pending" %}</p></div>
+
+    </div>
+
+    {% if pending_approval %}
+
+    <div class="stat-card">
+
+        <div class="stat-icon gold"><i class="fa-solid fa-check" aria-hidden="true"></i> </div>
+
+        <div class="stat-info"><h4>{{ pending_approval }}</h4><p>{% t "Wahakikiwe" "Approve" %}</p></div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+
+<div class="card">
+
+    <div class="card-header">
+
+        <h3><i class="fa-solid fa-users" aria-hidden="true"></i> All Members</h3>
+
+        <div class="flex gap-2" style="flex-wrap:wrap;">
+
+            {% can 'members.create' as can_create %}
+
+            {% if can_create %}
+
+            <a href="{% url 'members:create' %}" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i>{% t "Sajili Mwanachama" "Register Member" %}</a>
+
+            {% endif %}
+
+            {% can 'members.id_card_bulk' as can_bulk_id %}
+
+            {% if can_bulk_id %}
+
+            <a href="{% url 'members:id_card_bulk' %}" class="btn btn-sm btn-outline"><i class="fa-solid fa-id-card" aria-hidden="true"></i>{% t "ID Card Zote" "Bulk IDs" %}</a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="filter-bar">
+
+            <form method="get" class="filter-bar-form">
+
+                <input type="text" name="q" class="form-control filter-bar-search" placeholder="Search by name, phone, or member number..." value="{{ request.GET.q }}">
+
+                <select name="status" class="form-control filter-bar-select">
+
+                    <option value="">All Status</option>
+
+                    <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+
+                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+
+                    <option value="suspended" {% if request.GET.status == 'suspended' %}selected{% endif %}>Suspended</option>
+
+                    <option value="withdrawn" {% if request.GET.status == 'withdrawn' %}selected{% endif %}>Withdrawn</option>
+
+                </select>
+
+                <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+
+            </form>
+
+        </div>
+
+        <div class="table-container table-container--compact">
+
+            <table class="table-members">
+
+                <thead>
+
+                    <tr>
+
+                        <th>{% t "Namba" "Member No" %}</th>
+
+                        <th>{% t "Jina" "Name" %}</th>
+
+                        <th>{% t "Simu" "Phone" %}</th>
+
+                        <th>{% t "Hali" "Status" %}</th>
+
+                        <th>{% t "Uongozi" "Leadership" %}</th>
+
+                        <th class="col-hide-sm">{% t "Tarehe" "Joined" %}</th>
+
+                        <th>{% t "Vitendo" "Actions" %}</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for m in members %}
+
+                    <tr>
+
+                        <td><strong>{{ m.member_number }}</strong></td>
+
+                        <td>
+
+                            <a href="{% url 'members:detail' m.id %}" class="member-name-link">{{ m.first_name }} {{ m.last_name }}</a>
+
+                            {% if m.last_card_type %}
+
+                            <span class="badge badge-{% if m.last_card_type == 'normal' %}success{% else %}warning{% endif %}" style="font-size:0.65rem;margin-left:0.25rem;" title="ID Card"><i class="fa-solid fa-id-card" aria-hidden="true"></i></span>
+
+                            {% endif %}
+
+                            {% if m.signature_url %}
+
+                            <span class="badge badge-secondary" style="font-size:0.65rem;" title="{% te 'Sahihi' 'Signature' %}"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i></span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>{{ m.phone }}</td>
+
+                        <td><span class="badge badge-{% if m.status == 'active' %}success{% elif m.status == 'pending' %}warning{% elif m.status == 'suspended' %}danger{% else %}secondary{% endif %}">{{ m.status }}</span></td>
+
+                        <td class="leadership-cell">
+                            {% can 'members.promote_leader' as can_promote %}
+                            {% if m.is_board_leader %}
+                            <div class="leadership-inline">
+                                <span class="badge badge-info" title="{% te 'Mjumbe wa Bodi' 'Board Member' %}"><i class="fa-solid fa-user-tie" aria-hidden="true"></i></span>
+                                {% if can_promote %}
+                                <form method="post" action="{% url 'members:remove_leader' m.id %}" class="leadership-form" onsubmit="return confirm(uiMsg('Ondoa {{ m.first_name }} kutoka uongozini?', 'Remove {{ m.first_name }} from leadership?'));">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="return" value="list">
+                                    <button type="submit" class="btn btn-sm btn-warning" title="{% te 'Ondoa uongozi' 'Remove leader' %}">
+                                        <i class="fa-solid fa-user-minus" aria-hidden="true"></i>
+                                        <span class="lang-sw">Ondoa</span><span class="lang-en">Remove</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            {% elif can_promote and m.linked_user and m.linked_user.role == 'member' %}
+                            <form method="post" action="{% url 'members:mark_leader' m.id %}" class="leadership-form" onsubmit="return confirm(uiMsg('Weka {{ m.first_name }} kama mjumbe wa bodi?', 'Mark {{ m.first_name }} as board member?'));">
+                                {% csrf_token %}
+                                <input type="hidden" name="return" value="list">
+                                <button type="submit" class="btn btn-sm btn-success" title="{% te 'Weka mjumbe wa bodi' 'Set board member' %}">
+                                    <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                                    <span class="lang-sw">Weka</span><span class="lang-en">Set</span>
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="col-hide-sm">{{ m.joined_at|date:"d/m/Y"|default:"-" }}</td>
+
+                        <td class="actions-cell">
+
+                            <div class="table-actions table-actions--compact">
+
+                                <a href="{% url 'members:detail' m.id %}" class="btn btn-sm btn-outline" title="{% te 'Angalia' 'View' %}"><i class="fa-solid fa-eye" aria-hidden="true"></i></a>
+
+                                {% can 'members.approve' as can_approve %}
+
+                                {% can 'members.reject' as can_reject %}
+
+                                {% if m.status == 'pending' or m.status == 'under_review' or m.status == 'payment_confirmed' %}
+
+                                    {% if can_approve %}
+
+                                    <a href="{% url 'members:approve' m.id %}" class="btn btn-sm btn-success" title="{% te 'Idhinisha' 'Approve' %}"><i class="fa-solid fa-check" aria-hidden="true"></i></a>
+
+                                    {% endif %}
+
+                                    {% if can_reject %}
+
+                                    <a href="{% url 'members:reject' m.id %}" class="btn btn-sm btn-danger" title="{% te 'Kataa' 'Reject' %}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></a>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                                {% can 'members.suspend' as can_suspend %}
+
+                                {% if can_suspend and m.status == 'active' %}
+
+                                <a href="{% url 'members:suspend' m.id %}" class="btn btn-sm btn-warning" title="{% te 'Simamisha' 'Suspend' %}"><i class="fa-solid fa-pause" aria-hidden="true"></i></a>
+
+                                {% endif %}
+
+                                {% can 'members.id_card' as can_id_card %}
+
+                                {% if can_id_card and m.status == 'active' %}
+
+                                <a href="{% url 'members:id_card' m.id %}" class="btn btn-sm btn-outline" title="{% te 'Kadi' 'ID Card' %}"><i class="fa-solid fa-id-card" aria-hidden="true"></i></a>
+
+                                {% endif %}
+
+                                {% can 'members.kyc' as can_kyc %}
+
+                                {% if can_kyc and not m.signature_url %}
+
+                                <a href="{% url 'members:signature' m.id %}" class="btn btn-sm btn-outline" title="{% te 'Sahihi' 'Signature' %}"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i></a>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7" style="text-align:center;padding:2rem;color:var(--gray-400);">No members found.</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Database Status{% endblock %}
+{% block page_title %}Hali ya Database{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h3>{% t "Hali ya Database" "Database Status" %}</h3></div>
+    <div class="card-body">
+        <table class="table">
+            <tr><th>Active mode (server)</th><td><strong>{{ active_mode }}</strong></td></tr>
+            <tr><th>MySQL ping (live)</th><td>{% if primary_ping %}<span class="badge badge-success">OK</span>{% else %}<span class="badge badge-danger">FAIL</span>{% endif %}</td></tr>
+            <tr><th>Primary OK (startup)</th><td>{{ db_status.primary_ok }}</td></tr>
+            <tr><th>Fallback OK</th><td>{{ db_status.fallback_ok }}</td></tr>
+            <tr><th>Active database</th><td><code>{{ db_status.active_database }}</code></td></tr>
+            <tr><th>Fallback path</th><td><code>{{ db_status.fallback_path }}</code></td></tr>
+            <tr><th>Last backup</th><td>{{ db_status.last_backup|default:"—" }}</td></tr>
+            <tr><th>Last sync</th><td>{{ db_status.last_sync_fixture|default:"—" }}</td></tr>
+            <tr><th>Message</th><td>{{ db_status.message }}</td></tr>
+            <tr><th>Updated</th><td>{{ db_status.updated_at }}</td></tr>
+        </table>
+        <h4 class="mt-4">Amri za Usimamizi</h4>
+        <pre style="background:#f8fafc;padding:1rem;border-radius:8px;">python manage.py check_database
+python manage.py backup_database
+python manage.py sync_fallback_db --migrate-fallback</pre>
+        <p><a href="{% url 'health' %}" target="_blank" class="btn btn-secondary">JSON Health API</a></p>
+    </div>
+</div>
+{% endblock %}

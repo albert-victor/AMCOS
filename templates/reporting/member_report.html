@@ -1,0 +1,46 @@
+﻿{% extends 'base.html' %}
+{% block title %}Member Report{% endblock %}
+{% block page_title %}Member Report{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-users" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ total }}</h4><p>Total Members</p></div></div>
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-users" aria-hidden="true"></i> </div><div class="stat-info"><h4>{{ active }}</h4><p>Active Members</p></div></div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Member List Report</h3>
+        <a href="?format=csv" class="btn btn-sm btn-outline">Download CSV</a>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in members %}
+                    <tr>
+                        <td>{{ m.member_number }}</td>
+                        <td>{{ m.full_name }}</td>
+                        <td>{{ m.phone }}</td>
+                        <td>{{ m.email|default:"-" }}</td>
+                        <td>{{ m.gender|title }}</td>
+                        <td><span class="badge badge-{% if m.status == 'active' %}success{% else %}secondary{% endif %}">{{ m.status }}</span></td>
+                        <td>{{ m.joined_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+﻿{% extends 'base.html' %}
+{% block title %}Verify Payment{% endblock %}
+{% block page_title %}{% t "Thibitisha Malipo" "Verify Payment" %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><h3>{% t "Thibitisha Malipo" "Verify Payment" %}</h3></div>
+    <div class="card-body">
+        <div style="background:#fff8e1;border:1px solid #F9A825;padding:1rem;border-radius:8px;margin-bottom:1rem;">
+            <table>
+                <tr><td style="font-weight:600;width:160px;">Reference:</td><td>{{ payment.reference_number }}</td></tr>
+                <tr><td style="font-weight:600;">Transaction ID:</td><td>{{ payment.transaction_id|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">Member:</td><td>{{ payment.member_id|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">{% t "Aina" "Type" %}:</td><td>{{ payment.get_payment_type_display }}</td></tr>
+                <tr><td style="font-weight:600;">{% t "Njia" "Method" %}:</td><td>{{ payment.get_payment_method_display }}</td></tr>
+                <tr><td style="font-weight:600;">{% t "Kiasi" "Amount" %}:</td><td><strong style="font-size:1.25rem;color:#0d3b12;">{{ payment.amount|floatformat:2 }} TZS</strong></td></tr>
+                <tr><td style="font-weight:600;">{% t "Simu" "Phone" %}:</td><td>{{ payment.phone }}</td></tr>
+                <tr><td style="font-weight:600;">{% t "Aliwasilisha" "Submitted" %}:</td><td>{{ payment.submitted_at|date:"d/m/Y H:i"|default:"-" }}</td></tr>
+                <tr><td style="font-weight:600;">{% t "Hali" "Status" %}:</td><td><span class="badge badge-warning">{{ payment.status }}</span></td></tr>
+            </table>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{% t "Njia ya Uthibitisho" "Verification Method" %}</label>
+                <select name="verification_method" class="form-control">
+                    <option value="manual">{% t "Mkono" "Manual" %}</option>
+                    <option value="ussd">USSD Code</option>
+                    <option value="auto">Auto API</option>
+                </select>
+            </div>
+            <p style="color:var(--gray-500);margin-bottom:1rem;">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                {% t "SMS ya uthibitisho itatumwa kwa" "A confirmation SMS will be sent to" %} {{ payment.phone }}
+                {% t "baada ya kuthibitisha." "after verification." %}
+            </p>
+            <button type="submit" class="btn btn-success"><i class="fa-solid fa-check" aria-hidden="true"></i>{% t "Thibitisha" "Verify Payment" %}</button>
+            <a href="{% url 'payments:detail' payment.id %}" class="btn btn-outline">{% t "Ghairi" "Cancel" %}</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
